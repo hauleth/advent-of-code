@@ -1,5 +1,7 @@
-<!-- vim: syntax=markdown -->
-<!-- livebook:{"persist_outputs":true} -->
+<!--
+ vim:ft=markdown --!>
+ livebook:{"persist_outputs":true} 
+-->
 
 # Advent of Code 2021
 
@@ -7,10 +9,6 @@
 
 ```elixir
 Mix.install([])
-```
-
-```output
-:ok
 ```
 
 ## Day 1
@@ -23,18 +21,6 @@ stream =
   |> Stream.map(&String.to_integer(String.trim(&1)))
 ```
 
-```output
-#Stream<[
-  enum: %File.Stream{
-    line_or_bytes: :line,
-    modes: [:raw, :read_ahead, :binary],
-    path: "day1.txt",
-    raw: true
-  },
-  funs: [#Function<47.58486609/1 in Stream.map/2>]
-]>
-```
-
 ### Task 1
 
 <!-- livebook:{"break_markdown":true} -->
@@ -45,10 +31,6 @@ Compute count of consecutive increases
 stream
 |> Stream.chunk_every(2, 1, :discard)
 |> Enum.count(fn [a, b] -> a < b end)
-```
-
-```output
-1688
 ```
 
 ### Task 2
@@ -79,10 +61,6 @@ stream
 |> Enum.count(fn [a, _, _, b] -> a < b end)
 ```
 
-```output
-1728
-```
-
 ## Day 2
 
 ### Load input
@@ -111,18 +89,6 @@ stream =
   end)
 ```
 
-```output
-#Stream<[
-  enum: %File.Stream{
-    line_or_bytes: :line,
-    modes: [:raw, :read_ahead, :binary],
-    path: "day2.txt",
-    raw: true
-  },
-  funs: [#Function<47.58486609/1 in Stream.map/2>]
-]>
-```
-
 ### Task 1
 
 ```elixir
@@ -137,10 +103,6 @@ stream =
 h * d
 ```
 
-```output
-1499229
-```
-
 ### Task 2
 
 ```elixir
@@ -153,10 +115,6 @@ h * d
   end)
 
 h * d
-```
-
-```output
-1340836560
 ```
 
 ## Day 3
@@ -183,10 +141,6 @@ defmodule Day3 do
 end
 ```
 
-```output
-{:module, Day3, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:count, 1}}
-```
-
 ### Task 1
 
 ```elixir
@@ -204,10 +158,6 @@ half = div(length(stream), 2)
   end)
 
 a * b
-```
-
-```output
-3847100
 ```
 
 ### Task 2
@@ -241,6 +191,115 @@ o2 = List.to_integer(Day3.Task2.reduce(stream, &>/2), 2)
 co2 * o2
 ```
 
-```output
-4105235
+## Day 4
+
+### Input
+
+This time it is a little bit more convoluted, as there are 2 parts of the input.
+Fortunately we can easily disect the parts via pattern matching.
+
+Technically the conversion to the numbers is not needed, but it does no harm
+and provides additional layer of safety against some whitespace characters left there
+and here.
+
+The `Day4.win/2` function is manually unrolled, as it is easier to write than some
+random jumping in the list.
+
+<!-- livebook:{"disable_formatting":true} -->
+
+```elixir
+[numbers | bingos] =
+  File.read!("day4.txt")
+  |> String.split("\n\n", trim: true)
+
+numbers =
+  numbers
+  |> String.trim()
+  |> String.split(",")
+  |> Enum.map(&String.to_integer/1)
+
+bingos =
+  bingos
+  |> Enum.map(fn bingo ->
+    bingo
+    |> String.split(~r/\s+/, trim: true)
+    |> Enum.map(&String.to_integer/1)
+  end)
+
+defmodule Day4 do
+  def win(
+        [
+          a1, a2, a3, a4, a5,
+          b1, b2, b3, b4, b5,
+          c1, c2, c3, c4, c5,
+          d1, d2, d3, d4, d5,
+          e1, e2, e3, e4, e5
+        ],
+        nums
+      ) do
+    # Rows
+    all_in([a1, a2, a3, a4, a5], nums) or
+    all_in([b1, b3, b3, b4, b5], nums) or
+    all_in([c1, c2, c3, c4, c5], nums) or
+    all_in([d1, d2, d3, d4, d5], nums) or
+    all_in([e1, e2, e3, e4, e5], nums) or
+    # Columns
+    all_in([a1, b1, c1, d1, e1], nums) or
+    all_in([a2, b2, c2, d2, e2], nums) or
+    all_in([a3, b3, c3, d3, e3], nums) or
+    all_in([a4, b4, c4, d4, e4], nums) or
+    all_in([a5, b5, c5, d5, e5], nums) or
+    # Diagonals
+    all_in([a1, b2, c3, d4, e5], nums) or
+    all_in([a5, b4, c3, d2, e1], nums)
+  end
+
+  def not_matched(bingo, nums) do
+    Enum.reject(bingo, &(&1 in nums))
+  end
+
+  defp all_in(list, nums) do
+    Enum.all?(list, &(&1 in nums))
+  end
+end
+```
+
+### Task 1
+
+We simply traverse the `numbers` list aggregating the numbers (order doesn't really matter,
+here we aggregate them in reverse order to speedup the code). When we have enough numbers
+that any of the `bingos` is winning one, then we halt the reduction and return computed
+result.
+
+```elixir
+numbers
+|> Enum.reduce_while([], fn elem, acc ->
+  matches = [elem | acc]
+
+  case Enum.find(bingos, &Day4.win(&1, matches)) do
+    nil -> {:cont, matches}
+    bingo -> {:halt, Enum.sum(Day4.not_matched(bingo, matches)) * elem}
+  end
+end)
+```
+
+### Task 2
+
+```elixir
+numbers
+|> Enum.reduce_while({bingos, []}, fn elem, {bingos, acc} ->
+  matches = [elem | acc]
+
+  case bingos do
+    [bingo] ->
+      if Day4.win(bingo, matches) do
+        {:halt, Enum.sum(Day4.not_matched(bingo, matches)) * elem}
+      else
+        {:cont, {bingos, matches}}
+      end
+
+    _ ->
+      {:cont, {Enum.reject(bingos, &Day4.win(&1, matches)), matches}}
+  end
+end)
 ```
