@@ -248,10 +248,7 @@ defmodule Day4 do
     all_in([a2, b2, c2, d2, e2], nums) or
     all_in([a3, b3, c3, d3, e3], nums) or
     all_in([a4, b4, c4, d4, e4], nums) or
-    all_in([a5, b5, c5, d5, e5], nums) or
-    # Diagonals
-    all_in([a1, b2, c3, d4, e5], nums) or
-    all_in([a5, b4, c3, d2, e1], nums)
+    all_in([a5, b5, c5, d5, e5], nums)
   end
 
   def not_matched(bingo, nums) do
@@ -303,3 +300,5 @@ numbers
   end
 end)
 ```
+
+## Day 5
