@@ -10,9 +10,7 @@
 ## Setup
 
 ```elixir
-Mix.install([
-  {:nx, github: "elixir-nx/nx", sparse: "nx"}
-])
+Mix.install([])
 ```
 
 ```output
@@ -617,6 +615,11 @@ input =
 ]>
 ```
 
+### Task 1
+
+We simply need to count all occurences of the values that have 2, 3, 4, or 7 highlighted
+segments.
+
 ```elixir
 input
 |> Enum.map(fn {_, output} ->
@@ -628,6 +631,8 @@ end)
 ```output
 390
 ```
+
+### Task 2
 
 ```elixir
 defmodule Day8.Task2 do
