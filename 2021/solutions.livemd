@@ -3,6 +3,8 @@
  livebook:{"persist_outputs":true} 
 -->
 
+<!-- livebook:{"persist_outputs":true} -->
+
 # Advent of Code 2021
 
 ## Setup
@@ -11,6 +13,10 @@
 Mix.install([
   {:nx, github: "elixir-nx/nx", sparse: "nx"}
 ])
+```
+
+```output
+:ok
 ```
 
 ## Day 1
@@ -23,6 +29,18 @@ stream =
   |> Stream.map(&String.to_integer(String.trim(&1)))
 ```
 
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day1.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
 ### Task 1
 
 <!-- livebook:{"break_markdown":true} -->
@@ -33,6 +51,10 @@ Compute count of consecutive increases
 stream
 |> Stream.chunk_every(2, 1, :discard)
 |> Enum.count(fn [a, b] -> a < b end)
+```
+
+```output
+1688
 ```
 
 ### Task 2
@@ -63,6 +85,10 @@ stream
 |> Enum.count(fn [a, _, _, b] -> a < b end)
 ```
 
+```output
+1728
+```
+
 ## Day 2
 
 ### Load input
@@ -91,6 +117,18 @@ stream =
   end)
 ```
 
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day2.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
 ### Task 1
 
 ```elixir
@@ -105,6 +143,10 @@ stream =
 h * d
 ```
 
+```output
+1499229
+```
+
 ### Task 2
 
 ```elixir
@@ -117,6 +159,10 @@ h * d
   end)
 
 h * d
+```
+
+```output
+1340836560
 ```
 
 ## Day 3
@@ -143,6 +189,10 @@ defmodule Day3 do
 end
 ```
 
+```output
+{:module, Day3, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:count, 1}}
+```
+
 ### Task 1
 
 ```elixir
@@ -160,6 +210,10 @@ half = div(length(stream), 2)
   end)
 
 a * b
+```
+
+```output
+3847100
 ```
 
 ### Task 2
@@ -191,6 +245,10 @@ co2 = List.to_integer(Day3.Task2.reduce(stream, &</2), 2)
 o2 = List.to_integer(Day3.Task2.reduce(stream, &>/2), 2)
 
 co2 * o2
+```
+
+```output
+4105235
 ```
 
 ## Day 4
@@ -263,6 +321,10 @@ defmodule Day4 do
 end
 ```
 
+```output
+{:module, Day4, <<70, 79, 82, 49, 0, 0, 15, ...>>, {:all_in, 2}}
+```
+
 ### Task 1
 
 We simply traverse the `numbers` list aggregating the numbers (order doesn't really matter,
@@ -280,6 +342,10 @@ numbers
     bingo -> {:halt, Enum.sum(Day4.not_matched(bingo, matches)) * elem}
   end
 end)
+```
+
+```output
+34506
 ```
 
 ### Task 2
@@ -301,6 +367,10 @@ numbers
       {:cont, {Enum.reject(bingos, &Day4.win(&1, matches)), matches}}
   end
 end)
+```
+
+```output
+7686
 ```
 
 ## Day 5
@@ -334,13 +404,12 @@ defmodule Day5 do
     def horizontal?(a), do: a.start.y == a.finish.y
     def vertical?(a), do: a.start.x == a.finish.x
 
-    def intersect?(a, b) do
-      a.start.x in b.start.x..b.finish.y and b.start.y in a.start.y..a.finish.y
-    end
-
-    def overlapping?(a, b) do
-      {a.start.x, a.finish.x} == {b.start.x, b.finish.x} or
-        {a.start.y, a.finish.y} == {b.start.y, b.start.y}
+    def points(a) do
+      case {sign(a.finish.x - a.start.x), sign(a.finish.y - a.start.y)} do
+        {0, dy} -> for y <- a.start.y..a.finish.y//dy, do: {a.start.x, y}
+        {dx, 0} -> for x <- a.start.x..a.finish.x//dx, do: {x, a.start.y}
+        {dx, dy} -> Enum.zip(a.start.x..a.finish.x//dx, a.start.y..a.finish.y//dy)
+      end
     end
 
     def orientation(a) do
@@ -350,6 +419,10 @@ defmodule Day5 do
         true -> :diagonal
       end
     end
+
+    defp sign(0), do: 0
+    defp sign(x) when x < 0, do: -1
+    defp sign(x) when x > 0, do: 1
   end
 end
 
@@ -364,49 +437,45 @@ lines =
 
     Day5.Line.new(pa, pb)
   end)
+```
 
-x_min =
-  lines
-  |> Enum.map(& &1.start.x)
-  |> Enum.min()
-
-x_max =
-  lines
-  |> Enum.map(& &1.finish.x)
-  |> Enum.max()
-
-y_min =
-  lines
-  |> Enum.map(& &1.start.y)
-  |> Enum.min()
-
-y_max =
-  lines
-  |> Enum.map(& &1.finish.y)
-  |> Enum.max()
-
-{x_min, x_max, y_min, y_max}
-
-arr = Nx.iota({1000, 1000})
-
-arr = Nx.subtract(arr, arr)
-
-lines
-|> Enum.flat_map(fn a ->
-  case Day5.Line.orientation(a) do
-    :diagonal -> [(a.start.x - a.finish.x) / (a.start.y - a.finish.y)]
-    _ -> []
-  end
-end)
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day5.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>, #Function<47.58486609/1 in Stream.map/2>]
+]>
 ```
 
 ### Task 1
 
 ```elixir
-%{horizontal: horiz, vertical: vert} = Enum.group_by(lines, &Day5.Line.orientation/1)
+lines
+|> Stream.filter(&(Day5.Line.orientation(&1) != :diagonal))
+|> Stream.flat_map(&Day5.Line.points/1)
+|> Enum.frequencies()
+|> Enum.count(fn {_k, v} -> v > 1 end)
+```
 
-horiz = Enum.sort_by(horiz, &{&1.start.x, &1.start.y})
-vert = Enum.sort_by(vert, & &1.start.x)
+```output
+5197
+```
+
+### Task 2
+
+```elixir
+lines
+|> Stream.flat_map(&Day5.Line.points/1)
+|> Enum.frequencies()
+|> Enum.count(fn {_k, v} -> v > 1 end)
+```
+
+```output
+18605
 ```
 
 ## Day 6
@@ -421,32 +490,245 @@ counts =
   |> Enum.map(&String.to_integer/1)
   |> Enum.frequencies()
   |> Map.merge(initial, fn _, a, _ -> a end)
+
+defmodule Day6 do
+  def next(%{0 => next} = population) do
+    1..8
+    |> Map.new(&{&1 - 1, population[&1]})
+    |> Map.merge(%{6 => next, 8 => next}, fn _, v1, v2 -> v1 + v2 end)
+  end
+end
+```
+
+```output
+{:module, Day6, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:next, 1}}
 ```
 
 ### Task 1
 
 ```elixir
 1..80
-|> Enum.reduce(counts, fn _, %{0 => next} = acc ->
-  1..8
-  |> Map.new(fn idx -> {idx - 1, acc[idx]} end)
-  |> Map.update!(6, &(&1 + next))
-  |> Map.put(8, next)
-end)
+|> Enum.reduce(counts, fn _, acc -> Day6.next(acc) end)
 |> Map.values()
 |> Enum.sum()
+```
+
+```output
+343441
 ```
 
 ### Task 2
 
 ```elixir
 1..256
-|> Enum.reduce(counts, fn _, %{0 => next} = acc ->
-  1..8
-  |> Map.new(fn idx -> {idx - 1, acc[idx]} end)
-  |> Map.update!(6, &(&1 + next))
-  |> Map.put(8, next)
-end)
+|> Enum.reduce(counts, fn _, acc -> Day6.next(acc) end)
 |> Map.values()
 |> Enum.sum()
+```
+
+```output
+1569108373832
+```
+
+## Day 7
+
+```elixir
+input =
+  File.read!("day7.txt")
+  |> String.trim()
+  |> String.split(",")
+  |> Enum.map(&String.to_integer/1)
+```
+
+```output
+[1101, 1, 29, 67, 1102, 0, 1, 65, 1008, 65, 35, 66, 1005, 66, 28, 1, 67, 65, 20, 4, 0, 1001, 65, 1,
+ 65, 1106, 0, 8, 99, 35, 67, 101, 99, 105, 32, 110, 39, 101, 115, 116, 32, 112, 97, 115, 32, 117,
+ 110, 101, 32, 105, ...]
+```
+
+### Task 1
+
+```elixir
+mean = Enum.at(Enum.sort(input), div(length(input), 2))
+
+input
+|> Enum.map(&abs(&1 - mean))
+|> Enum.sum()
+```
+
+```output
+336721
+```
+
+### Task 2
+
+```elixir
+arith_sum = fn n -> div(n * n + n, 2) end
+
+max = Enum.max(input)
+
+0..max
+|> Enum.reduce(:infinity, fn n, acc ->
+  sum =
+    input
+    |> Enum.map(&arith_sum.(abs(&1 - n)))
+    |> Enum.sum()
+
+  if sum < acc, do: sum, else: acc
+end)
+```
+
+```output
+91638945
+```
+
+## Day 8
+
+```elixir
+input =
+  File.stream!("day8.txt")
+  |> Stream.map(fn line ->
+    line
+    |> String.split(" | ")
+    |> Enum.map(fn part ->
+      part
+      |> String.trim()
+      |> String.split(" ")
+      |> Enum.map(fn disp ->
+        disp
+        |> String.to_charlist()
+        |> Enum.sort()
+        |> List.to_string()
+      end)
+    end)
+    |> List.to_tuple()
+  end)
+```
+
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day8.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
+```elixir
+input
+|> Enum.map(fn {_, output} ->
+  Enum.count(output, &(byte_size(&1) in [2, 3, 4, 7]))
+end)
+|> Enum.sum()
+```
+
+```output
+390
+```
+
+```elixir
+defmodule Day8.Task2 do
+  def a --- b do
+    MapSet.difference(a, b)
+  end
+
+  def a +++ b do
+    MapSet.union(a, b)
+  end
+
+  def a <~> b do
+    MapSet.intersection(a, b)
+  end
+
+  def a <|> b do
+    (a +++ b) --- (a <~> b)
+  end
+
+  #            1.   7.    4. 2|3|5. 2|3|5. 2|3|5.  6|9|0.  6|9|0.  6|9|0.       8.
+  def deduce({cf, acf, bcdf, acdeg, acdfg, abdfg, abdefg, abcdfg, abcefg, abcdefg}) do
+    a = acf --- cf
+    eg = abcdefg --- (acf +++ bcdf)
+    bd = bcdf --- cf
+    abfg = abdefg <|> abcdfg <|> abcefg
+    b = abfg <~> bd
+    f = abfg <~> cf
+    g = abfg --- (a +++ b +++ f)
+    d = bd --- b
+    c = cf --- f
+    e = eg --- g
+
+    {a, b, c, d, e, f, g} =
+      [a, b, c, d, e, f, g]
+      |> Enum.map(&extract/1)
+      |> List.to_tuple()
+
+    [
+      # 0
+      [a, b, c, e, f, g],
+      # 1
+      [c, f],
+      # 2
+      [a, c, d, e, g],
+      # 3
+      [a, c, d, f, g],
+      # 4
+      [b, c, d, f],
+      # 5
+      [a, b, d, f, g],
+      # 6
+      [a, b, d, e, f, g],
+      # 7
+      [a, c, f],
+      # 8
+      [a, b, c, d, e, f, g],
+      # 9
+      [a, b, c, d, f, g]
+    ]
+    |> Enum.map(&List.to_string(Enum.sort(&1)))
+    |> Enum.with_index()
+    |> Map.new()
+  end
+
+  defp extract(a) do
+    [v] = MapSet.to_list(a)
+
+    v
+  end
+
+  def decode(matches, output) do
+    output
+    |> Enum.map(&matches[&1])
+    |> Integer.undigits()
+  end
+end
+
+input
+|> Enum.map(fn {input, output} ->
+  input
+  |> Enum.sort_by(&byte_size/1)
+  |> Enum.map(&MapSet.new(String.to_charlist(&1)))
+  |> List.to_tuple()
+  |> Day8.Task2.deduce()
+  |> Day8.Task2.decode(output)
+end)
+|> Enum.sum()
+```
+
+```output
+warning: variable "abdfg" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  solutions.livemd#cell:19: Day8.Task2.deduce/1
+
+warning: variable "acdeg" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  solutions.livemd#cell:19: Day8.Task2.deduce/1
+
+warning: variable "acdfg" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  solutions.livemd#cell:19: Day8.Task2.deduce/1
+
+```
+
+```output
+1011785
 ```
