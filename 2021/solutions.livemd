@@ -10,7 +10,31 @@
 ## Setup
 
 ```elixir
-Mix.install([])
+Mix.install([
+  {:nx, github: "elixir-nx/nx", sparse: "nx"},
+  {:kino, github: "livebook-dev/kino"}
+])
+```
+
+```output
+* Getting nx (https://github.com/elixir-nx/nx.git)
+remote: Enumerating objects: 10786, done.        
+remote: Counting objects: 100% (2841/2841), done.        
+remote: Compressing objects: 100% (635/635), done.        
+remote: Total 10786 (delta 2376), reused 2515 (delta 2195), pack-reused 7945        
+origin/HEAD set to main
+* Getting kino (https://github.com/livebook-dev/kino.git)
+remote: Enumerating objects: 488, done.        
+remote: Counting objects: 100% (488/488), done.        
+remote: Compressing objects: 100% (351/351), done.        
+remote: Total 488 (delta 269), reused 274 (delta 118), pack-reused 0        
+origin/HEAD set to main
+==> kino
+Compiling 19 files (.ex)
+Generated kino app
+==> nx
+Compiling 23 files (.ex)
+Generated nx app
 ```
 
 ```output
@@ -565,15 +589,15 @@ arith_sum = fn n -> div(n * n + n, 2) end
 
 max = Enum.max(input)
 
-0..max
-|> Enum.reduce(:infinity, fn n, acc ->
-  sum =
-    input
-    |> Enum.map(&arith_sum.(abs(&1 - n)))
-    |> Enum.sum()
+mean = Enum.sum(input) / length(input)
 
-  if sum < acc, do: sum, else: acc
+[floor(mean), ceil(mean)]
+|> Enum.map(fn n ->
+  input
+  |> Enum.map(&arith_sum.(abs(&1 - n)))
+  |> Enum.sum()
 end)
+|> Enum.min()
 ```
 
 ```output
@@ -593,6 +617,7 @@ input =
       |> String.trim()
       |> String.split(" ")
       |> Enum.map(fn disp ->
+        # Sort characters in each entry to simplify later work
         disp
         |> String.to_charlist()
         |> Enum.sort()
@@ -636,39 +661,29 @@ end)
 
 ```elixir
 defmodule Day8.Task2 do
-  def a --- b do
-    MapSet.difference(a, b)
-  end
+  defp a --- b, do: MapSet.difference(a, b)
 
-  def a +++ b do
-    MapSet.union(a, b)
-  end
+  defp a +++ b, do: MapSet.union(a, b)
 
-  def a <~> b do
-    MapSet.intersection(a, b)
-  end
-
-  def a <|> b do
-    (a +++ b) --- (a <~> b)
-  end
+  defp a <~> b, do: MapSet.intersection(a, b)
 
   #            1.   7.    4. 2|3|5. 2|3|5. 2|3|5.  6|9|0.  6|9|0.  6|9|0.       8.
-  def deduce({cf, acf, bcdf, acdeg, acdfg, abdfg, abdefg, abcdfg, abcefg, abcdefg}) do
-    a = acf --- cf
+  def deduce([cf, acf, bcdf, acdeg, acdfg, abdfg, abdefg, abcdfg, abcefg, abcdefg]) do
     eg = abcdefg --- (acf +++ bcdf)
     bd = bcdf --- cf
-    abfg = abdefg <|> abcdfg <|> abcefg
+    adg = acdeg <~> acdfg <~> abdfg
+    abfg = abdefg <~> abcdfg <~> abcefg
+    a = acf --- cf
     b = abfg <~> bd
     f = abfg <~> cf
-    g = abfg --- (a +++ b +++ f)
-    d = bd --- b
+    g = adg <~> eg
+    d = adg <~> bd
     c = cf --- f
     e = eg --- g
 
-    {a, b, c, d, e, f, g} =
+    [a, b, c, d, e, f, g] =
       [a, b, c, d, e, f, g]
       |> Enum.map(&extract/1)
-      |> List.to_tuple()
 
     [
       # 0
@@ -698,6 +713,7 @@ defmodule Day8.Task2 do
   end
 
   defp extract(a) do
+    # Just additional sanity check
     [v] = MapSet.to_list(a)
 
     v
@@ -715,7 +731,6 @@ input
   input
   |> Enum.sort_by(&byte_size/1)
   |> Enum.map(&MapSet.new(String.to_charlist(&1)))
-  |> List.to_tuple()
   |> Day8.Task2.deduce()
   |> Day8.Task2.decode(output)
 end)
@@ -723,17 +738,108 @@ end)
 ```
 
 ```output
-warning: variable "abdfg" is unused (if the variable is not meant to be used, prefix it with an underscore)
-  solutions.livemd#cell:19: Day8.Task2.deduce/1
+1011785
+```
 
-warning: variable "acdeg" is unused (if the variable is not meant to be used, prefix it with an underscore)
-  solutions.livemd#cell:19: Day8.Task2.deduce/1
+## Day 9
 
-warning: variable "acdfg" is unused (if the variable is not meant to be used, prefix it with an underscore)
-  solutions.livemd#cell:19: Day8.Task2.deduce/1
+```elixir
+input =
+  File.read!("day9.txt")
+  # ~S[110
+  #   101
+  #   110]
+  |> String.split("\n", trim: true)
+  |> Enum.map(&String.to_charlist(String.trim(&1)))
+  |> Nx.tensor(names: [:y, :x])
+  |> Nx.subtract(?0)
+  |> Nx.add(1)
 
+{width, height} = shape = Nx.shape(input)
 ```
 
 ```output
-1011785
+{100, 100}
+```
+
+### Task 1
+
+```elixir
+padded = Nx.pad(input, 99, [{0, 0, 0}, {1, 1, 0}])
+
+shifted = Nx.slice_axis(padded, 0, height, :x)
+
+x1 = Nx.less(input, shifted)
+
+shifted = Nx.slice_axis(padded, 2, height, :x)
+
+x2 = Nx.less(input, shifted)
+
+x = Nx.logical_and(x1, x2)
+
+padded = Nx.pad(input, 99, [{1, 1, 0}, {0, 0, 0}])
+
+shifted = Nx.slice_axis(padded, 0, width, :y)
+
+y1 = Nx.less(input, shifted)
+
+shifted = Nx.slice_axis(padded, 2, width, :y)
+
+y2 = Nx.less(input, shifted)
+
+y = Nx.logical_and(y1, y2)
+
+minimas = Nx.logical_and(x, y)
+
+input
+|> Nx.multiply(minimas)
+|> Nx.sum()
+|> Nx.to_number()
+```
+
+```output
+452
+```
+
+### Task 2
+
+```elixir
+input
+|> Nx.equal(10)
+|> Nx.logical_not()
+|> Nx.select(Nx.iota(shape), 9999)
+|> Nx.to_flat_list()
+|> Enum.reject(&(&1 == 9999))
+|> Enum.map(fn point -> {div(point, width), rem(point, width)} end)
+|> Enum.reduce([], fn {y, x} = point, basins ->
+  basin_left = Enum.find_index(basins, &({y, x - 1} in &1))
+  basin_up = Enum.find_index(basins, &({y - 1, x} in &1))
+
+  case {basin_left, basin_up} do
+    {nil, nil} ->
+      [MapSet.new([point]) | basins]
+
+    {idx, nil} ->
+      List.update_at(basins, idx, &MapSet.put(&1, point))
+
+    {nil, idx} ->
+      List.update_at(basins, idx, &MapSet.put(&1, point))
+
+    {idx, idx} ->
+      List.update_at(basins, idx, &MapSet.put(&1, point))
+
+    {idx1, idx2} ->
+      {old, basins} = List.pop_at(basins, max(idx1, idx2))
+
+      List.update_at(basins, min(idx1, idx2), &(&1 |> MapSet.union(old) |> MapSet.put(point)))
+  end
+end)
+|> Enum.map(&MapSet.size/1)
+|> Enum.sort(:desc)
+|> Enum.take(3)
+|> Enum.reduce(&*/2)
+```
+
+```output
+1263735
 ```
