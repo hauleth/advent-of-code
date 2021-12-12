@@ -17,27 +17,6 @@ Mix.install([
 ```
 
 ```output
-* Getting nx (https://github.com/elixir-nx/nx.git)
-remote: Enumerating objects: 10786, done.        
-remote: Counting objects: 100% (2841/2841), done.        
-remote: Compressing objects: 100% (635/635), done.        
-remote: Total 10786 (delta 2376), reused 2515 (delta 2195), pack-reused 7945        
-origin/HEAD set to main
-* Getting kino (https://github.com/livebook-dev/kino.git)
-remote: Enumerating objects: 488, done.        
-remote: Counting objects: 100% (488/488), done.        
-remote: Compressing objects: 100% (351/351), done.        
-remote: Total 488 (delta 269), reused 274 (delta 118), pack-reused 0        
-origin/HEAD set to main
-==> kino
-Compiling 19 files (.ex)
-Generated kino app
-==> nx
-Compiling 23 files (.ex)
-Generated nx app
-```
-
-```output
 :ok
 ```
 
@@ -571,10 +550,10 @@ input =
 ### Task 1
 
 ```elixir
-mean = Enum.at(Enum.sort(input), div(length(input), 2))
+median = Enum.at(Enum.sort(input), div(length(input), 2))
 
 input
-|> Enum.map(&abs(&1 - mean))
+|> Enum.map(&abs(&1 - median))
 |> Enum.sum()
 ```
 
@@ -746,9 +725,6 @@ end)
 ```elixir
 input =
   File.read!("day9.txt")
-  # ~S[110
-  #   101
-  #   110]
   |> String.split("\n", trim: true)
   |> Enum.map(&String.to_charlist(String.trim(&1)))
   |> Nx.tensor(names: [:y, :x])
@@ -765,29 +741,23 @@ input =
 ### Task 1
 
 ```elixir
+minima = fn padded, size, axis ->
+  shifted = Nx.slice_axis(padded, 0, size, axis)
+  x1 = Nx.less(input, shifted)
+
+  shifted = Nx.slice_axis(padded, 2, size, axis)
+  x2 = Nx.less(input, shifted)
+
+  Nx.logical_and(x1, x2)
+end
+
 padded = Nx.pad(input, 99, [{0, 0, 0}, {1, 1, 0}])
 
-shifted = Nx.slice_axis(padded, 0, height, :x)
-
-x1 = Nx.less(input, shifted)
-
-shifted = Nx.slice_axis(padded, 2, height, :x)
-
-x2 = Nx.less(input, shifted)
-
-x = Nx.logical_and(x1, x2)
+x = minima.(padded, width, :x)
 
 padded = Nx.pad(input, 99, [{1, 1, 0}, {0, 0, 0}])
 
-shifted = Nx.slice_axis(padded, 0, width, :y)
-
-y1 = Nx.less(input, shifted)
-
-shifted = Nx.slice_axis(padded, 2, width, :y)
-
-y2 = Nx.less(input, shifted)
-
-y = Nx.logical_and(y1, y2)
+y = minima.(padded, height, :y)
 
 minimas = Nx.logical_and(x, y)
 
@@ -842,4 +812,258 @@ end)
 
 ```output
 1263735
+```
+
+## Day 10
+
+```elixir
+input =
+  File.stream!("day10.txt")
+  |> Stream.map(&String.trim/1)
+
+defmodule Day10 do
+  @parens %{?( => ?), ?[ => ?], ?< => ?>, ?{ => ?}}
+
+  def parse(input), do: parse(input, [])
+
+  defp parse(<<c>> <> rest, stack) when c in '([{<', do: parse(rest, [@parens[c] | stack])
+  defp parse(<<c>> <> rest, [c | stack]), do: parse(rest, stack)
+  defp parse(<<>>, []), do: :ok
+  defp parse(<<>>, rest), do: {:incomplete, rest}
+  defp parse(<<c>> <> _, _), do: {:unexpected, [c]}
+end
+```
+
+```output
+{:module, Day10, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:parse, 2}}
+```
+
+```elixir
+points = %{
+  ?) => 3,
+  ?] => 57,
+  ?} => 1197,
+  ?> => 25137
+}
+
+input
+|> Enum.map(&Day10.parse/1)
+|> Enum.map(fn
+  {:unexpected, [c]} -> points[c]
+  _ -> 0
+end)
+|> Enum.sum()
+```
+
+```output
+288291
+```
+
+```elixir
+points = %{
+  ?) => 1,
+  ?] => 2,
+  ?} => 3,
+  ?> => 4
+}
+
+median = fn list ->
+  sorted = Enum.sort(list)
+  middle = div(length(list), 2)
+
+  Enum.at(sorted, middle)
+end
+
+input
+|> Enum.map(&Day10.parse/1)
+|> Enum.flat_map(fn
+  {:incomplete, rest} ->
+    [
+      Enum.reduce(rest, 0, fn c, acc ->
+        acc * 5 + points[c]
+      end)
+    ]
+
+  _ ->
+    []
+end)
+|> median.()
+```
+
+```output
+820045242
+```
+
+## Day 11
+
+```elixir
+input =
+  File.read!("day11.txt")
+  |> String.split("\n")
+  |> Enum.map(&String.trim/1)
+  |> Enum.map(fn line ->
+    for <<c <- line>>, do: c - ?0
+  end)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {row, y} ->
+    for {v, x} <- Enum.with_index(row), do: {{x, y}, v}
+  end)
+  |> Map.new()
+
+defmodule Day11 do
+  def step(map) do
+    updated = Map.new(map, fn {k, v} -> {k, v + 1} end)
+
+    lightup(updated, 0)
+  end
+
+  @diffs for dx <- -1..1, dy <- -1..1, dx != 0 or dy != 0, do: {dx, dy}
+
+  IO.inspect(@diffs)
+
+  def lightup(map, n) do
+    map
+    |> Enum.reduce({map, 0}, fn
+      {_, v}, acc when v < 10 ->
+        acc
+
+      {{x, y} = k, _}, {map, count} ->
+        new_map =
+          @diffs
+          |> Enum.reduce(map, fn {dx, dy}, acc ->
+            point = {x + dx, y + dy}
+
+            case Map.fetch(acc, point) do
+              {:ok, value} when value != 0 -> %{acc | point => value + 1}
+              _ -> acc
+            end
+          end)
+          |> Map.put(k, 0)
+
+        {new_map, count + 1}
+    end)
+    |> case do
+      {map, 0} -> {map, n}
+      {map, m} -> lightup(map, n + m)
+    end
+  end
+end
+```
+
+```output
+[{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}]
+```
+
+```output
+{:module, Day11, <<70, 79, 82, 49, 0, 0, 11, ...>>, {:lightup, 2}}
+```
+
+```elixir
+draw = fn map ->
+  for x <- 0..9 do
+    IO.puts(for y <- 0..9, do: ?0 + map[{x, y}])
+  end
+
+  IO.puts("")
+end
+
+1..100
+|> Enum.reduce({input, 0}, fn _, {map, n} ->
+  {new_map, m} = Day11.step(map)
+  {new_map, n + m}
+end)
+|> elem(1)
+```
+
+```output
+1688
+```
+
+```elixir
+Stream.unfold(1, &{&1, &1 + 1})
+|> Enum.reduce_while(input, fn idx, map ->
+  case Day11.step(map) do
+    {_, 100} -> {:halt, idx}
+    {next, _} -> {:cont, next}
+  end
+end)
+```
+
+```output
+403
+```
+
+## Day 12
+
+```elixir
+input =
+  File.read!("day12.txt")
+  |> String.split("\n")
+  |> Enum.map(&String.split(&1, "-"))
+
+graph =
+  Enum.reduce(input, %{}, fn [a, b], acc ->
+    acc
+    |> Map.update(a, [b], &[b | &1])
+    |> Map.update(b, [a], &[a | &1])
+  end)
+
+defmodule Day12 do
+  def dfs(graph, start, finish), do: dfs(graph, start, finish, [start])
+
+  defp dfs(_graph, vertex, vertex, _visited), do: 1
+
+  defp dfs(graph, vertex, finish, visited) do
+    (graph[vertex] -- visited)
+    |> Enum.reduce(0, fn vertex, acc ->
+      visited = if small?(vertex), do: [vertex | visited], else: visited
+
+      acc + dfs(graph, vertex, finish, visited)
+    end)
+  end
+
+  def dfs2(graph, start, finish), do: dfs2(graph, start, finish, %{start => :inf})
+
+  defp dfs2(_graph, vertex, vertex, _visited), do: 1
+
+  defp dfs2(graph, vertex, finish, visited) do
+    (graph[vertex] -- keys(visited))
+    |> Enum.reduce(0, fn vertex, acc ->
+      visited = if small?(vertex), do: Map.update(visited, vertex, 1, &(&1 + 1)), else: visited
+
+      acc + dfs2(graph, vertex, finish, visited)
+    end)
+  end
+
+  defp keys(map) do
+    if Enum.any?(map, fn {_, v} -> v == 2 end) do
+      # there is already some vertex visited twice
+      Map.keys(map)
+    else
+      for {k, v} <- map, v > 1, do: k
+    end
+  end
+
+  defp small?(<<c>> <> _), do: c in ?a..?z
+end
+```
+
+```output
+{:module, Day12, <<70, 79, 82, 49, 0, 0, 15, ...>>, {:small?, 1}}
+```
+
+```elixir
+Day12.dfs(graph, "start", "end")
+```
+
+```output
+4167
+```
+
+```elixir
+Day12.dfs2(graph, "start", "end")
+```
+
+```output
+98441
 ```
