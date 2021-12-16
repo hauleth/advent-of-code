@@ -838,6 +838,8 @@ end
 {:module, Day10, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:parse, 2}}
 ```
 
+### Task 1
+
 ```elixir
 points = %{
   ?) => 3,
@@ -858,6 +860,8 @@ end)
 ```output
 288291
 ```
+
+### Task 2
 
 ```elixir
 points = %{
@@ -919,8 +923,6 @@ defmodule Day11 do
 
   @diffs for dx <- -1..1, dy <- -1..1, dx != 0 or dy != 0, do: {dx, dy}
 
-  IO.inspect(@diffs)
-
   def lightup(map, n) do
     map
     |> Enum.reduce({map, 0}, fn
@@ -951,12 +953,10 @@ end
 ```
 
 ```output
-[{-1, -1}, {-1, 0}, {-1, 1}, {0, -1}, {0, 1}, {1, -1}, {1, 0}, {1, 1}]
-```
-
-```output
 {:module, Day11, <<70, 79, 82, 49, 0, 0, 11, ...>>, {:lightup, 2}}
 ```
+
+### Task 1
 
 ```elixir
 draw = fn map ->
@@ -978,6 +978,8 @@ end)
 ```output
 1688
 ```
+
+### Task 2
 
 ```elixir
 Stream.unfold(1, &{&1, &1 + 1})
@@ -1052,6 +1054,8 @@ end
 {:module, Day12, <<70, 79, 82, 49, 0, 0, 15, ...>>, {:small?, 1}}
 ```
 
+### Task 1
+
 ```elixir
 Day12.dfs(graph, "start", "end")
 ```
@@ -1059,6 +1063,8 @@ Day12.dfs(graph, "start", "end")
 ```output
 4167
 ```
+
+### Task 2
 
 ```elixir
 Day12.dfs2(graph, "start", "end")
@@ -1131,6 +1137,8 @@ end
 {:module, Day13, <<70, 79, 82, 49, 0, 0, 13, ...>>, {:draw, 1}}
 ```
 
+### Task 1
+
 ```elixir
 Day13.fold(hd(folds), input) |> MapSet.size()
 ```
@@ -1138,6 +1146,8 @@ Day13.fold(hd(folds), input) |> MapSet.size()
 ```output
 802
 ```
+
+### Task 2
 
 ```elixir
 Enum.reduce(folds, input, &Day13.fold/2)
@@ -1219,6 +1229,8 @@ end
 {:module, Day14, <<70, 79, 82, 49, 0, 0, 13, ...>>, {:frequencies, 1}}
 ```
 
+### Task 1
+
 ```elixir
 {{_, min}, {_, max}} =
   1..10
@@ -1235,6 +1247,8 @@ max - min
 ```output
 2768
 ```
+
+### Task 2
 
 ```elixir
 {{_, min}, {_, max}} =
@@ -1275,6 +1289,8 @@ input =
 {99, 99}
 ```
 
+### Task 1
+
 ```elixir
 shortest_paths =
   for y <- height..0//-1,
@@ -1299,6 +1315,8 @@ shortest_paths[{0, 0}] - input[{0, 0}]
 ```output
 429
 ```
+
+### Task 2
 
 ```elixir
 defmodule Day15.Task2 do
@@ -1913,6 +1931,8 @@ input =
 }
 ```
 
+### Task 1
+
 ```elixir
 defmodule Day16.Task1 do
   alias Day16.Packet
@@ -1930,6 +1950,8 @@ Day16.Task1.sum(input)
 ```output
 949
 ```
+
+### Task 2
 
 ```elixir
 defmodule Day16.Task2 do
