@@ -1,0 +1,165 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 22
+
+## Input
+
+```elixir
+input =
+  File.stream!("day22.txt")
+  |> Stream.map(&String.trim/1)
+  |> Stream.map(&String.split(&1, [" "]))
+  |> Enum.map(fn [action, rest] ->
+    {_, bindings} =
+      rest
+      |> String.replace(",", ";")
+      |> Code.eval_string()
+
+    {String.to_atom(action), Map.new(bindings)}
+  end)
+```
+
+```output
+[
+  on: %{x: -40..7, y: -3..49, z: -48..6},
+  on: %{x: -38..10, y: -11..37, z: -30..19},
+  on: %{x: -43..1, y: -16..30, z: -38..13},
+  on: %{x: -10..44, y: -8..46, z: -41..4},
+  on: %{x: -27..19, y: -2..45, z: -33..12},
+  on: %{x: -41..4, y: -18..32, z: -34..19},
+  on: %{x: -43..9, y: -20..27, z: -34..20},
+  on: %{x: -47..-2, y: -5..49, z: -20..32},
+  on: %{x: -20..33, y: -40..6, z: -16..33},
+  on: %{x: -25..24, y: -47..-2, z: -46..6},
+  off: %{x: -28..-9, y: -6..4, z: 22..37},
+  on: %{x: -34..14, y: -16..32, z: -43..3},
+  off: %{x: -36..-18, y: -44..-33, z: 5..16},
+  on: %{x: -23..22, y: -34..11, z: -38..12},
+  off: %{x: -24..-15, y: 26..39, z: -18..-9},
+  on: %{x: -23..22, y: -31..20, z: -38..13},
+  off: %{x: -16..-6, y: 7..19, z: -44..-30},
+  on: %{x: -8..45, y: -18..28, z: -27..18},
+  off: %{x: -24..-8, y: -3..7, z: 33..45},
+  on: %{x: -28..18, y: -15..39, z: -18..35},
+  on: %{x: 52706..68579, y: -51721..-24984, z: -29134..-4745},
+  on: %{x: 19158..43390, y: 48482..62915, z: 36278..51760},
+  on: %{x: 33529..54535, y: 41410..44729, z: 35536..62066},
+  on: %{x: 39279..54831, y: -54196..-35294, z: -46321..-19146},
+  on: %{x: -49951..-33034, y: -75783..-65241, z: -32974..-9141},
+  on: %{x: 16267..33862, y: 32962..38520, z: 55102..80003},
+  on: %{x: 28231..33305, y: -13203..11551, z: -82121..-71765},
+  on: %{x: -3880..15012, y: -97354..-71276, z: -32509..-10704},
+  on: %{x: -59644..-43923, y: -56932..-39976, z: -46680..-24924},
+  on: %{x: -22171..6559, y: 59909..65127, z: 51012..71854},
+  on: %{x: -35278..-11377, y: -90913..-54535, z: 15441..29860},
+  on: %{x: 42440..47504, y: -77130..-54916, z: -5117..22780},
+  on: %{x: -23382..-925, y: -96268..-67199, z: -1408..16864},
+  on: %{x: 46073..66555, y: 2178..6843, z: -72379..-46993},
+  on: %{x: -7367..16256, y: 27822..35444, z: -81222..-57262},
+  on: %{x: 70121..85076, y: -2405..20765, z: -25162..-6383},
+  on: %{x: -38188..-8731, y: 303..24311, z: -85237..-74901},
+  on: %{x: 9308..35679, y: 72560..89334, z: -12862..6802},
+  on: %{x: 19088..20550, y: -54261..-29941, z: -66813..-56094},
+  on: %{x: 58563..67361, y: 32116..50251, z: -40547..-22471},
+  on: %{x: 63946..72885, y: -45525..-32975, z: 6297..33150},
+  on: %{x: 35523..45582, y: -46123..-39187, z: -62601..-55854},
+  on: %{x: -45263..-16076, y: 66141..71305, z: 24152..51511},
+  on: %{x: -56833..-39277, y: -61785..-39127, z: 20400..30866},
+  on: %{x: -64099..-47168, y: -14802..-10218, z: 59578..78286},
+  on: %{x: 54485..79540, y: -9884..13564, z: -33614..-29502},
+  on: %{x: -56136..-41543, y: 40175..50868, z: 18766..46233},
+  on: %{x: -29888..-22443, y: 56778..79471, ...},
+  on: %{x: 57940..83198, ...},
+  on: %{...},
+  ...
+]
+```
+
+## Implementation
+
+```elixir
+defmodule Day22 do
+  def volume(%{x: x, y: y, z: z}),
+    do: Range.size(x) * Range.size(y) * Range.size(z)
+
+  def volume(list), do: list |> Enum.map(&volume/1) |> Enum.sum()
+
+  def apply({action, new}, cuboids) do
+    cuboids = Enum.flat_map(cuboids, fn old -> sub(old, new) end)
+
+    case action do
+      :on -> [new | cuboids]
+      :off -> cuboids
+    end
+  end
+
+  defp sub(%{x: ax, y: ay, z: az} = a, %{x: bx, y: by, z: bz} = b) do
+    if overlap?(a, b) do
+      rx = split(ax, bx)
+      ry = split(ay, by)
+      rz = split(az, bz)
+
+      for x <- rx,
+          y <- ry,
+          z <- rz,
+          cube = cube(x, y, z),
+          overlap?(cube, a),
+          not overlap?(cube, b),
+          do: cube
+    else
+      [a]
+    end
+  end
+
+  defp overlap?(%{x: ax, y: ay, z: az}, %{x: bx, y: by, z: bz}) do
+    not (Range.disjoint?(ax, bx) or
+           Range.disjoint?(ay, by) or
+           Range.disjoint?(az, bz))
+  end
+
+  defp cube(x, y, z), do: %{x: x, y: y, z: z}
+
+  # `b` is "whithin" `a`
+  defp split(a1..a2, b1..b2) do
+    [
+      a1..(b1 - 1)//1,
+      max(a1, b1)..min(a2, b2)//1,
+      (min(a2, b2) + 1)..a2//1
+    ]
+    |> Enum.reject(&(Range.size(&1) == 0))
+  end
+end
+```
+
+```output
+{:module, Day22, <<70, 79, 82, 49, 0, 0, 18, ...>>, {:split, 2}}
+```
+
+## Task 1
+
+```elixir
+range = -50..50
+
+input
+|> Enum.reject(fn {_, v} ->
+  Enum.any?(Map.values(v), &Range.disjoint?(&1, range))
+end)
+|> Enum.reduce([], &Day22.apply/2)
+|> Day22.volume()
+```
+
+```output
+556501
+```
+
+## Task 2
+
+```elixir
+input
+|> Enum.reduce([], &Day22.apply/2)
+|> Day22.volume()
+```
+
+```output
+1217140271559773
+```

@@ -1,0 +1,141 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 8
+
+```elixir
+input =
+  File.stream!("day8.txt")
+  |> Stream.map(fn line ->
+    line
+    |> String.split(" | ")
+    |> Enum.map(fn part ->
+      part
+      |> String.trim()
+      |> String.split(" ")
+      |> Enum.map(fn disp ->
+        # Sort characters in each entry to simplify later work
+        disp
+        |> String.to_charlist()
+        |> Enum.sort()
+        |> List.to_string()
+      end)
+    end)
+    |> List.to_tuple()
+  end)
+```
+
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day8.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
+## Task 1
+
+We simply need to count all occurences of the values that have 2, 3, 4, or 7 highlighted
+segments.
+
+```elixir
+input
+|> Enum.map(fn {_, output} ->
+  Enum.count(output, &(byte_size(&1) in [2, 3, 4, 7]))
+end)
+|> Enum.sum()
+```
+
+```output
+390
+```
+
+## Task 2
+
+```elixir
+defmodule Day8.Task2 do
+  defp a --- b, do: MapSet.difference(a, b)
+
+  defp a +++ b, do: MapSet.union(a, b)
+
+  defp a <~> b, do: MapSet.intersection(a, b)
+
+  #            1.   7.    4. 2|3|5. 2|3|5. 2|3|5.  6|9|0.  6|9|0.  6|9|0.       8.
+  def deduce([cf, acf, bcdf, acdeg, acdfg, abdfg, abdefg, abcdfg, abcefg, abcdefg]) do
+    eg = abcdefg --- (acf +++ bcdf)
+    bd = bcdf --- cf
+    adg = acdeg <~> acdfg <~> abdfg
+    abfg = abdefg <~> abcdfg <~> abcefg
+    a = acf --- cf
+    b = abfg <~> bd
+    f = abfg <~> cf
+    g = adg <~> eg
+    d = adg <~> bd
+    c = cf --- f
+    e = eg --- g
+
+    [a, b, c, d, e, f, g] =
+      [a, b, c, d, e, f, g]
+      |> Enum.map(&extract/1)
+
+    [
+      # 0
+      [a, b, c, e, f, g],
+      # 1
+      [c, f],
+      # 2
+      [a, c, d, e, g],
+      # 3
+      [a, c, d, f, g],
+      # 4
+      [b, c, d, f],
+      # 5
+      [a, b, d, f, g],
+      # 6
+      [a, b, d, e, f, g],
+      # 7
+      [a, c, f],
+      # 8
+      [a, b, c, d, e, f, g],
+      # 9
+      [a, b, c, d, f, g]
+    ]
+    |> Enum.map(&List.to_string(Enum.sort(&1)))
+    |> Enum.with_index()
+    |> Map.new()
+  end
+
+  defp extract(a) do
+    # Just additional sanity check
+    [v] = MapSet.to_list(a)
+
+    v
+  end
+
+  def decode(matches, output) do
+    output
+    |> Enum.map(&matches[&1])
+    |> Integer.undigits()
+  end
+end
+
+input
+|> Enum.map(fn {input, output} ->
+  input
+  |> Enum.sort_by(&byte_size/1)
+  |> Enum.map(&MapSet.new(String.to_charlist(&1)))
+  |> Day8.Task2.deduce()
+  |> Day8.Task2.decode(output)
+end)
+|> Enum.sum()
+```
+
+```output
+1011785
+```

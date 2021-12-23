@@ -1,0 +1,185 @@
+<!-- vim:ft=markdown -->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 17
+
+## Setup
+
+```elixir
+input = File.read!("day17.txt")
+# input = "target area: x=117..7310, y=-9546..-89"
+
+IO.puts(input)
+
+%{"a_x" => a_x, "a_y" => a_y, "b_x" => b_x, "b_y" => b_y} =
+  Regex.named_captures(
+    ~r/target area: x=(?<a_x>-?\d+)\.\.(?<b_x>-?\d+), y=(?<a_y>-?\d+)\.\.(?<b_y>-?\d+)/,
+    input
+  )
+
+a = %{x: String.to_integer(a_x), y: String.to_integer(a_y)}
+b = %{x: String.to_integer(b_x), y: String.to_integer(b_y)}
+
+[a: a, b: b]
+```
+
+```output
+target area: x=288..330, y=-96..-50
+```
+
+```output
+[a: %{x: 288, y: -96}, b: %{x: 330, y: -50}]
+```
+
+## Task 1
+
+### Lemma 1
+
+The horizontal velocity there can be ignored, as we can always find a horizontal velocity
+that will reach the target area and will reduce the velocity to $$0$$, which mean that all
+further movement will happen only in one dimension. That velocity is:
+
+$$
+v_x = \lceil \frac{-1 + \sqrt{1 + 8b_x}}{2} \rceil
+$$
+
+#### Proof:
+
+Which came from the fact that distance traveled by the projectile is sum of the arithmetic
+sequence with $$r = -1$$, so the distance traveled is:
+
+$$
+s_x = \frac{2v_{x0} - t + 1}{2}t
+$$
+
+Where $$t$$ is travel time. As $$v_x(t) = v_{x0}$$ then $$v_x(t) = 0 \implies t = v_{x0}$$,
+so after substituting $$t$$ we get:
+
+$$
+s_x = \frac{2v_{x0} - v_{x0} + 1}{2}v_{x0} \\
+s_x = \frac{v_{x0} + 1}{2}v_{x0} \\
+s_x = \frac{v_{x0}^2 + v_{x0}}{2}
+$$
+
+As we want to find the nearest column where we want to stop movement in $$OX$$ then
+we are looking at $$s_x = b_x$$:
+
+$$
+b_x = \frac{v_{x0}^2 + v_{x0}}{2} \\
+2b_x = v_{x0}^2 + v_{x0} \\
+0 = v_{x0}^2 + v_{x0} - 2b_x
+$$
+
+The soultions for these equation are in form of:
+
+$$
+v_{x0} = \frac{-1 \mp \sqrt{1 + 8b_x}}{2}
+$$
+
+As we assume that $$b_x \gt 0$$, then the solutions will always be trivial. Additionally
+we do not care about negative roots, so we can take only:
+
+$$
+v_{x0} = \frac{-1 + \sqrt{1 + 8b_x}}{2}
+$$
+
+As this can be fractional and we want $$v_x0 \in \mathbb{Z}$$ and assume that target is
+big enough to have at least one point that we can land on, then we can simply round velocity
+up:
+
+$$
+v_x = \lceil \frac{-1 + \sqrt{1 + 8b_x}}{2} \rceil\\
+$$
+
+$$\blacksquare$$
+
+### Lemma 2
+
+TODO
+
+As
+
+$$
+v_{y0} = \frac{2a_y - t + t^2}{2t}
+$$
+
+Left to prove that $$v_0$$ will have highest possible value for $$t = -2a_y$$.
+Then above equation reduces like that:
+
+$$
+v_{y0} = \frac{2a_y + 2a_y + 4a_y^2}{4a_y} \\
+v_{y0} = \frac{4a_y + 4a_y^2}{4a_y} \\
+v_{y0} = 1 + a_y
+$$
+
+```elixir
+v_y = -min(a.y, b.y) - 1
+
+{v_y, v_y * (v_y + 1) / 2}
+```
+
+```output
+{95, 4560.0}
+```
+
+## Task 2
+
+```elixir
+solveq_pos = fn a, b, c ->
+  [
+    (-b - :math.sqrt(b * b - 4 * a * c)) / (2 * a),
+    (-b + :math.sqrt(b * b - 4 * a * c)) / (2 * a)
+  ]
+  |> Enum.filter(&(&1 > 0))
+end
+
+v_xmin_rest = ceil(hd(solveq_pos.(1, 1, -2 * min(a.x, b.x))))
+v_xmax_rest = floor(hd(solveq_pos.(1, 1, -2 * max(a.x, b.x))))
+
+v_ymax = -min(a.y, b.y) - 1
+v_ymin = min(a.y, b.y)
+
+{xmin, xmax} = Enum.min_max([a.x, b.x])
+{ymin, ymax} = Enum.min_max([a.y, b.y])
+
+offset = fn
+  0 -> {1, -1}
+  v_y when v_y > 0 -> {2 * v_y + 1, -v_y - 1}
+  v_y -> {0, v_y}
+end
+
+v_y_pairs =
+  for v_y <- v_ymin..v_ymax,
+      {offset, fv_y} = offset.(v_y),
+      tmin <- solveq_pos.(-1, 2 * fv_y + 1, -2 * ymax),
+      tmax <- solveq_pos.(-1, 2 * fv_y + 1, -2 * ymin),
+      ceil(tmin) <= floor(tmax),
+      t <- ceil(tmin)..floor(tmax),
+      do: {v_y, t + offset}
+
+v_x_pairs =
+  for t <- Enum.uniq(Enum.map(v_y_pairs, &elem(&1, 1))),
+      v_xmin_move = ceil((2 * xmin / t + t - 1) / 2),
+      v_xmax_move = floor((2 * xmax / t + t - 1) / 2),
+      xrange = Enum.filter(v_xmin_move..v_xmax_move, &(&1 >= t)),
+      xrange =
+        if(v_xmin_rest < t,
+          do: Enum.concat(xrange, v_xmin_rest..min(t, v_xmax_rest)),
+          else: xrange
+        ),
+      v_x <- MapSet.new(xrange),
+      do: {t, v_x}
+
+pairs =
+  for {v_y, t} <- v_y_pairs,
+      {^t, v_x} <- v_x_pairs,
+      into: MapSet.new(),
+      do: {v_x, v_y}
+
+MapSet.size(pairs)
+```
+
+```output
+3344
+```

@@ -1,0 +1,114 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+
+# Day 9
+
+## Setup
+
+```elixir
+Mix.install([
+  {:nx, github: "elixir-nx/nx", sparse: "nx"},
+  {:kino, github: "livebook-dev/kino"}
+])
+```
+
+```output
+:ok
+```
+
+## Input
+
+```elixir
+input =
+  File.read!("day9.txt")
+  |> String.split("\n", trim: true)
+  |> Enum.map(&String.to_charlist(String.trim(&1)))
+  |> Nx.tensor(names: [:y, :x])
+  |> Nx.subtract(?0)
+  |> Nx.add(1)
+
+{width, height} = shape = Nx.shape(input)
+```
+
+```output
+{100, 100}
+```
+
+## Task 1
+
+```elixir
+minima = fn padded, size, axis ->
+  shifted = Nx.slice_axis(padded, 0, size, axis)
+  x1 = Nx.less(input, shifted)
+
+  shifted = Nx.slice_axis(padded, 2, size, axis)
+  x2 = Nx.less(input, shifted)
+
+  Nx.logical_and(x1, x2)
+end
+
+padded = Nx.pad(input, 99, [{0, 0, 0}, {1, 1, 0}])
+
+x = minima.(padded, width, :x)
+
+padded = Nx.pad(input, 99, [{1, 1, 0}, {0, 0, 0}])
+
+y = minima.(padded, height, :y)
+
+minimas = Nx.logical_and(x, y)
+
+input
+|> Nx.multiply(minimas)
+|> Nx.sum()
+|> Nx.to_number()
+```
+
+```output
+452
+```
+
+## Task 2
+
+```elixir
+input
+|> Nx.equal(10)
+|> Nx.logical_not()
+|> Nx.select(Nx.iota(shape), 9999)
+|> Nx.to_flat_list()
+|> Enum.reject(&(&1 == 9999))
+|> Enum.map(fn point -> {div(point, width), rem(point, width)} end)
+|> Enum.reduce([], fn {y, x} = point, basins ->
+  basin_left = Enum.find_index(basins, &({y, x - 1} in &1))
+  basin_up = Enum.find_index(basins, &({y - 1, x} in &1))
+
+  case {basin_left, basin_up} do
+    {nil, nil} ->
+      [MapSet.new([point]) | basins]
+
+    {idx, nil} ->
+      List.update_at(basins, idx, &MapSet.put(&1, point))
+
+    {nil, idx} ->
+      List.update_at(basins, idx, &MapSet.put(&1, point))
+
+    {idx, idx} ->
+      List.update_at(basins, idx, &MapSet.put(&1, point))
+
+    {idx1, idx2} ->
+      {old, basins} = List.pop_at(basins, max(idx1, idx2))
+
+      List.update_at(basins, min(idx1, idx2), &(&1 |> MapSet.union(old) |> MapSet.put(point)))
+  end
+end)
+|> Enum.map(&MapSet.size/1)
+|> Enum.sort(:desc)
+|> Enum.take(3)
+|> Enum.reduce(&*/2)
+```
+
+```output
+1263735
+```

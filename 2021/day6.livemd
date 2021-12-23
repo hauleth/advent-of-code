@@ -1,0 +1,57 @@
+<!--  vim:ft=markdown -->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 6
+
+## Section
+
+```elixir
+initial = for i <- 0..8, into: %{}, do: {i, 0}
+
+counts =
+  File.read!("day6.txt")
+  |> String.trim()
+  |> String.split(",")
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.frequencies()
+  |> Map.merge(initial, fn _, a, _ -> a end)
+
+defmodule Day6 do
+  def next(%{0 => next} = population) do
+    1..8
+    |> Map.new(&{&1 - 1, population[&1]})
+    |> Map.merge(%{6 => next, 8 => next}, fn _, v1, v2 -> v1 + v2 end)
+  end
+end
+```
+
+```output
+{:module, Day6, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:next, 1}}
+```
+
+## Task 1
+
+```elixir
+1..80
+|> Enum.reduce(counts, fn _, acc -> Day6.next(acc) end)
+|> Map.values()
+|> Enum.sum()
+```
+
+```output
+343441
+```
+
+## Task 2
+
+```elixir
+1..256
+|> Enum.reduce(counts, fn _, acc -> Day6.next(acc) end)
+|> Map.values()
+|> Enum.sum()
+```
+
+```output
+1569108373832
+```

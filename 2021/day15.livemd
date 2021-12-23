@@ -1,0 +1,117 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 15
+
+```elixir
+input =
+  File.read!("day15.txt")
+  |> String.trim()
+  |> String.split("\n")
+  |> Enum.map(&String.to_charlist/1)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {row, y} ->
+    row
+    |> Enum.with_index()
+    |> Enum.map(fn {v, x} -> {{x, y}, v - ?0} end)
+  end)
+  |> Map.new()
+
+{width, height} = Enum.max(Map.keys(input))
+```
+
+```output
+{99, 99}
+```
+
+## Task 1
+
+```elixir
+shortest_paths =
+  for y <- height..0//-1,
+      x <- width..0//-1,
+      reduce: %{} do
+    acc ->
+      right = acc[{x + 1, y}]
+      bottom = acc[{x, y + 1}]
+
+      value =
+        case {right, bottom} do
+          {nil, nil} -> input[{x, y}]
+          _ -> input[{x, y}] + min(right, bottom)
+        end
+
+      Map.put(acc, {x, y}, value)
+  end
+
+shortest_paths[{0, 0}] - input[{0, 0}]
+```
+
+```output
+429
+```
+
+## Task 2
+
+```elixir
+defmodule Day15.Task2 do
+  def expand_grid(board) do
+    {width, height} = Enum.max(Map.keys(board))
+
+    board
+    |> Enum.flat_map(fn {{x, y}, v} ->
+      for rx <- 0..4, ry <- 0..4 do
+        {{x + (width + 1) * rx, y + (height + 1) * ry}, rem(v - 1 + rx + ry, 9) + 1}
+      end
+    end)
+    |> Map.new()
+  end
+
+  def find_path(board, start, finish) do
+    dists = :gb_sets.singleton({0, start})
+
+    find_path(board, finish, dists, MapSet.new())
+  end
+
+  @surround for dx <- -1..1, dy <- -1..1, abs(dx) != abs(dy), do: {dx, dy}
+
+  def find_path(board, finish, dists, visited) do
+    {{dist, {x, y} = curr}, dists} = :gb_sets.take_smallest(dists)
+
+    if curr == finish do
+      dist
+    else
+      visited = MapSet.put(visited, curr)
+
+      dists =
+        for {dx, dy} <- @surround,
+            next = {x + dx, y + dy},
+            next not in visited,
+            is_map_key(board, next),
+            alt = dist + board[next],
+            reduce: dists do
+          acc ->
+            :gb_sets.add_element({alt, next}, acc)
+        end
+
+      find_path(board, finish, dists, visited)
+    end
+  end
+end
+```
+
+```output
+{:module, Day15.Task2, <<70, 79, 82, 49, 0, 0, 16, ...>>, {:find_path, 4}}
+```
+
+```elixir
+input
+|> Day15.Task2.expand_grid()
+|> Day15.Task2.find_path({0, 0}, {499, 499})
+```
+
+```output
+2844
+```

@@ -1,0 +1,56 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 7
+
+```elixir
+input =
+  File.read!("day7.txt")
+  |> String.trim()
+  |> String.split(",")
+  |> Enum.map(&String.to_integer/1)
+```
+
+```output
+[1101, 1, 29, 67, 1102, 0, 1, 65, 1008, 65, 35, 66, 1005, 66, 28, 1, 67, 65, 20, 4, 0, 1001, 65, 1,
+ 65, 1106, 0, 8, 99, 35, 67, 101, 99, 105, 32, 110, 39, 101, 115, 116, 32, 112, 97, 115, 32, 117,
+ 110, 101, 32, 105, ...]
+```
+
+## Task 1
+
+```elixir
+median = Enum.at(Enum.sort(input), div(length(input), 2))
+
+input
+|> Enum.map(&abs(&1 - median))
+|> Enum.sum()
+```
+
+```output
+336721
+```
+
+## Task 2
+
+```elixir
+arith_sum = fn n -> div(n * n + n, 2) end
+
+max = Enum.max(input)
+
+mean = Enum.sum(input) / length(input)
+
+[floor(mean), ceil(mean)]
+|> Enum.map(fn n ->
+  input
+  |> Enum.map(&arith_sum.(abs(&1 - n)))
+  |> Enum.sum()
+end)
+|> Enum.min()
+```
+
+```output
+91638945
+```

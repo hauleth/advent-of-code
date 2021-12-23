@@ -1,0 +1,101 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 11
+
+```elixir
+input =
+  File.read!("day11.txt")
+  |> String.split("\n")
+  |> Enum.map(&String.trim/1)
+  |> Enum.map(fn line ->
+    for <<c <- line>>, do: c - ?0
+  end)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {row, y} ->
+    for {v, x} <- Enum.with_index(row), do: {{x, y}, v}
+  end)
+  |> Map.new()
+
+defmodule Day11 do
+  def step(map) do
+    updated = Map.new(map, fn {k, v} -> {k, v + 1} end)
+
+    lightup(updated, 0)
+  end
+
+  @diffs for dx <- -1..1, dy <- -1..1, dx != 0 or dy != 0, do: {dx, dy}
+
+  def lightup(map, n) do
+    map
+    |> Enum.reduce({map, 0}, fn
+      {_, v}, acc when v < 10 ->
+        acc
+
+      {{x, y} = k, _}, {map, count} ->
+        new_map =
+          @diffs
+          |> Enum.reduce(map, fn {dx, dy}, acc ->
+            point = {x + dx, y + dy}
+
+            case Map.fetch(acc, point) do
+              {:ok, value} when value != 0 -> %{acc | point => value + 1}
+              _ -> acc
+            end
+          end)
+          |> Map.put(k, 0)
+
+        {new_map, count + 1}
+    end)
+    |> case do
+      {map, 0} -> {map, n}
+      {map, m} -> lightup(map, n + m)
+    end
+  end
+end
+```
+
+```output
+{:module, Day11, <<70, 79, 82, 49, 0, 0, 11, ...>>, {:lightup, 2}}
+```
+
+## Task 1
+
+```elixir
+draw = fn map ->
+  for x <- 0..9 do
+    IO.puts(for y <- 0..9, do: ?0 + map[{x, y}])
+  end
+
+  IO.puts("")
+end
+
+1..100
+|> Enum.reduce({input, 0}, fn _, {map, n} ->
+  {new_map, m} = Day11.step(map)
+  {new_map, n + m}
+end)
+|> elem(1)
+```
+
+```output
+1688
+```
+
+## Task 2
+
+```elixir
+Stream.unfold(1, &{&1, &1 + 1})
+|> Enum.reduce_while(input, fn idx, map ->
+  case Day11.step(map) do
+    {_, 100} -> {:halt, idx}
+    {next, _} -> {:cont, next}
+  end
+end)
+```
+
+```output
+403
+```

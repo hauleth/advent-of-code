@@ -1,0 +1,99 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 13
+
+```elixir
+[input, folds] =
+  File.read!("day13.txt")
+  |> String.trim()
+  |> String.split("\n\n")
+
+input =
+  input
+  |> String.split("\n")
+  |> Enum.map(fn line ->
+    [x, y] = String.split(line, ",")
+
+    {String.to_integer(x), String.to_integer(y)}
+  end)
+  |> MapSet.new()
+
+folds =
+  folds
+  |> String.split("\n")
+  |> Enum.map(fn
+    "fold along " <> <<c>> <> "=" <> rest ->
+      {String.to_atom(<<c>>), String.to_integer(rest)}
+  end)
+
+defmodule Day13 do
+  def fold({orientation, pos}, set) do
+    Enum.reduce(set, MapSet.new(), fn point, acc ->
+      new_point = folded_coords(orientation, pos, point)
+
+      MapSet.put(acc, new_point)
+    end)
+  end
+
+  defp folded_coords(:x, col, {x, y}) when x > col, do: {abs(2 * col - x), y}
+  defp folded_coords(:y, row, {x, y}) when y > row, do: {x, abs(2 * row - y)}
+  defp folded_coords(_, _, point), do: point
+
+  def draw(set) do
+    set
+    |> Enum.group_by(&elem(&1, 1))
+    |> Enum.sort()
+    |> Enum.map(fn {_, points} ->
+      points
+      |> Enum.map(&elem(&1, 0))
+      |> Enum.sort()
+      |> Enum.chunk_every(2, 1)
+      |> Enum.map(fn
+        [a, b] -> b - a
+        _ -> 0
+      end)
+      |> Enum.map(&String.pad_trailing("█", &1, " "))
+    end)
+    |> Enum.join("\n")
+  end
+end
+```
+
+```output
+{:module, Day13, <<70, 79, 82, 49, 0, 0, 13, ...>>, {:draw, 1}}
+```
+
+## Task 1
+
+```elixir
+Day13.fold(hd(folds), input) |> MapSet.size()
+```
+
+```output
+802
+```
+
+## Task 2
+
+```elixir
+Enum.reduce(folds, input, &Day13.fold/2)
+|> Day13.draw()
+|> IO.puts()
+```
+
+```output
+███  █  █ █  █ ████ ████  ██  █  █ ███
+█  █ █ █  █  █ █       █ █  █ █  █ █  █
+█  █ ██   ████ ███    █  █    █  █ ███
+███  █ █  █  █ █     █   █ ██ █  █ █  █
+█ █  █ █  █  █ █    █    █  █ █  █ █  █
+█  █ █  █ █  █ █    ████  ███  ██  ███
+```
+
+```output
+:ok
+```
+

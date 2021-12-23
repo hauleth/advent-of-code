@@ -1,0 +1,102 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 14
+
+```elixir
+[polymer_raw, subs] =
+  File.read!("day14.txt")
+  |> String.split("\n\n")
+
+<<first, _::binary>> = polymer_raw
+
+polymer =
+  {first,
+   polymer_raw
+   |> String.to_charlist()
+   |> Enum.chunk_every(2, 1, :discard)
+   |> Enum.frequencies()}
+
+subs =
+  subs
+  |> String.trim()
+  |> String.split(["\n", " -> "])
+  |> Enum.chunk_every(2)
+  |> Map.new(fn [pair, <<new>>] -> {String.to_charlist(pair), new} end)
+
+defmodule Day14 do
+  def expand({hd, polymer}, subs) do
+    new =
+      polymer
+      |> Enum.reduce(%{}, fn {[a, b] = pair, count}, acc ->
+        s = Map.fetch!(subs, pair)
+
+        acc
+        |> Map.update([a, s], count, &(&1 + count))
+        |> Map.update([s, b], count, &(&1 + count))
+      end)
+
+    {hd, new}
+  end
+
+  def expand_naive(polymer, subs) do
+    polymer
+    |> to_charlist()
+    |> Enum.chunk_every(2, 1, :discard)
+    |> Enum.flat_map(fn [a, b] = pair ->
+      [a, subs[pair], b]
+    end)
+    |> List.to_string()
+  end
+
+  def frequencies({hd, polymer}) do
+    polymer
+    |> Enum.reduce(%{hd => 1}, fn {[_, b], count}, acc ->
+      Map.update(acc, b, count, &(&1 + count))
+    end)
+  end
+end
+```
+
+```output
+{:module, Day14, <<70, 79, 82, 49, 0, 0, 13, ...>>, {:frequencies, 1}}
+```
+
+## Task 1
+
+```elixir
+{{_, min}, {_, max}} =
+  1..10
+  |> Enum.reduce(polymer, fn _, acc ->
+    Day14.expand(acc, subs)
+  end)
+  |> Day14.frequencies()
+  |> Enum.min_max_by(&elem(&1, 1))
+
+# 2768
+max - min
+```
+
+```output
+2768
+```
+
+## Task 2
+
+```elixir
+{{_, min}, {_, max}} =
+  1..40
+  |> Enum.reduce(polymer, fn _, acc ->
+    Day14.expand(acc, subs)
+  end)
+  |> Day14.frequencies()
+  |> Enum.min_max_by(&elem(&1, 1))
+
+max - min
+```
+
+```output
+2914365137499
+```

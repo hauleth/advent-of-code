@@ -1,0 +1,610 @@
+<!--  vim:ft=markdown -->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 16
+
+## Section
+
+```elixir
+defmodule Day16 do
+  defmodule Packet do
+    defstruct [:version, :type, :value]
+  end
+
+  def decode(<<version::3, 4::3, rest::bitstring>>) do
+    {value, rest} = literal(rest, 0)
+
+    {%Packet{type: 4, version: version, value: value}, rest}
+  end
+
+  def decode(<<version::3, type::3, 0::1, length::15, rest::bitstring>>) do
+    <<subpackets::bitstring-size(length), rest::bitstring>> = rest
+
+    {%Packet{type: type, version: version, value: decode_all(subpackets)}, rest}
+  end
+
+  def decode(<<version::3, type::3, 1::1, length::11, rest::bitstring>>) do
+    {value, rest} = Enum.map_reduce(1..length, rest, fn _, acc -> decode(acc) end)
+
+    {%Packet{type: type, version: version, value: value}, rest}
+  end
+
+  def decode_all(input) do
+    case decode(input) do
+      {packet, <<>>} -> [packet]
+      {packet, rest} -> [packet | decode_all(rest)]
+    end
+  end
+
+  defp literal(<<1::1, bits::4, rest::bitstring>>, acc) do
+    literal(rest, acc * 0x10 + bits)
+  end
+
+  defp literal(<<0::1, bits::4, rest::bitstring>>, acc) do
+    {acc * 0x10 + bits, rest}
+  end
+end
+
+input =
+  File.read!("day16.txt")
+  |> String.trim()
+  |> Base.decode16!()
+  |> Day16.decode()
+  |> elem(0)
+```
+
+```output
+%Day16.Packet{
+  type: 0,
+  value: [
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 20, version: 6},
+        %Day16.Packet{
+          type: 6,
+          value: [
+            %Day16.Packet{type: 4, value: 14747, version: 1},
+            %Day16.Packet{type: 4, value: 14747, version: 6}
+          ],
+          version: 2
+        }
+      ],
+      version: 1
+    },
+    %Day16.Packet{
+      type: 3,
+      value: [
+        %Day16.Packet{type: 4, value: 15, version: 5},
+        %Day16.Packet{type: 4, value: 10, version: 6}
+      ],
+      version: 7
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 7,
+          value: [
+            %Day16.Packet{type: 4, value: 2184, version: 1},
+            %Day16.Packet{type: 4, value: 130250, version: 6}
+          ],
+          version: 6
+        },
+        %Day16.Packet{type: 4, value: 5442981, version: 4}
+      ],
+      version: 6
+    },
+    %Day16.Packet{type: 4, value: 8281083, version: 0},
+    %Day16.Packet{
+      type: 2,
+      value: [
+        %Day16.Packet{type: 4, value: 102, version: 5},
+        %Day16.Packet{type: 4, value: 647125, version: 7}
+      ],
+      version: 1
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 178, version: 1},
+        %Day16.Packet{type: 4, value: 176, version: 6}
+      ],
+      version: 0
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 6,
+          value: [
+            %Day16.Packet{
+              type: 0,
+              value: [
+                %Day16.Packet{type: 4, value: 13, version: 1},
+                %Day16.Packet{type: 4, value: 8, version: 4},
+                %Day16.Packet{type: 4, value: 4, version: 3}
+              ],
+              version: 2
+            },
+            %Day16.Packet{
+              type: 0,
+              value: [
+                %Day16.Packet{type: 4, value: 7, version: 7},
+                %Day16.Packet{type: 4, value: 11, version: 3},
+                %Day16.Packet{type: 4, value: 14, version: 2}
+              ],
+              version: 4
+            }
+          ],
+          version: 7
+        },
+        %Day16.Packet{type: 4, value: 2724, version: 0}
+      ],
+      version: 1
+    },
+    %Day16.Packet{type: 4, value: 9, version: 4},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 5,
+          value: [
+            %Day16.Packet{type: 4, value: 7240238, version: 2},
+            %Day16.Packet{type: 4, value: 233, version: 7}
+          ],
+          version: 1
+        },
+        %Day16.Packet{type: 4, value: 37, version: 6}
+      ],
+      version: 4
+    },
+    %Day16.Packet{type: 2, value: [%Day16.Packet{type: 4, value: 2, version: 5}], version: 5},
+    %Day16.Packet{type: 4, value: 53749, version: 4},
+    %Day16.Packet{type: 4, value: 11, version: 3},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 382979, version: 4},
+        %Day16.Packet{
+          type: 5,
+          value: [
+            %Day16.Packet{
+              type: 0,
+              value: [
+                %Day16.Packet{type: 4, value: 15, version: 1},
+                %Day16.Packet{type: 4, value: 10, version: 0},
+                %Day16.Packet{type: 4, value: 2, version: 6}
+              ],
+              version: 5
+            },
+            %Day16.Packet{
+              type: 0,
+              value: [
+                %Day16.Packet{type: 4, value: 4, version: 7},
+                %Day16.Packet{type: 4, value: 7, version: 4},
+                %Day16.Packet{type: 4, value: 2, version: 5}
+              ],
+              version: 1
+            }
+          ],
+          version: 6
+        }
+      ],
+      version: 2
+    },
+    %Day16.Packet{type: 4, value: 21251, version: 1},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 163, version: 6},
+        %Day16.Packet{
+          type: 5,
+          value: [
+            %Day16.Packet{type: 4, value: 59, version: 3},
+            %Day16.Packet{type: 4, value: 836848134220, version: 1}
+          ],
+          version: 6
+        }
+      ],
+      version: 2
+    },
+    %Day16.Packet{
+      type: 2,
+      value: [
+        %Day16.Packet{
+          type: 0,
+          value: [
+            %Day16.Packet{
+              type: 0,
+              value: [
+                %Day16.Packet{
+                  type: 2,
+                  value: [
+                    %Day16.Packet{
+                      type: 2,
+                      value: [
+                        %Day16.Packet{
+                          type: 0,
+                          value: [
+                            %Day16.Packet{
+                              type: 3,
+                              value: [
+                                %Day16.Packet{
+                                  type: 2,
+                                  value: [
+                                    %Day16.Packet{
+                                      type: 2,
+                                      value: [
+                                        %Day16.Packet{
+                                          type: 3,
+                                          value: [%Day16.Packet{type: 0, value: [...], ...}],
+                                          version: 0
+                                        }
+                                      ],
+                                      version: 1
+                                    }
+                                  ],
+                                  version: 1
+                                }
+                              ],
+                              version: 7
+                            }
+                          ],
+                          version: 0
+                        }
+                      ],
+                      version: 6
+                    }
+                  ],
+                  version: 2
+                }
+              ],
+              version: 2
+            }
+          ],
+          version: 6
+        }
+      ],
+      version: 7
+    },
+    %Day16.Packet{type: 1, value: [%Day16.Packet{type: 4, value: 44, version: 4}], version: 7},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 255, version: 2},
+        %Day16.Packet{type: 4, value: 91, version: 5},
+        %Day16.Packet{type: 4, value: 176, version: 5},
+        %Day16.Packet{type: 4, value: 23, version: 1}
+      ],
+      version: 7
+    },
+    %Day16.Packet{
+      type: 3,
+      value: [
+        %Day16.Packet{type: 4, value: 11520, version: 4},
+        %Day16.Packet{type: 4, value: 6069, version: 0},
+        %Day16.Packet{type: 4, value: 1089149511401, version: 4},
+        %Day16.Packet{type: 4, value: 158, version: 2},
+        %Day16.Packet{type: 4, value: 620605, version: 0}
+      ],
+      version: 2
+    },
+    %Day16.Packet{
+      type: 0,
+      value: [
+        %Day16.Packet{type: 4, value: 62788, version: 7},
+        %Day16.Packet{type: 4, value: 9410622, version: 2},
+        %Day16.Packet{type: 4, value: 15912821, version: 4}
+      ],
+      version: 4
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 22416, version: 5},
+        %Day16.Packet{
+          type: 5,
+          value: [
+            %Day16.Packet{type: 4, value: 246, version: 1},
+            %Day16.Packet{type: 4, value: 246, version: 4}
+          ],
+          version: 2
+        }
+      ],
+      version: 0
+    },
+    %Day16.Packet{type: 3, value: [%Day16.Packet{type: 4, value: 13008601, version: 5}], version: 0},
+    %Day16.Packet{
+      type: 0,
+      value: [
+        %Day16.Packet{
+          type: 1,
+          value: [
+            %Day16.Packet{type: 4, value: 3, version: 4},
+            %Day16.Packet{type: 4, value: 14, version: 1},
+            %Day16.Packet{type: 4, value: 5, version: 0}
+          ],
+          version: 5
+        },
+        %Day16.Packet{
+          type: 1,
+          value: [
+            %Day16.Packet{type: 4, value: 2, version: 1},
+            %Day16.Packet{type: 4, value: 14, version: 1},
+            %Day16.Packet{type: 4, value: 10, version: 1}
+          ],
+          version: 6
+        },
+        %Day16.Packet{
+          type: 1,
+          value: [
+            %Day16.Packet{type: 4, value: 8, version: 3},
+            %Day16.Packet{type: 4, value: 6, version: 6},
+            %Day16.Packet{type: 4, value: 11, version: 0}
+          ],
+          version: 1
+        }
+      ],
+      version: 5
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 32940592237, version: 2},
+        %Day16.Packet{
+          type: 5,
+          value: [
+            %Day16.Packet{type: 4, value: 100, version: 1},
+            %Day16.Packet{type: 4, value: 1393232728, version: 2}
+          ],
+          version: 2
+        }
+      ],
+      version: 0
+    },
+    %Day16.Packet{type: 4, value: 89, version: 3},
+    %Day16.Packet{
+      type: 2,
+      value: [
+        %Day16.Packet{type: 4, value: 204, version: 6},
+        %Day16.Packet{type: 4, value: 260321821, version: 2},
+        %Day16.Packet{type: 4, value: 225241983, version: 6}
+      ],
+      version: 0
+    },
+    %Day16.Packet{
+      type: 0,
+      value: [
+        %Day16.Packet{type: 4, value: 960899, version: 3},
+        %Day16.Packet{type: 4, value: 58997, version: 5},
+        %Day16.Packet{type: 4, value: 54940, version: 6},
+        %Day16.Packet{type: 4, value: 10974, version: 2},
+        %Day16.Packet{type: 4, value: 882043, version: 2}
+      ],
+      version: 0
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 6,
+          value: [
+            %Day16.Packet{type: 4, value: 35633017255, version: 4},
+            %Day16.Packet{type: 4, value: 35633017255, version: 2}
+          ],
+          version: 3
+        },
+        %Day16.Packet{type: 4, value: 1359, version: 6}
+      ],
+      version: 6
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 92, version: 4},
+        %Day16.Packet{type: 4, value: 38, version: 3},
+        %Day16.Packet{type: 4, value: 160, version: 5},
+        %Day16.Packet{type: 4, value: 111, version: 1},
+        %Day16.Packet{type: 4, value: 64, version: 4}
+      ],
+      version: 4
+    },
+    %Day16.Packet{
+      type: 0,
+      value: [
+        %Day16.Packet{type: 4, value: 2541, version: 3},
+        %Day16.Packet{type: 4, value: 263947, version: 6},
+        %Day16.Packet{type: 4, value: 7686705, version: 5},
+        %Day16.Packet{type: 4, value: 31, version: 4}
+      ],
+      version: 2
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 6,
+          value: [
+            %Day16.Packet{type: 4, value: 3193865, version: 1},
+            %Day16.Packet{type: 4, value: 20223, version: 7}
+          ],
+          version: 2
+        },
+        %Day16.Packet{type: 4, value: 9328522, version: 5}
+      ],
+      version: 0
+    },
+    %Day16.Packet{
+      type: 2,
+      value: [
+        %Day16.Packet{type: 4, value: 5, version: 4},
+        %Day16.Packet{type: 4, value: 7, version: 3},
+        %Day16.Packet{type: 4, value: 179420284, version: 4},
+        %Day16.Packet{type: 4, value: 19890, version: 1},
+        %Day16.Packet{type: 4, value: 2655, version: 0}
+      ],
+      version: 7
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 862089, version: 1},
+        %Day16.Packet{
+          type: 6,
+          value: [
+            %Day16.Packet{type: 4, value: 248, version: 3},
+            %Day16.Packet{type: 4, value: 3286, version: 5}
+          ],
+          version: 3
+        }
+      ],
+      version: 3
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 93, version: 6},
+        %Day16.Packet{
+          type: 5,
+          value: [
+            %Day16.Packet{type: 4, value: 4269, version: 6},
+            %Day16.Packet{type: 4, value: 240, version: 3}
+          ],
+          version: 4
+        }
+      ],
+      version: 5
+    },
+    %Day16.Packet{
+      type: 3,
+      value: [
+        %Day16.Packet{type: 4, value: 2938, version: 6},
+        %Day16.Packet{type: 4, value: 3, version: 6},
+        %Day16.Packet{type: 4, value: 211, version: 7}
+      ],
+      version: 3
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 7,
+          value: [
+            %Day16.Packet{type: 4, value: 159, version: 0},
+            %Day16.Packet{type: 4, value: 159, version: 5}
+          ],
+          version: 0
+        },
+        %Day16.Packet{type: 4, value: 28, version: 1}
+      ],
+      version: 4
+    },
+    %Day16.Packet{type: 4, value: 84, version: 4},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 235, version: 4},
+        %Day16.Packet{
+          type: 6,
+          value: [
+            %Day16.Packet{type: 0, value: [%Day16.Packet{...}, ...], version: 4},
+            %Day16.Packet{type: 0, value: [...], ...}
+          ],
+          version: 3
+        }
+      ],
+      version: 6
+    },
+    %Day16.Packet{type: 4, value: 1425, version: 4},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{
+          type: 7,
+          value: [%Day16.Packet{type: 0, value: [...], ...}, %Day16.Packet{type: 0, ...}],
+          version: 5
+        },
+        %Day16.Packet{type: 4, value: 13, version: 2}
+      ],
+      version: 2
+    },
+    %Day16.Packet{type: 0, value: [%Day16.Packet{type: 4, value: 3121, version: 6}], version: 5},
+    %Day16.Packet{
+      type: 1,
+      value: [
+        %Day16.Packet{type: 4, value: 51, version: 2},
+        %Day16.Packet{type: 4, value: 61, ...},
+        %Day16.Packet{type: 4, ...}
+      ],
+      version: 4
+    },
+    %Day16.Packet{
+      type: 1,
+      value: [%Day16.Packet{type: 4, value: 1393, ...}, %Day16.Packet{type: 5, ...}],
+      version: 3
+    },
+    %Day16.Packet{type: 1, value: [%Day16.Packet{type: 7, ...}, %Day16.Packet{...}], version: 3},
+    %Day16.Packet{type: 1, value: [%Day16.Packet{...}, ...], version: 7},
+    %Day16.Packet{type: 3, value: [...], ...},
+    %Day16.Packet{type: 2, ...},
+    %Day16.Packet{...},
+    ...
+  ],
+  version: 3
+}
+```
+
+## Task 1
+
+```elixir
+defmodule Day16.Task1 do
+  alias Day16.Packet
+
+  def sum(%Packet{type: 4, version: version}), do: version
+
+  def sum(%Packet{version: version, value: value}) do
+    Enum.reduce(value, version, &(sum(&1) + &2))
+  end
+end
+
+Day16.Task1.sum(input)
+```
+
+```output
+949
+```
+
+## Task 2
+
+```elixir
+defmodule Day16.Task2 do
+  alias Day16.Packet
+
+  def evaluate(%Packet{type: 0} = packet), do: reduce(packet, 0, &+/2)
+  def evaluate(%Packet{type: 1} = packet), do: reduce(packet, 1, &*/2)
+  def evaluate(%Packet{type: 2} = packet), do: reduce(packet, :inf, &min/2)
+  def evaluate(%Packet{type: 3} = packet), do: reduce(packet, 0, &max/2)
+
+  def evaluate(%Packet{type: 4, value: value}), do: value
+
+  def evaluate(%Packet{type: 5} = packet), do: compare(packet, &>/2)
+  def evaluate(%Packet{type: 6} = packet), do: compare(packet, &</2)
+  def evaluate(%Packet{type: 7} = packet), do: compare(packet, &==/2)
+
+  defp reduce(%Packet{value: value}, initial, op) do
+    Enum.reduce(value, initial, &op.(evaluate(&1), &2))
+  end
+
+  defp compare(%Packet{value: [a, b]}, op) do
+    if op.(evaluate(a), evaluate(b)), do: 1, else: 0
+  end
+end
+
+Day16.Task2.evaluate(input)
+```
+
+```output
+1114600142730
+```

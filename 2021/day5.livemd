@@ -1,0 +1,109 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 5
+
+```elixir
+defmodule Day5 do
+  defmodule Point do
+    defstruct [:x, :y]
+
+    def parse(input) do
+      [x, y] = String.split(input, ",")
+
+      %__MODULE__{x: String.to_integer(x), y: String.to_integer(y)}
+    end
+  end
+
+  defmodule Line do
+    defstruct [:start, :finish]
+
+    def new(a, b) do
+      {start, finish} =
+        cond do
+          a.x < b.x -> {a, b}
+          a.y < b.y -> {a, b}
+          true -> {b, a}
+        end
+
+      %__MODULE__{start: start, finish: finish}
+    end
+
+    def horizontal?(a), do: a.start.y == a.finish.y
+    def vertical?(a), do: a.start.x == a.finish.x
+
+    def points(a) do
+      case {sign(a.finish.x - a.start.x), sign(a.finish.y - a.start.y)} do
+        {0, dy} -> for y <- a.start.y..a.finish.y//dy, do: {a.start.x, y}
+        {dx, 0} -> for x <- a.start.x..a.finish.x//dx, do: {x, a.start.y}
+        {dx, dy} -> Enum.zip(a.start.x..a.finish.x//dx, a.start.y..a.finish.y//dy)
+      end
+    end
+
+    def orientation(a) do
+      cond do
+        horizontal?(a) -> :horizontal
+        vertical?(a) -> :vertical
+        true -> :diagonal
+      end
+    end
+
+    defp sign(0), do: 0
+    defp sign(x) when x < 0, do: -1
+    defp sign(x) when x > 0, do: 1
+  end
+end
+
+lines =
+  File.stream!("day5.txt")
+  |> Stream.map(&String.trim/1)
+  |> Stream.map(fn input ->
+    [a, b] = String.split(input, " -> ")
+
+    pa = Day5.Point.parse(a)
+    pb = Day5.Point.parse(b)
+
+    Day5.Line.new(pa, pb)
+  end)
+```
+
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day5.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>, #Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
+## Task 1
+
+```elixir
+lines
+|> Stream.filter(&(Day5.Line.orientation(&1) != :diagonal))
+|> Stream.flat_map(&Day5.Line.points/1)
+|> Enum.frequencies()
+|> Enum.count(fn {_k, v} -> v > 1 end)
+```
+
+```output
+5197
+```
+
+## Task 2
+
+```elixir
+lines
+|> Stream.flat_map(&Day5.Line.points/1)
+|> Enum.frequencies()
+|> Enum.count(fn {_k, v} -> v > 1 end)
+```
+
+```output
+18605
+```

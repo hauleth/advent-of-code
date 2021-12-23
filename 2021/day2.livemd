@@ -1,0 +1,80 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 2
+
+## Load input
+
+We do parsing there, as it will help us with the latter tasks. Pattern matching
+is the simplest approach there, as input is in form of:
+
+```
+forward 10
+up 20
+down 30
+```
+
+We need to `trim/1` input to make sure that the last newline will not interrupt
+`String.to_integer/1` calls.
+
+```elixir
+stream =
+  File.stream!("day2.txt")
+  |> Stream.map(fn input ->
+    case String.trim(input) do
+      "forward " <> n -> {:forward, String.to_integer(n)}
+      "up " <> n -> {:up, String.to_integer(n)}
+      "down " <> n -> {:down, String.to_integer(n)}
+    end
+  end)
+```
+
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day2.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
+## Task 1
+
+```elixir
+{h, d} =
+  stream
+  |> Enum.reduce({0, 0}, fn
+    {:forward, n}, {h, d} -> {h + n, d}
+    {:up, n}, {h, d} -> {h, d - n}
+    {:down, n}, {h, d} -> {h, d + n}
+  end)
+
+h * d
+```
+
+```output
+1499229
+```
+
+## Task 2
+
+```elixir
+{h, d, _} =
+  stream
+  |> Enum.reduce({0, 0, 0}, fn
+    {:forward, n}, {h, d, a} -> {h + n, d + a * n, a}
+    {:up, n}, {h, d, a} -> {h, d, a - n}
+    {:down, n}, {h, d, a} -> {h, d, a + n}
+  end)
+
+h * d
+```
+
+```output
+1340836560
+```

@@ -1,0 +1,88 @@
+<!-- vim:ft=markdown
+-->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 10
+
+```elixir
+input =
+  File.stream!("day10.txt")
+  |> Stream.map(&String.trim/1)
+
+defmodule Day10 do
+  @parens %{?( => ?), ?[ => ?], ?< => ?>, ?{ => ?}}
+
+  def parse(input), do: parse(input, [])
+
+  defp parse(<<c>> <> rest, stack) when c in '([{<', do: parse(rest, [@parens[c] | stack])
+  defp parse(<<c>> <> rest, [c | stack]), do: parse(rest, stack)
+  defp parse(<<>>, []), do: :ok
+  defp parse(<<>>, rest), do: {:incomplete, rest}
+  defp parse(<<c>> <> _, _), do: {:unexpected, [c]}
+end
+```
+
+```output
+{:module, Day10, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:parse, 2}}
+```
+
+## Task 1
+
+```elixir
+points = %{
+  ?) => 3,
+  ?] => 57,
+  ?} => 1197,
+  ?> => 25137
+}
+
+input
+|> Enum.map(&Day10.parse/1)
+|> Enum.map(fn
+  {:unexpected, [c]} -> points[c]
+  _ -> 0
+end)
+|> Enum.sum()
+```
+
+```output
+288291
+```
+
+## Task 2
+
+```elixir
+points = %{
+  ?) => 1,
+  ?] => 2,
+  ?} => 3,
+  ?> => 4
+}
+
+median = fn list ->
+  sorted = Enum.sort(list)
+  middle = div(length(list), 2)
+
+  Enum.at(sorted, middle)
+end
+
+input
+|> Enum.map(&Day10.parse/1)
+|> Enum.flat_map(fn
+  {:incomplete, rest} ->
+    [
+      Enum.reduce(rest, 0, fn c, acc ->
+        acc * 5 + points[c]
+      end)
+    ]
+
+  _ ->
+    []
+end)
+|> median.()
+```
+
+```output
+820045242
+```

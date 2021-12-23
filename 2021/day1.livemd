@@ -1,0 +1,69 @@
+<!-- vim:ft=markdown -->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 1
+
+## Load input
+
+```elixir
+stream =
+  File.stream!("day1.txt")
+  |> Stream.map(&String.to_integer(String.trim(&1)))
+```
+
+```output
+#Stream<[
+  enum: %File.Stream{
+    line_or_bytes: :line,
+    modes: [:raw, :read_ahead, :binary],
+    path: "day1.txt",
+    raw: true
+  },
+  funs: [#Function<47.58486609/1 in Stream.map/2>]
+]>
+```
+
+## Task 1
+
+Compute count of consecutive increases
+
+```elixir
+stream
+|> Stream.chunk_every(2, 1, :discard)
+|> Enum.count(fn [a, b] -> a < b end)
+```
+
+```output
+1688
+```
+
+## Task 2
+
+Compute count of consecutive increases of sums of trigrams.
+
+However we can notice, that if we have list like:
+
+$$
+[a, b, c, d]
+$$
+
+Then when we want to compare consecutive trigrams then we compare:
+
+$$
+a + b + c < b + c + d \\
+a < d
+$$
+
+So we can traverse each 4 elements and then just compare first and last one
+instead of summing and then traversing it again.
+
+```elixir
+stream
+|> Stream.chunk_every(4, 1, :discard)
+|> Enum.count(fn [a, _, _, b] -> a < b end)
+```
+
+```output
+1728
+```

@@ -1,0 +1,306 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 19
+
+## Section
+
+```elixir
+# File.read!("day19.txt")
+input =
+  File.read!("day19.txt")
+  |> String.split("\n\n")
+  |> Enum.map(fn scanner ->
+    scanner
+    |> String.split("\n", trim: true)
+    |> Enum.drop(1)
+    |> Enum.map(fn coords ->
+      coords
+      |> String.split(",")
+      |> Enum.map(&String.to_integer/1)
+      |> Enum.zip(~w[x y z]a)
+      |> Map.new(fn {v, k} -> {k, v} end)
+    end)
+    |> MapSet.new()
+  end)
+
+length(input)
+```
+
+```output
+34
+```
+
+$$
+\left\{
+\begin{alignat*}{3}
+b_{x_1} r_x + b_{x_0} = a_{x_1} \\
+b_{x_2} r_x + b_{x_0} = a_{x_2}
+\end{alignat*}
+\right.
+\left\{
+\begin{alignat*}{3}
+b_{y_1} r_y + b_{y_0} = a_{y_1} \\
+b_{y_2} r_y + b_{y_0} = a_{y_2} \\
+\end{alignat*}
+\right.
+\left\{
+\begin{alignat*}{3}
+b_{z_1} r_z + b_{z_0} = a_{z_1} \\
+b_{z_2} r_z + b_{z_0} = a_{z_2} \\
+\end{alignat*}
+\right.
+$$
+
+Where $$r_x, r_y, r_z \in \{-1, 1\}$$ and $$a_{xyz}, b_{xyz} = \text{const}$$.
+This mean that we need to solve:
+
+$$
+B_x x + b_0 = a_x \\
+B_y y + b_0 = a_y \\
+B_z z + b_0 = a_z
+$$
+
+Where:
+
+$$
+B_d = \begin{bmatrix}
+{b_1}_d & 1 \\
+{b_2}_d & 1 \\
+\end{bmatrix}
+d = \begin{bmatrix}
+r_d \\
+b_{d_0}
+\end{bmatrix}
+a_d = \begin{bmatrix}
+{a_1}_d \\
+{a_2}_d
+\end{bmatrix}
+$$
+
+By applying [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule) we can solve these
+linear equations with:
+
+$$
+e_d = \frac{
+\begin{vmatrix}
+{b_1}_d & 1 \\
+{b_2}_d & 1
+\end{vmatrix}
+}{
+\begin{vmatrix}
+{a_1}_d & 1 \\
+{a_2}_d & 1
+\end{vmatrix}
+} = \frac{{b_1}_d - {b_2}_d}{{a_1}_d - {a_2}_d} \\
+b_{d_0} = \frac{
+  \begin{vmatrix}
+{a_1}_d & {b_1}_d \\
+{a_2}_d & {b_2}_d
+\end{vmatrix}
+}{
+  \begin{vmatrix}
+{a_1}_d & 1 \\
+{a_2}_d & 1
+\end{vmatrix}
+} = \frac{{a_1}_d {b_2}_d - {b_1}_d {a_2}_d}{{a_1}_d - {a_2}_d}
+
+```elixir
+defmodule Day19 do
+  def rebase(base, pairs1) do
+    pairs0 = pairs(base)
+    # Take common points
+    pa = Map.take(pairs0, Map.keys(pairs1))
+    pb = Map.take(pairs1, Map.keys(pairs0))
+
+    # Merge them
+    [{{a, b, axes1}, {_, _, axes2}} = p0 | others] =
+      Map.merge(pa, pb, fn _, a, b -> {a, b} end)
+      |> Map.values()
+
+    p1 = Enum.find(others, fn {{x, y, _}, _} -> a in [x, y] end)
+    p2 = Enum.find(others, fn {{x, y, _}, _} -> b in [x, y] end)
+
+    axes = axes_transformations(axes1, axes2)
+
+    a_1 = a
+    a_2 = b
+    b_1 = reaxe(select_common(p0, p1), axes)
+    b_2 = reaxe(select_common(p0, p2), axes)
+
+    transform =
+      for i <- ~w[x y z]a, into: %{} do
+        a_1 = a_1[i]
+        a_2 = a_2[i]
+        b_1 = b_1[i]
+        b_2 = b_2[i]
+        det_b = b_1 - b_2
+        r = div(a_1 - a_2, det_b)
+
+        b_0 = div(b_1 * a_2 - a_1 * b_2, det_b)
+
+        {i, {r, b_0}}
+      end
+
+    new_points =
+      pairs1
+      |> Map.values()
+      |> Enum.flat_map(&[elem(&1, 0), elem(&1, 1)])
+      |> Enum.uniq()
+      |> Enum.map(&reaxe(&1, axes))
+      |> do_rebase(transform)
+      |> MapSet.new()
+
+    %{x: {_, sx}, y: {_, sy}, z: {_, sz}} = transform
+    scanner = %{x: sx, y: sy, z: sz}
+
+    {new_points, scanner}
+  end
+
+  defp do_rebase(points, transform) do
+    points
+    |> Enum.map(fn p ->
+      Map.merge(p, transform, fn _k, d, {r, b} -> d * r + b end)
+    end)
+    |> MapSet.new()
+  end
+
+  defp select_common(a, b) do
+    case {a, b} do
+      {{_, {_, x, _}}, {_, {_, x, _}}} -> x
+      {{_, {x, _, _}}, {_, {x, _, _}}} -> x
+      {{_, {_, x, _}}, {_, {x, _, _}}} -> x
+      {{_, {x, _, _}}, {_, {_, x, _}}} -> x
+    end
+  end
+
+  defp axes_transformations(a, b) do
+    Map.merge(a, b, fn
+      _, a, b -> {a, b}
+    end)
+    |> Map.values()
+    |> Map.new()
+  end
+
+  defp reaxe(point, axes) do
+    %{
+      x: point[axes[:x]],
+      y: point[axes[:y]],
+      z: point[axes[:z]]
+    }
+  end
+
+  def pairs(points) do
+    for a <- points,
+        b <- points,
+        a < b,
+        dx = abs(a.x - b.x),
+        dy = abs(a.y - b.y),
+        dz = abs(a.z - b.z),
+        into: %{},
+        do: {{dx ** 2 + dy ** 2 + dz ** 2, dx + dy + dz}, {a, b, %{dx => :x, dy => :y, dz => :z}}}
+  end
+end
+```
+
+```output
+{:module, Day19, <<70, 79, 82, 49, 0, 0, 26, ...>>, {:pairs, 1}}
+```
+
+```elixir
+[first | rest] = Enum.map(input, &Day19.pairs/1)
+
+{joinable, later} =
+  Enum.split_with(rest, fn pairs ->
+    s1 = MapSet.new(first, fn {k, _} -> k end)
+    s2 = MapSet.new(pairs, fn {k, _} -> k end)
+
+    case MapSet.size(MapSet.intersection(s1, s2)) do
+      66 -> true
+      x when x < 66 -> false
+    end
+  end)
+
+{length(joinable), length(later)}
+```
+
+```output
+{3, 30}
+```
+
+```elixir
+# Distances between each pair of points in `first`
+
+points_set = MapSet.new(hd(input))
+
+{points_set, scanners} =
+  Enum.reduce_while(
+    1..34,
+    {points_set, joinable, later, []},
+    fn i, {set, joinable, later, scanners} ->
+      {time, {set, scanners}} =
+        :timer.tc(fn ->
+          Enum.reduce(joinable, {set, scanners}, fn new, {base, scanners} ->
+            {new, scanner} = Day19.rebase(base, new)
+
+            {MapSet.union(new, base), [scanner | scanners]}
+          end)
+        end)
+
+      IO.inspect(time / 1_000_000)
+
+      current = Day19.pairs(set)
+
+      Enum.split_with(later, fn pairs ->
+        s1 = MapSet.new(current, fn {k, _} -> k end)
+        s2 = MapSet.new(pairs, fn {k, _} -> k end)
+
+        MapSet.size(MapSet.intersection(s1, s2)) >= 66
+      end)
+      |> case do
+        {[], []} ->
+          {:halt, {set, scanners}}
+
+        {joinable, later} ->
+          IO.inspect({length(joinable), length(later)}, label: i)
+          {:cont, {set, joinable, later, scanners}}
+      end
+    end
+  )
+
+MapSet.size(points_set)
+```
+
+```output
+0.002822
+1: {5, 25}
+0.017052
+2: {5, 20}
+0.0355
+3: {7, 13}
+0.134655
+4: {6, 7}
+0.229952
+5: {5, 2}
+0.288351
+6: {1, 1}
+0.076665
+7: {1, 0}
+0.071942
+```
+
+```output
+396
+```
+
+```elixir
+for(
+  a <- scanners,
+  b <- scanners,
+  do: abs(a.x - b.x) + abs(a.y - b.y) + abs(a.z - b.z)
+)
+|> Enum.max()
+```
+
+```output
+11828
+```
