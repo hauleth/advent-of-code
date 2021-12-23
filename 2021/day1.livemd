@@ -1,4 +1,4 @@
-<!-- vim:ft=markdown -->
+<!-- vim:set ft=markdown: -->
 
 <!-- livebook:{"persist_outputs":true} -->
 
