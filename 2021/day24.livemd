@@ -1,0 +1,351 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 24
+
+## Section
+
+```elixir
+defmodule Day24 do
+  def parse("inp " <> reg), do: {:inp, String.to_atom(reg)}
+
+  def parse(<<op::binary-size(3)>> <> " " <> <<reg>> <> " " <> arg) do
+    {String.to_atom(op), String.to_atom(<<reg>>), parse_arg(arg)}
+  end
+
+  defp parse_arg(arg) do
+    case Integer.parse(arg) do
+      {num, ""} -> num
+      :error -> String.to_atom(arg)
+    end
+  end
+
+  def evaluate(ops, input), do: evaluate(ops, Integer.digits(input), %{w: 0, x: 0, y: 0, z: 0})
+
+  defp evaluate([], _, regs), do: regs
+
+  defp evaluate([:nop | rest], input, regs), do: evaluate(rest, input, regs)
+
+  defp evaluate([{:inp, reg} | rest], [v | input], regs),
+    do: evaluate(rest, input, %{regs | reg => v})
+
+  defp evaluate([{:eql, reg, v} | rest], input, regs) do
+    val = if get(reg, regs) == get(v, regs), do: 1, else: 0
+
+    evaluate(rest, input, %{regs | reg => val})
+  end
+
+  defp evaluate([{:add, reg, v} | rest], input, regs),
+    do: evaluate(rest, input, %{regs | reg => get(reg, regs) + get(v, regs)})
+
+  defp evaluate([{:mul, reg, v} | rest], input, regs),
+    do: evaluate(rest, input, %{regs | reg => get(reg, regs) * get(v, regs)})
+
+  defp evaluate([{:div, reg, v} | rest], input, regs),
+    do: evaluate(rest, input, %{regs | reg => div(get(reg, regs), get(v, regs))})
+
+  defp evaluate([{:mod, reg, v} | rest], input, regs),
+    do: evaluate(rest, input, %{regs | reg => rem(get(reg, regs), get(v, regs))})
+
+  defp get(imm, _regs) when is_integer(imm), do: imm
+  defp get(reg, regs) when is_atom(reg), do: Map.get(regs, reg, 0)
+end
+
+input =
+  File.stream!("day24.txt")
+  |> Stream.map(&String.trim/1)
+  |> Enum.map(&Day24.parse/1)
+  |> IO.inspect(limit: :infinity)
+
+length(input)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 11},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 16},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 12},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 11},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 13},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 12},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -5},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 12},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -3},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 12},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 14},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 2},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 15},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 11},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -16},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 4},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 14},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 12},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 1},
+  {:add, :x, 15},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 9},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -7},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 10},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -11},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 11},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -6},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 6},
+  {:mul, :y, :x},
+  {:add, :z, :y},
+  {:inp, :w},
+  {:mul, :x, 0},
+  {:add, :x, :z},
+  {:mod, :x, 26},
+  {:div, :z, 26},
+  {:add, :x, -11},
+  {:eql, :x, :w},
+  {:eql, :x, 0},
+  {:mul, :y, 0},
+  {:add, :y, 25},
+  {:mul, :y, :x},
+  {:add, :y, 1},
+  {:mul, :z, :y},
+  {:mul, :y, 0},
+  {:add, :y, :w},
+  {:add, :y, 15},
+  {:mul, :y, :x},
+  {:add, :z, :y}
+]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+252
+```
+
+```elixir
+44..52 |> Enum.map(&rem(&1, 26))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[18, 19, 20, 21, 22, 23, 24, 25, 0]
+```
+
+```elixir
+IO.inspect(Day24.evaluate(input, 11_111_111_111_161))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{w: 1, x: 1, y: 16, z: 207697766}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{w: 1, x: 1, y: 16, z: 207697766}
+```

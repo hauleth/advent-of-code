@@ -28,7 +28,9 @@ input =
 length(input)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 34
 ```
 
@@ -105,6 +107,7 @@ b_{d_0} = \frac{
 {a_2}_d & 1
 \end{vmatrix}
 } = \frac{{a_1}_d {b_2}_d - {b_1}_d {a_2}_d}{{a_1}_d - {a_2}_d}
+$$
 
 ```elixir
 defmodule Day19 do
@@ -204,7 +207,9 @@ defmodule Day19 do
 end
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {:module, Day19, <<70, 79, 82, 49, 0, 0, 26, ...>>, {:pairs, 1}}
 ```
 
@@ -225,7 +230,9 @@ end
 {length(joinable), length(later)}
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {3, 30}
 ```
 
@@ -272,7 +279,9 @@ points_set = MapSet.new(hd(input))
 MapSet.size(points_set)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 0.002822
 1: {5, 25}
 0.017052
@@ -290,7 +299,9 @@ MapSet.size(points_set)
 0.071942
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 396
 ```
 
@@ -303,6 +314,8 @@ for(
 |> Enum.max()
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 11828
 ```

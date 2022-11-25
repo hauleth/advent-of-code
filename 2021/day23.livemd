@@ -1,0 +1,149 @@
+<!-- vim:ft=markdown -->
+
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 23
+
+## Section
+
+```elixir
+input =
+  File.stream!("day23.txt")
+  |> Enum.map(fn line ->
+    for <<c <- line>>, c in 'ABCD', do: String.to_atom(<<c + 32>>)
+  end)
+  |> Enum.reject(&(&1 == []))
+  |> Enum.zip()
+  |> Enum.map(&Tuple.to_list/1)
+  |> Enum.zip_with(~w[a b c d]a, &{&2, &1})
+  |> Map.new()
+```
+
+```output
+%{a: [:d, :b], b: [:d, :a], c: [:c, :b], d: [:c, :a]}
+```
+
+Graph of the possible movements. `--` and `|` have multiply 1 and `---`, `\`, and `/` have
+multiply 2.
+
+```
+.--.---.---.---.---.--.
+    \ / \ / \ / \ /
+     .   .   .   .
+     |   |   |   |
+     .   .   .   .
+```
+
+```elixir
+defmodule Day23 do
+  @costs %{a: 1, b: 10, c: 100, d: 1000}
+  @rooms %{a: -3, b: -1, c: 1, d: 3}
+
+  # - - - - -   + + + + +
+  # 5 4 3 2 1 0 1 2 3 4 5
+  #     A   B   C   D
+  #     A   B   C   D
+
+  defp memoize(tid, args, func) do
+    case :ets.lookup(tid, args) do
+      [{^args, value}] ->
+        value
+
+      [] ->
+        value = func.()
+        :ets.insert(tid, {args, value})
+        value
+    end
+  end
+
+  def process(stacks) do
+    tid = :ets.new(:memoize, [:public, :set])
+    depth = length(stacks[:a])
+
+    try do
+      do_process(stacks, %{}, target(depth), depth, tid)
+    after
+      :ets.delete(tid)
+    end
+  end
+
+  defp do_process(target, _, target, _depth, _tid), do: 0
+
+  defp do_process(stacks, hall, target, depth, tid) do
+    memoize(tid, [stacks, hall], fn ->
+      possible_moves(stacks, hall, depth)
+      |> Enum.map(fn {new_stack, new_hall, cost} ->
+        cost + do_process(new_stack, new_hall, target, depth, tid)
+      end)
+      |> Enum.min(&<=/2, fn -> :inf end)
+    end)
+  end
+
+  defp possible_moves(stacks, hall, depth) do
+    hall_to_room(stacks, hall, depth) ++ room_to_hall(stacks, hall, depth)
+  end
+
+  defp hall_to_room(stacks, hall, depth) do
+    # IO.inspect({stacks, hall, depth}, label: elem(__ENV__.function, 0))
+    for {pos, t} <- hall,
+        clear_path_to_room?(t, pos, hall),
+        accepts?(t, stacks),
+        {size, new_stacks} = into_room(t, stacks),
+        do: {new_stacks, Map.delete(hall, pos), cost(t, pos, @rooms[t], depth - size)}
+  end
+
+  defp room_to_hall(stacks, hall, depth) do
+    []
+  end
+
+  defp clear_path_to_room?(t, pos, hall) do
+    hall
+    |> Map.keys()
+    |> Enum.find(&(&1 in min(pos, @rooms[t])..max(pos, @rooms[t])))
+    |> case do
+      nil -> true
+      _ -> false
+    end
+  end
+
+  defp accepts?(t, stacks), do: Enum.all?(stacks[t], &(&1 == t))
+
+  defp into_room(t, stacks) do
+    Map.get_and_update!(stacks, t, &{length(&1), [t | &1]})
+  end
+
+  defp target(depth) do
+    for v <- ~w[a b c d]a,
+        into: %{},
+        do: {v, List.duplicate(v, depth)}
+  end
+
+  def cost(elem, from, to, depth) do
+    @costs[elem] * (depth + abs(to - from))
+  end
+end
+```
+
+```output
+warning: variable "depth" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  day23.livemd#cell:58: Day23.room_to_hall/3
+
+warning: variable "hall" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  day23.livemd#cell:58: Day23.room_to_hall/3
+
+warning: variable "stacks" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  day23.livemd#cell:58: Day23.room_to_hall/3
+
+```
+
+```output
+{:module, Day23, <<70, 79, 82, 49, 0, 0, 23, ...>>, {:cost, 4}}
+```
+
+```elixir
+Day23.process(input)
+```
+
+```output
+:inf
+```
