@@ -9,7 +9,7 @@
 ```elixir
 # File.read!("day19.txt")
 input =
-  File.read!("day19.txt")
+  File.read!("2021/day19.txt")
   |> String.split("\n\n")
   |> Enum.map(fn scanner ->
     scanner
@@ -34,23 +34,25 @@ length(input)
 34
 ```
 
+To find rotation of point $b_1$ and $b_2$ around shift point $b_0$
+
 $$
 \left\{
 \begin{alignat*}{3}
-b_{x_1} r_x + b_{x_0} = a_{x_1} \\
-b_{x_2} r_x + b_{x_0} = a_{x_2}
+{b_1}_x r_x + {b_0}_x = {a_1}_x \\
+{b_2}_x r_x + {b_0}_x = {a_2}_x
 \end{alignat*}
 \right.
 \left\{
 \begin{alignat*}{3}
-b_{y_1} r_y + b_{y_0} = a_{y_1} \\
-b_{y_2} r_y + b_{y_0} = a_{y_2} \\
+{b_1}_y r_y + {b_0}_y = {a_1}_y \\
+{b_2}_y r_y + {b_0}_y = {a_2}_y \\
 \end{alignat*}
 \right.
 \left\{
 \begin{alignat*}{3}
-b_{z_1} r_z + b_{z_0} = a_{z_1} \\
-b_{z_2} r_z + b_{z_0} = a_{z_2} \\
+{b_1}_z r_z + {b_0}_z = {a_1}_z \\
+{b_2}_z r_z + {b_0}_z = {a_2}_z \\
 \end{alignat*}
 \right.
 $$
@@ -59,9 +61,9 @@ Where $$r_x, r_y, r_z \in \{-1, 1\}$$ and $$a_{xyz}, b_{xyz} = \text{const}$$.
 This mean that we need to solve:
 
 $$
-B_x x + b_0 = a_x \\
-B_y y + b_0 = a_y \\
-B_z z + b_0 = a_z
+B_x r_x + b_0 = a_x \\
+B_y r_y + b_0 = a_y \\
+B_z r_z + b_0 = a_z
 $$
 
 Where:
@@ -71,9 +73,9 @@ B_d = \begin{bmatrix}
 {b_1}_d & 1 \\
 {b_2}_d & 1 \\
 \end{bmatrix}
-d = \begin{bmatrix}
-r_d \\
-b_{d_0}
+b_0 = \begin{bmatrix}
+{b_0}_d \\
+{b_0}_d
 \end{bmatrix}
 a_d = \begin{bmatrix}
 {a_1}_d \\
@@ -82,31 +84,31 @@ a_d = \begin{bmatrix}
 $$
 
 By applying [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule) we can solve these
-linear equations with:
+linear equations with (we are looking for $b_0$ and $r$):
 
 $$
-e_d = \frac{
+r_d = \frac{
+\begin{vmatrix}
+{a_1}_d & 1 \\
+{a_2}_d & 1
+\end{vmatrix}
+}{
 \begin{vmatrix}
 {b_1}_d & 1 \\
 {b_2}_d & 1
 \end{vmatrix}
-}{
-\begin{vmatrix}
-{a_1}_d & 1 \\
-{a_2}_d & 1
-\end{vmatrix}
-} = \frac{{b_1}_d - {b_2}_d}{{a_1}_d - {a_2}_d} \\
+} = \frac{{a_1}_d - {a_2}_d}{{b_1}_d - {b_2}_d} \\
 b_{d_0} = \frac{
   \begin{vmatrix}
-{a_1}_d & {b_1}_d \\
-{a_2}_d & {b_2}_d
+{b_1}_d & {a_1}_d \\
+{b_2}_d & {a_2}_d
 \end{vmatrix}
 }{
   \begin{vmatrix}
-{a_1}_d & 1 \\
-{a_2}_d & 1
+{b_1}_d & 1 \\
+{b_2}_d & 1
 \end{vmatrix}
-} = \frac{{a_1}_d {b_2}_d - {b_1}_d {a_2}_d}{{a_1}_d - {a_2}_d}
+} = \frac{{b_1}_d {a_2}_d - {a_1}_d {b_2}_d}{{b_1}_d - {b_2}_d}
 $$
 
 ```elixir
@@ -133,17 +135,17 @@ defmodule Day19 do
     b_2 = reaxe(select_common(p0, p2), axes)
 
     transform =
-      for i <- ~w[x y z]a, into: %{} do
-        a_1 = a_1[i]
-        a_2 = a_2[i]
-        b_1 = b_1[i]
-        b_2 = b_2[i]
+      for d <- ~w[x y z]a, into: %{} do
+        a_1 = a_1[d]
+        a_2 = a_2[d]
+        b_1 = b_1[d]
+        b_2 = b_2[d]
         det_b = b_1 - b_2
         r = div(a_1 - a_2, det_b)
 
         b_0 = div(b_1 * a_2 - a_1 * b_2, det_b)
 
-        {i, {r, b_0}}
+        {d, {r, b_0}}
       end
 
     new_points =
@@ -210,7 +212,7 @@ end
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, Day19, <<70, 79, 82, 49, 0, 0, 26, ...>>, {:pairs, 1}}
+{:module, Day19, <<70, 79, 82, 49, 0, 0, 29, ...>>, {:pairs, 1}}
 ```
 
 ```elixir
@@ -282,21 +284,21 @@ MapSet.size(points_set)
 <!-- livebook:{"output":true} -->
 
 ```
-0.002822
+0.005503
 1: {5, 25}
-0.017052
+0.029354
 2: {5, 20}
-0.0355
+0.067284
 3: {7, 13}
-0.134655
+0.195126
 4: {6, 7}
-0.229952
+0.292686
 5: {5, 2}
-0.288351
+0.374403
 6: {1, 1}
-0.076665
+0.074645
 7: {1, 0}
-0.071942
+0.090199
 ```
 
 <!-- livebook:{"output":true} -->
