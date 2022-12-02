@@ -1,0 +1,117 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 02
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"2","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "2", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "C Z\nC Y\nB X\nA Z\nC Z\nB X\nC Z\nB Z\nA Z\nA Z\nB Z\nB X\nC Z\nC Z\nA Z\nB Y\nB X\nC Y\nB X\nB X\nA Y\nA Z\nA Z\nA Z\nA Z\nC Z\nA Z\nC Z\nB X\nA X\nA Z\nB Y\nB X\nA Z\nB X\nC Z\nA Z\nC Z\nA Z\nA Z\nB X\nC X\nB X\nA X\nB X\nA Z\nA Z\nB X\nB Y\nB Y\nB Y\nC Z\nA Z\nA Z\nC X\nB X\nC Y\nB X\nC Z\nA Z\nC Z\nB X\nB X\nB Z\nB X\nA Z\nC Z\nA Z\nA Z\nA Z\nA Z\nB X\nC Z\nC Y\nA Z\nA Z\nA Z\nA Z\nC Z\nA X\nA Z\nA Z\nC Z\nC Y\nA Z\nC Y\nA Z\nA Z\nC Y\nC Z\nC Z\nA Z\nB Y\nB X\nB Y\nC Z\nA Z\nA Z\nA Z\nB Z\nC Z\nA Z\nB X\nC Y\nA Z\nB X\nA Z\nB Z\nA Z\nB X\nA Z\nB Y\nA Z\nA Z\nC Y\nA Z\nB Z\nA Z\nA Y\nB Y\nC Z\nA Z\nB X\nC Z\nC Z\nB X\nC Z\nC Z\nA Z\nB X\nC Z\nC Z\nA Z\nC Y\nA Z\nA Z\nB Y\nC Y\nA Z\nB X\nB Y\nB X\nB X\nA Z\nC Y\nA Z\nC Y\nA Z\nB Y\nC Z\nA Z\nA Z\nC Y\nA Z\nA Z\nC Z\nA Z\nA Z\nA Z\nC Y\nA Z\nB X\nC Z\nA Z\nC Z\nB Z\nC Z\nA Z\nC Y\nB X\nC Z\nC Z\nA Z\nC Y\nA Z\nB Y\nB X\nA Z\nC Y\nC Z\nB X\nC X\nB X\nC Y\nB X\nB X\nC Z\nB X\nA Z\nC X\nA Z\nC Z\nB X\nC Y\nA Z\nA Z\nC Z\nC Y\nA Z\nA Z\nA Z\nB X\nA Y\nB X\nC X\nC Z\nB X\nC Z\nC X\nA Z\nC Z\nB Z\nA X\nA Z\nC Y\nA Z\nC Z\nC Z\nB X\nC Z\nA X\nC Y\nC Z\nC Z\nC Z\nB Y\nC X\nB X\nA Z\nB Y\nA Z\nA Z\nC Y\nA Z\nB X\nA Y\nA Y\nC Y\nA Z\nA Z\nC Z\nA Z\nA Z\nA Z\nB Y\nB X\nB X\nA Z\nC X\nC Y\nA Z\nC Z\nA Z\nA Z\nA Z\nA Z\nA X\nA Z\nC Z\nA Z\nB Y\nA Y\nA Y\nC Y\nC Y\nB X\nB Y\nA Z\nA Z\nC X\nA Z\nB X\nC Y\nA Y\nA Y\nA Z\nC Y\nC Z\nB X\nA Z\nC Y\nB X\nC Z\nA Z\nB X\nA Z\nC Y\nB X\nC Z\nA Z\nA Z\nA Y\nA Z\nA Z\nC Y\nC Z\nA Z\nB X\nC Z\nC Y\nA Z\nA Z\nC Y\nA Z\nC Z\nB X\nA Z\nC Z\nA Z\nA Z\nA Z\nC Y\nC Y\nB X\nB Z\nB X\nA Z\nB Y\nB Y\nA Z\nA Z\nA Z\nB Y\nB Y\nC Y\nA Y\nA Z\nC X\nB X\nA Y\nB Y\nC Y\nA Z\nB Z\nC Y\nC Z\nB X\nA Z\nA X\nB X\nC Y\nB Z\nA Z\nB Y\nA Z\nB X\nA Z\nB X\nA Z\nC X\nC Y\nC Z\nB X\nC Z\nC Y\nA Z\nC X\nC Z\nA Z\nC Y\nA Y\nC Y\nC Y\nB Y\nA Z\nA Z\nA Y\nA Z\nC Z\nB X\nA Y\nB X\nB Y\nB X\nA Z\nC Z\nC Z\nC Y\nB X\nC Z\nA X\nA Z\nA Z\nA Y\nA Z\nA Z\nA Z\nA Z\nB Z\nB X\nB X\nC Y\nC Z\nC Z\nA Y\nB X\nC Z\nC X\nC Z\nB Y\nA Z\nB X\nB Y\nB X\nA Z\nB X\nB X\nA Z\nA Z\nC X\nB X\nC Z\nC X\nA Z\nA X\nC Z\nA Z\nA Z\nC Z\nB Z\nC Z\nB X\nA Z\nA Z\nC Z\nA Y\nA Z\nA Z\nC Y\nA Z\nB X\nB Y\nA Z\nA Y\nA X\nB X\nA Z\nA Z\nC Y\nC Y\nA Z\nC X\nA Z\nA Y\nA Z\nB Y\nA Z\nA Y\nB X\nC Z\nA Z\nB X\nA Z\nA Z\nB X\nA Z\nA Z\nB X\nA Z\nC Y\nA Z\nC Z\nC Y\nB Y\nB X\nA Z\nB Y\nA Z\nA Z\nB X\nA Z\nA Z\nB X\nC Z\nA Z\nC Z\nB X\nB X\nB Y\nA Y\nC Y\nB X\nA Z\nC Z\nA Z\nA Z\nA Z\nB X\nA Z\nB X\nA Z\nA Z\nA Z\nC Z\nA X\nB X\nB Z\nA Z\nA Z\nC Z\nA Z\nA Z\nA Z\nB Y\nA Y\nC Z\nB X\nB X\nC Y\nA Y\nA Z\nC X\nB Z\nA Z\nA Z\nC Z\nA Z\nA Y\nB Y\nC Z\nB X\nA Z\nA Z\nA Z\nC Z\nA Z\nA Y\nB X\nC Y\nA Z\nA Z\nA Z\nC X\nB X\nA Z\nA Z\nC Z\nB X\nA Z\nA Z\nA Z\nA Z\nA Z\nA Z\nC Y\nA Z\nB X\nA Y\nC Y\nA Z\nA Z\nB X\nA Z\nB Y\nA Y\nB X\nA X\nA Z\nC Z\nC Z\nC Y\nA Z\nB Y\nA Z\nC X\nA Z\nA Z\nB X\nA Z\nA Z\nB Y\nA Y\nA Z\nA Z\nB X\nC Y\nB X\nB Y\nC Y\nC X\nA Z\nA Z\nB Y\nA Z\nB Y\nC Y\nC Y\nA Z\nC Y\nA Z\nC Z\nA Z\nB X\nA Z\nA Z\nA X\nA Z\nA Z\nA Z\nA Z\nB Z\nC X\nB Y\nA Z\nC Z\nA Z\nA Z\nA Z\nC Z\nB X\nA Z\nB X\nC Y\nC Z\nA Z\nA Z\nC Z\nB X\nB X\nA Z\nA Z\nB X\nA Z\nA Z\nC Z\nA Z\nA Z\nA X\nC Z\nC Y\nA Z\nA Z\nA Z\nA Z\nC Z\nA Z\nA Z\nB Z\nA Z\nC Y\nA Z\nA Z\nB Y\nA Z\nA Z\nB X\nA Z\nB X\nA Z\nA Z\nC Y\nA Y\nC Y\nB Z\nB X\nB Y\nA Z\nA Z\nC Y\nA Z\nA Y\nB Z\nA Z\nC Y\nA Z\nA Z\nA X\nA Z\nB Y\nB Y\nA Z\nA Z\nA Z\nC Z\nC Z\nA Y\nC Y\nB X\nA Y\nB X\nB Y\nC X\nC Y\nC Y\nA Z\nC Z\nA Z\nA Z\nA Z\nB X\nA Z\nA Z\nA Z\nA Z\nA Y\nB X\nA Z\nA Z\nB X\nA Z\nA Z\nA Z\nA Z\nA X\nC Y\nB X\nA Z\nA Y\nC Y\nC Y\nA X\nA Z\nC X\nC Z\nA Z\nC X\nA Z\nA Z\nB Y\nA Z\nA Z\nA Z\nB X\nA Z\nA Z\nB X\nB X\nA Z\nA Z\nC Z\nC Z\nA Z\nC Z\nB X\nA Z\nA Z\nB X\nC Z\nC Z\nC Y\nC Z\nA Z\nB X\nA X\nC Z\nA X\nC Z\nA Z\nA Z\nA Z\nA Z\nA Z\nB X\nA Z\nB X\nC Y\nA Z\nA Z\nA Z\nC Z\nA Y\nA Y\nB Y\nA Z\nA Z\nC Y\nC Z\nB X\nB X\nA X\nC Z\nB X\nA Z\nA Z\nA Z\nB Z\nA Z\nC Y\nB X\nA Z\nA Z\nA Y\nB Y\nC Z\nC Z\nA Z\nA Z\nA Z\nB Y\nA Z\nC Y\nB X\nB Z\nC X\nB X\nC Y\nA X\nC Z\nA Z\nB X\nC X\nA Y\nC X\nA Z\nB X\nB X\nA Z\nA Z\nC Z\nB X\nB Z\nC Y\nC Z\nA Z\nB Y\nA Z\nA Z\nB X\nC Y\nA Z\nC Z\nA Z\nB Z\nC Z\nC Z\nA Z\nC Y\nA Z\nA Z\nA Z\nC Z\nC X\nB Y\nC Y\nA Z\nC Y\nC Y\nC X\nC Y\nA Z\nC Y\nC Y\nC X\nC X\nA Z\nB X\nA Z\nC Y\nA Z\nB X\nB X\nB X\nB X\nB X\nB Y\nA Z\nA Z\nC Z\nA Z\nA Z\nA Z\nC Z\nC Z\nC Z\nA Z\nA Z\nA Y\nA Z\nA Z\nA Y\nA X\nC Z\nA Z\nA Z\nC Z\nB X\nC Z\nB Y\nC Z\nA Y\nA Z\nC Y\nB X\nA Z\nC Y\nA Z\nC Z\nC Y\nB X\nA Z\nA Z\nA Z\nA Z\nA Z\nC X\nC Z\nA Z\nA Z\nA Z\nC Z\nA Z\nB X\nA Z\nA X\nA Z\nB X\nA Z\nC Z\nA Z\nA Y\nB X\nB Z\nA Z\nB X\nA Z\nA Z\nB Y\nA Z\nA Z\nC Y\nB Y\nC X\nA Z\nA Z\nA Z\nC Z\nA Z\nA Z\nA Z\nC Z\nA Z\nC Y\nB X\nA Z\nA Z\nC X\nA Z\nC Z\nA Z\nB Y\nA Z\nA Y\nC Z\nC Z\nA Y\nA Y\nA Z\nA X\nA Z\nA Z\nB X\nA Z\nA Z\nB X\nC Z\nA Z\nA Y\nB X\nA Z\nA Z\nC Z\nA Z\nA Z\nB X\nB Z\nA Z\nA X\nB Y\nA Z\nB X\nA Z\nC Z\nB X\nC Y\nA Z\nB X\nA Z\nA Z\nA Z\nB Z\nA Z\nC Z\nA Z\nC Z\nB X\nA Z\nB Z\nA Z\nC Z\nC Z\nB Y\nC Z\nA Z\nA Z\nC Y\nA Z\nA Z\nB X\nB Y\nC Z\nA Z\nC Z\nA Z\nC Z\nA Z\nB X\nA X\nB Y\nA Z\nC Z\nA Z\nC Z\nC Y\nB X\nC Z\nC Z\nB Y\nB X\nC Z\nB X\nC Y\nA Z\nC Y\nC Y\n" <> ...}
+```
+
+```elixir
+translate = %{"A" => :rock, "B" => :paper, "C" => :scissors}
+points = %{rock: 1, paper: 2, scissors: 3}
+
+defmodule Day02 do
+  @wins %{paper: :rock, rock: :scissors, scissors: :paper}
+
+  def score(a, a), do: 3
+  def score(a, b) when :erlang.map_get(a, @wins) == b, do: 6
+  def score(_, _), do: 0
+
+  for {a, b} <- @wins do
+    def wins_with(unquote(a)), do: unquote(b)
+    def loses_to(unquote(b)), do: unquote(a)
+  end
+end
+
+freqs =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn <<a, ?\s, b>> -> {translate[<<a>>], <<b>>} end)
+  |> Enum.frequencies()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  {:paper, "X"} => 395,
+  {:paper, "Y"} => 146,
+  {:paper, "Z"} => 65,
+  {:rock, "X"} => 77,
+  {:rock, "Y"} => 113,
+  {:rock, "Z"} => 1011,
+  {:scissors, "X"} => 96,
+  {:scissors, "Y"} => 242,
+  {:scissors, "Z"} => 355
+}
+```
+
+## Task 1
+
+I really dislike this task, because description of the task suggested that the goal is to find best strategy that do not win all rounds. Instead it is supposed to play strategy using **exact** steps defined in the example.
+
+Very poor wording.
+
+```elixir
+strategy = %{"Y" => :paper, "X" => :rock, "Z" => :scissors}
+
+freqs
+|> Enum.reduce(0, fn {{b, c}, v}, acc ->
+  choice = strategy[c]
+  result = Day02.score(choice, b)
+  acc + v * (points[choice] + result)
+end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+9241
+```
+
+## Task 2
+
+```elixir
+freqs
+|> Enum.reduce(0, fn {{b, strategy}, v}, acc ->
+  choice =
+    case strategy do
+      "X" -> Day02.wins_with(b)
+      "Y" -> b
+      "Z" -> Day02.loses_to(b)
+    end
+
+  result = Day02.score(choice, b)
+  acc + v * (points[choice] + result)
+end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+14610
+```
