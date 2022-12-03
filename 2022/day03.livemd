@@ -1,0 +1,122 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 03
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Setup
+
+<!-- livebook:{"attrs":{"day":"3","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "3", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "gfWpjRRQffQGCHHJsGqjsj\nSclzJZZvmmnPbJtVSqqNBqVCBdSCsd\ntlbvZJDZtmtPcJmlPnhMFQWWpMRFTfLDRRTWRp\nHjMPgSWjVrjgbHRRSSMRgjRdpdbGdlcdCvQfcCdlwQJfdf\nLNDnhtNtLNFFZDtFnhzvdldDflvvDCdlJfldpJ\nZFLFZZmFtFtTNTSPRrVPWWMpRP\nqLBSBLRwmgzqCbzCffDlrfCV\nTFFFHNWFMFFMpHpGHMTHGNhrldWZCsdZsslZlZfrflDVss\nPTMcPGntTThHhTGctnMvSwjjvmmqLBmnjqqgCR\nnClJtMwwntqVVPJcgZqq\nmjpsDcrcSSFFPZqFBWWgVP\nvQcjsvhrvvrmhbmNHMNnlHbNMtCtNM\nbgvvhnTQtjrrrhsDDf\npLSMltLzLLSjFrSSjrSJHD\nzNWRLBdZPllPQtCvttgCqb\nDRlDrrFTNDNlgzsGTBfcnqhhcnJfcrCSqc\nMMmmdWtdLmvtldHjMmQfPBqSJWnfCCCqcWSSPJ\nvjHMjLmjpLtHptQLmHvwTRgNVVpTzZFZgZRlsVTN\nrzpMpDCGFCFFjRFsRPFRNFPv\nfWclbHCHtSmfvjnmfsvZ\nwTcTlSwwtQtWclBQBLGMLMCLVzVLwJGqLd\nMQSjLNjPPLLSBPjfQhSPHjDVCjDtVVpDHwbwVpbD\nRcmWzsRrzZrmTszWRqWlmRJscbtHwCbndCtcDVddDpdnVnbt\nJTsrGGTqmwTlWmTzJzWmhhPLLGgPFgBffSSPhFFM\nqMMRNZMDDNWLPqfzCgDcGncVDCgG\nwwBFhwhhBgmcVzhghG\ntbJbjjtJvwtdtwjpFtlbvtdTLNSMqNqMMgqNHPlZRTNggL\nqmjMHsZmZSbjbZMjSLFFFFwgsgvFswpwww\nhRJBhmnhhvFFwhcv\nllfWDWzrzBNTRfNBrWzzTmZbGTMjPqMmZPjVbSZGSP\nCRRPLwwcclcGVppQ\nSHFjDjjHDTfSDNTTHfSHjQVGrpmllQQWltVVVZGp\nHFlqzDTfqlzwbgPJLwCP\nWRCNLphpLppSCWVHNfLRzVnQMnBnMddPMQDFQgrhPQFM\njTjJqvqjvPVJFJFBJF\nqTsZbvGqqZlstsmZVljtwqwSHHNWczHSSRcWNSRHzzNfbW\nglgzDzHjSrVHcVgbrjmNsscNGmNWssGNNtst\nhHPQLHJpwdLpdHfQQtnZmNMwnZGZWwsFZM\nQpdhPJRTJfPphJfhCBlVqVvgvVDBbvVqDbHD\nVtHzjZpjVtHrprgGmjHsGHNdSJFQRcLJqCdQcSqJNpcq\nbBWfTPwhbfDlMnhffRwQJQNdqJcLFQLSdR\nbhBhvfMWTnlDnTBfPSmvmjsjmmGtzHtsHm\npcRPRPWrSDcJGZSStmwZZS\nVnLfCfTlfVzfnMMBCqVNZJdtjNtJjhJdGNNbwT\nBLvqCCMVsnRQsPQgDcZH\ncQbqqQhDGhlQfQlhQrqGsTNgLgCpRgLTPPPLNbpg\nwtHVddVFwSHznZwwznCpRBdjppNBNTTdCjRR\nZtWFwWtSmvVnwZDrCMGfQlDDJQmD\nPzPZGCZzrZrlhdjdCqfCsqQdRD\ncbvZLVVFvbbNSNFHSDnsDQdnfqNQDRngsR\nFJHSLSFSScJJbWHFmFVFSZmrrzBmhtBwmzBMPMPzPh\nnlpFcLBgcVcLbssGVBGGrlpGPhJJJJJqPBZPDNMQMJJhJQZZ\nSSTjHzfHwtZSPVQVQMRQ\nTzVHwWfTtzwdVzsbFnGgsbdcGrLc\nFppVBRVZDdLmrDGmmfrQ\nNtNMPNshJCzznLGJSrqRrRrr\ntRssthhPlCWhPzsWtzhzCbVVjwTpVwdZZTpwjbdBbwBc\nTTWblHWScvPCCHTWFzSrqqsNNSmdmqrrpz\nRLRwjjnjZNprzmmZcq\nQQgtQnccQDGjgLDRRcLthQhFBvCbMtMHTWlBFllBbFCMTW\nWnBVNvDnVsNvZWdrWDLVDMbsHpTjpHCSSClsbSCCMH\nGPFtmztzgPhRFtJTdbTwjppSCjpgSl\nhJcfPtQhdtWNVZqNnqNQ\nGLcqZPPsnqQcFsmBBrqRvrddNqrC\nMtHthJwLllwvjRvvtrvBRS\nVHMfDLbpfznszZQG\nWBSdPlQPRfBtGQPfBGPBJgzgjwsJzsszJwCrdwCT\nZpppVpMVpnVHMVVbZRJrCgwRzTJrwNJw\nMvhmnpLqLmhVmBlftRQBFSlR\nhhQlSJqhtCSnqZJnqShSlNDwRzpvdwRlMBMMdcjRjMpMRc\nfrrGmLmWbfFrsmFHmBzBvBcwdJbvpjzbMM\nmmgFrVGLWJLFGsgfhSVtVPqntqnnSStN\nSFJTJTSqswwFQbwf\ncDtcWPclrtPwVsfssQmN\nHDtwWCgWdggdzSGJMSzGMq\nJpqJtWRJMhCMJpMQCWtFrjgHdgdlgllwNjlQjldH\nfBzPZcZvnBmDnZvZBZDmPvglVVVdgHHSwrNRgVgwNPRH\nGbZnZccfvcsZmccsmnnZTRbCCMWFTWJqFCCMJFRT\nvrrFqrFTBTmLmNrLMqMTHddJbHpWnhdWdWbHhJGM\nwBzfwzcQSzWSSshpdWGp\ngwjPPPDQtzQlzQDPqTgLBRmRqZBvqFNR\nbWVptFFsbPcZsGLhsZGmLB\nqnWrnrHdMCDCNqfWmvRRZSSRLdRGZGRG\nnNqqNDfMrMWHDQNHzWfHNDnwzblpzFlbwtFbVVlwVcPJpP\nBHJhlHdJQggvddglJBBhglhQzZHPZpFFPDMzFDDRDFZZDFZD\nrSTfqnCffMfCVfCLNqbzbjWNDbbWDPFpPFbP\nnfnnrSfCTVSwrqSLCGfTGlgQhlvsGMJQJBhhssJhGc\ntBjjDjjqfDjLfJlrLgglvmrlmrcc\nTwNNTVhwwpgvGSNNSssS\nTbwhnvvChhbVRTPPRJBJQQfJttMQQJCQfW\nmWSvSQVgmWQsQvspQJlrlLnJLLpCClhhlp\nbFHRjZdNjjBZzFzhtnCllCcJLrCBll\nHFFNHbdZZLZjfPFjHVQmWDDVsvsmTqVqDf\nJJPllQQClqgBCgdHwHbpjVTwHd\ntmGZtjGjHZpVbfMT\nShGjNGWmDSNcNRtGmshDRzzCvzQJJRBLrvlrBPJv\ncTpqsTWqVVpsNLfvCDFlMFDVFL\nJnndJPddQgzHlvMJFDhLCG\nBjtntgdRnQgzjdBRQBlpNWrTTlNTSwNpWS\nqHmqLVLjmVqsDBLtmjmbtPwCTwwPzGWRgGwGwMwW\nZhcCNCSprRTWTwSnWW\nhflhZvvQhppZfcNpvrhpQHjVjLmbVmmVHVCFDvqVFb\nnnNrwDnZrspwDNnZsNSDsNbCmpjvMTPQjLMmPmmQPGBTQP\nFdVtRdRfctBQPmTtTLQB\nqhzWVWJqVHwbhlLSsS\nhtWmhDhFztnztDhtBmBtghPRSrpfjVwPdfPwpwnRSVrr\ncbCHvgJGcTqbqcbqqqcqsMsRVrSCwffdRPPpVpwCRSwfjj\nGlgGQqTqbgQzttmBNNFz\nNWQNQgdTgjQNddTZfrCQWRDnnnbqnLqnRcjJlqqvDj\nFtSSmSmJhpllcclDvpln\nJBVVSsSFBVBttShFGSPQfCGNdrMfZZTQTZNNdC\nHgHthMhphcbfbMMfHhsGGDCRRVlcVSScsCRz\nnWvPFqLqPNdjnNLnjdJnPdWjGlssDPSsllVCRzlTCTGlSDzS\nRvddJRJQHwQwpZZb\ngdZwgpjZZQtHTdrWrwdpWRnlhNBRlLbFthNhflhBnL\nCVzDCPGMVqVmGsGGbJCmCDvMcRcqnBFFFnRBBNRBBNqhnFfF\nDsmSGsGPzvMGJvdbgTSTbjbSSdgH\njBGmbNBQGdBNNDJNQRLLVDsHtDRzHHZZcH\nwCWPFWPCrPhPrplvprhwpCHHtszttqZslRVHLtzVlJZL\nvprMMvMnJCwnnPShNGSTfGSfNmmgdNff\nbPtLbvVWWztbLSVVnbszpzQsrcDDBdpRcDrs\nllZmgCZqgCFgmdRdJcscBdJsmQ\nFZlgfqCFfgZHlqCMCglwCFGWntLLSMRSPGPVttWRtVGL\nvtnDsDtrnrSvrMVmbrrJg" <> ...}
+```
+
+```elixir
+bags =
+  puzzle_input
+  |> String.split("\n", trim: true)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["gfWpjRRQffQGCHHJsGqjsj", "SclzJZZvmmnPbJtVSqqNBqVCBdSCsd",
+ "tlbvZJDZtmtPcJmlPnhMFQWWpMRFTfLDRRTWRp", "HjMPgSWjVrjgbHRRSSMRgjRdpdbGdlcdCvQfcCdlwQJfdf",
+ "LNDnhtNtLNFFZDtFnhzvdldDflvvDCdlJfldpJ", "ZFLFZZmFtFtTNTSPRrVPWWMpRP", "qLBSBLRwmgzqCbzCffDlrfCV",
+ "TFFFHNWFMFFMpHpGHMTHGNhrldWZCsdZsslZlZfrflDVss", "PTMcPGntTThHhTGctnMvSwjjvmmqLBmnjqqgCR",
+ "nClJtMwwntqVVPJcgZqq", "mjpsDcrcSSFFPZqFBWWgVP", "vQcjsvhrvvrmhbmNHMNnlHbNMtCtNM",
+ "bgvvhnTQtjrrrhsDDf", "pLSMltLzLLSjFrSSjrSJHD", "zNWRLBdZPllPQtCvttgCqb",
+ "DRlDrrFTNDNlgzsGTBfcnqhhcnJfcrCSqc", "MMmmdWtdLmvtldHjMmQfPBqSJWnfCCCqcWSSPJ",
+ "vjHMjLmjpLtHptQLmHvwTRgNVVpTzZFZgZRlsVTN", "rzpMpDCGFCFFjRFsRPFRNFPv", "fWclbHCHtSmfvjnmfsvZ",
+ "wTcTlSwwtQtWclBQBLGMLMCLVzVLwJGqLd", "MQSjLNjPPLLSBPjfQhSPHjDVCjDtVVpDHwbwVpbD",
+ "RcmWzsRrzZrmTszWRqWlmRJscbtHwCbndCtcDVddDpdnVnbt", "JTsrGGTqmwTlWmTzJzWmhhPLLGgPFgBffSSPhFFM",
+ "qMMRNZMDDNWLPqfzCgDcGncVDCgG", "wwBFhwhhBgmcVzhghG",
+ "tbJbjjtJvwtdtwjpFtlbvtdTLNSMqNqMMgqNHPlZRTNggL", "qmjMHsZmZSbjbZMjSLFFFFwgsgvFswpwww",
+ "hRJBhmnhhvFFwhcv", "llfWDWzrzBNTRfNBrWzzTmZbGTMjPqMmZPjVbSZGSP", "CRRPLwwcclcGVppQ",
+ "SHFjDjjHDTfSDNTTHfSHjQVGrpmllQQWltVVVZGp", "HFlqzDTfqlzwbgPJLwCP",
+ "WRCNLphpLppSCWVHNfLRzVnQMnBnMddPMQDFQgrhPQFM", "jTjJqvqjvPVJFJFBJF",
+ "qTsZbvGqqZlstsmZVljtwqwSHHNWczHSSRcWNSRHzzNfbW", "glgzDzHjSrVHcVgbrjmNsscNGmNWssGNNtst",
+ "hHPQLHJpwdLpdHfQQtnZmNMwnZGZWwsFZM", "QpdhPJRTJfPphJfhCBlVqVvgvVDBbvVqDbHD",
+ "VtHzjZpjVtHrprgGmjHsGHNdSJFQRcLJqCdQcSqJNpcq", "bBWfTPwhbfDlMnhffRwQJQNdqJcLFQLSdR",
+ "bhBhvfMWTnlDnTBfPSmvmjsjmmGtzHtsHm", "pcRPRPWrSDcJGZSStmwZZS",
+ "VnLfCfTlfVzfnMMBCqVNZJdtjNtJjhJdGNNbwT", "BLvqCCMVsnRQsPQgDcZH",
+ "cQbqqQhDGhlQfQlhQrqGsTNgLgCpRgLTPPPLNbpg", "wtHVddVFwSHznZwwznCpRBdjppNBNTTdCjRR",
+ "ZtWFwWtSmvVnwZDrCMGfQlDDJQmD", "PzPZGCZzrZrlhdjdCqfCsqQdRD", "cbvZLVVFvbbNSNFHSDnsDQdnfqNQDRngsR",
+ ...]
+```
+
+```elixir
+defmodule Day03 do
+  def count(list) do
+    list
+    |> Enum.map(fn v -> Enum.reduce(v, &MapSet.intersection/2) end)
+    |> Enum.flat_map(&Enum.to_list/1)
+    |> Enum.map(fn
+      c when c in ?a..?z -> c - ?a + 1
+      c when c in ?A..?Z -> c - ?A + 27
+    end)
+    |> Enum.sum()
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day03, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:count, 1}}
+```
+
+## Task 1
+
+```elixir
+bags
+|> Enum.map(fn bag ->
+  size = byte_size(bag)
+  half = div(size, 2)
+
+  {b1, b2} = String.split_at(bag, half)
+
+  [MapSet.new(to_charlist(b1)), MapSet.new(to_charlist(b2))]
+end)
+|> Day03.count()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+7845
+```
+
+## Task 2
+
+```elixir
+bags
+|> Enum.map(&MapSet.new(to_charlist(&1)))
+|> Enum.chunk_every(3)
+|> Day03.count()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+2790
+```
