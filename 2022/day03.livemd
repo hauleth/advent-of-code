@@ -31,7 +31,7 @@ Mix.install([
 ```
 
 ```elixir
-bags =
+rucksacks =
   puzzle_input
   |> String.split("\n", trim: true)
 ```
@@ -68,8 +68,11 @@ bags =
 defmodule Day03 do
   def count(list) do
     list
-    |> Enum.map(fn v -> Enum.reduce(v, &MapSet.intersection/2) end)
-    |> Enum.flat_map(&Enum.to_list/1)
+    |> Enum.map(fn sets ->
+      sets
+      |> Enum.reduce(&MapSet.intersection/2)
+      |> Enum.at(0)
+    end)
     |> Enum.map(fn
       c when c in ?a..?z -> c - ?a + 1
       c when c in ?A..?Z -> c - ?A + 27
@@ -88,12 +91,12 @@ end
 ## Task 1
 
 ```elixir
-bags
-|> Enum.map(fn bag ->
-  size = byte_size(bag)
+rucksacks
+|> Enum.map(fn rucksacks_pair ->
+  size = byte_size(rucksacks_pair)
   half = div(size, 2)
 
-  {b1, b2} = String.split_at(bag, half)
+  {b1, b2} = String.split_at(rucksacks_pair, half)
 
   [MapSet.new(to_charlist(b1)), MapSet.new(to_charlist(b2))]
 end)
@@ -109,7 +112,7 @@ end)
 ## Task 2
 
 ```elixir
-bags
+rucksacks
 |> Enum.map(&MapSet.new(to_charlist(&1)))
 |> Enum.chunk_every(3)
 |> Day03.count()
