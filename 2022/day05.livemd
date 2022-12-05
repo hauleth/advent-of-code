@@ -1,0 +1,131 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 05
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Setup
+
+<!-- livebook:{"attrs":{"day":"5","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "5", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "[N]     [C]                 [Q]    \n[W]     [J] [L]             [J] [V]\n[F]     [N] [D]     [L]     [S] [W]\n[R] [S] [F] [G]     [R]     [V] [Z]\n[Z] [G] [Q] [C]     [W] [C] [F] [G]\n[S] [Q] [V] [P] [S] [F] [D] [R] [S]\n[M] [P] [R] [Z] [P] [D] [N] [N] [M]\n[D] [W] [W] [F] [T] [H] [Z] [W] [R]\n 1   2   3   4   5   6   7   8   9 \n\nmove 1 from 3 to 9\nmove 3 from 5 to 3\nmove 4 from 2 to 5\nmove 4 from 1 to 2\nmove 3 from 5 to 7\nmove 3 from 1 to 2\nmove 4 from 8 to 7\nmove 4 from 9 to 7\nmove 4 from 2 to 7\nmove 2 from 3 to 6\nmove 3 from 6 to 2\nmove 5 from 4 to 7\nmove 7 from 3 to 7\nmove 5 from 6 to 9\nmove 2 from 4 to 8\nmove 1 from 3 to 2\nmove 4 from 2 to 7\nmove 2 from 2 to 8\nmove 8 from 8 to 5\nmove 1 from 2 to 4\nmove 1 from 2 to 9\nmove 7 from 5 to 4\nmove 31 from 7 to 1\nmove 9 from 9 to 3\nmove 12 from 1 to 9\nmove 15 from 1 to 7\nmove 4 from 3 to 8\nmove 2 from 5 to 1\nmove 12 from 7 to 5\nmove 2 from 8 to 2\nmove 12 from 5 to 4\nmove 1 from 3 to 5\nmove 6 from 1 to 3\nmove 1 from 1 to 5\nmove 1 from 8 to 7\nmove 1 from 8 to 5\nmove 7 from 7 to 8\nmove 5 from 8 to 2\nmove 11 from 4 to 2\nmove 10 from 3 to 1\nmove 1 from 7 to 5\nmove 10 from 1 to 3\nmove 5 from 4 to 2\nmove 1 from 4 to 6\nmove 7 from 2 to 3\nmove 9 from 9 to 5\nmove 15 from 2 to 3\nmove 1 from 9 to 1\nmove 7 from 5 to 3\nmove 1 from 2 to 4\nmove 2 from 9 to 2\nmove 1 from 8 to 9\nmove 5 from 5 to 3\nmove 1 from 8 to 7\nmove 1 from 2 to 4\nmove 1 from 7 to 6\nmove 1 from 1 to 6\nmove 1 from 6 to 9\nmove 1 from 5 to 4\nmove 1 from 6 to 4\nmove 1 from 6 to 8\nmove 2 from 9 to 4\nmove 12 from 3 to 1\nmove 8 from 4 to 8\nmove 1 from 9 to 8\nmove 10 from 8 to 6\nmove 1 from 6 to 7\nmove 6 from 6 to 9\nmove 1 from 2 to 7\nmove 1 from 4 to 7\nmove 2 from 7 to 3\nmove 1 from 1 to 3\nmove 6 from 9 to 1\nmove 2 from 6 to 7\nmove 12 from 1 to 3\nmove 5 from 1 to 9\nmove 1 from 7 to 3\nmove 38 from 3 to 7\nmove 19 from 7 to 8\nmove 19 from 8 to 2\nmove 1 from 9 to 6\nmove 5 from 3 to 7\nmove 2 from 6 to 7\nmove 1 from 3 to 9\nmove 2 from 3 to 6\nmove 4 from 2 to 6\nmove 6 from 2 to 4\nmove 14 from 7 to 9\nmove 8 from 2 to 5\nmove 19 from 9 to 3\nmove 6 from 4 to 1\nmove 6 from 1 to 4\nmove 4 from 4 to 3\nmove 10 from 7 to 6\nmove 1 from 6 to 4\nmove 22 from 3 to 1\nmove 5 from 1 to 6\nmove 5 from 5 to 8\nmove 1 from 7 to 4\nmove 1 from 2 to 3\nmove 15 from 6 to 9\nmove 3 from 8 to 4\nmove 2 from 3 to 1\nmove 6 from 9 to 1\nmove 1 from 3 to 9\nmove 1 from 3 to 1\nmove 1 from 5 to 9\nmove 1 from 7 to 1\nmove 1 from 8 to 2\nmove 6 from 9 to 2\nmove 2 from 9 to 1\nmove 3 from 6 to 3\nmove 2 from 9 to 5\nmove 1 from 6 to 7\nmove 2 from 2 to 7\nmove 3 from 3 to 5\nmove 1 from 8 to 9\nmove 7 from 4 to 7\nmove 1 from 6 to 3\nmove 2 from 9 to 5\nmove 10 from 1 to 5\nmove 19 from 1 to 8\nmove 9 from 7 to 1\nmove 1 from 3 to 5\nmove 2 from 2 to 4\nmove 2 from 2 to 6\nmove 2 from 6 to 4\nmove 7 from 1 to 7\nmove 3 from 7 to 3\nmove 2 from 4 to 1\nmove 3 from 3 to 4\nmove 1 from 2 to 4\nmove 2 from 4 to 1\nmove 2 from 4 to 8\nmove 20 from 8 to 2\nmove 1 from 8 to 3\nmove 4 from 7 to 8\nmove 14 from 2 to 6\nmove 3 from 1 to 2\nmove 2 from 1 to 7\nmove 1 from 4 to 6\nmove 1 from 1 to 5\nmove 4 from 2 to 8\nmove 3 from 7 to 6\nmove 1 from 4 to 6\nmove 2 from 7 to 9\nmove 1 from 2 to 6\nmove 1 from 3 to 1\nmove 3 from 5 to 8\nmove 1 from 1 to 4\nmove 2 from 9 to 5\nmove 4 from 6 to 7\nmove 1 from 4 to 1\nmove 1 from 8 to 5\nmove 1 from 7 to 6\nmove 1 from 2 to 9\nmove 2 from 7 to 1\nmove 1 from 1 to 3\nmove 1 from 7 to 2\nmove 4 from 2 to 7\nmove 1 from 1 to 3\nmove 2 from 3 to 2\nmove 9 from 8 to 3\nmove 1 from 8 to 6\nmove 2 from 7 to 3\nmove 1 from 7 to 4\nmove 1 from 9 to 7\nmove 1 from 7 to 2\nmove 2 from 2 to 8\nmove 6 from 5 to 2\nmove 5 from 3 to 7\nmove 1 from 4 to 7\nmove 3 from 7 to 1\nmove 11 from 5 to 8\nmove 2 from 1 to 6\nmove 2 from 1 to 8\nmove 2 from 5 to 9\nmove 1 from 7 to 2\nmove 2 from 5 to 4\nmove 17 from 6 to 7\nmove 1 from 4 to 1\nmove 1 from 1 to 7\nmove 1 from 6 to 5\nmove 1 from 6 to 2\nmove 9 from 2 to 5\nmove 1 from 6 to 7\nmove 9 from 7 to 4\nmove 3 from 7 to 8\nmove 3 from 3 to 4\nmove 8 from 7 to 9\nmove 11 from 8 to 1\nmove 1 from 4 to 3\nmove 1 from 7 to 4\nmove 9 from 9 to 4\nmove 5 from 1 to 7\nmove 8 from 5 to 1\nmove 3 from 3 to 4\nm" <> ...}
+```
+
+```elixir
+[crates, moves] = String.split(puzzle_input, "\n\n")
+
+moves =
+  moves
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn move ->
+    result = Regex.named_captures(~r/move (?<count>\d+) from (?<from>\d) to (?<to>\d)/, move)
+
+    %{
+      count: String.to_integer(result["count"]),
+      from: String.to_integer(result["from"]),
+      to: String.to_integer(result["to"])
+    }
+  end)
+
+crates =
+  crates
+  |> String.split("\n")
+  |> Enum.drop(-1)
+  |> Enum.map(fn line ->
+    line
+    |> String.to_charlist()
+    |> Enum.chunk_every(4)
+    |> Enum.map(fn
+      [?[, n, ?] | _] -> n
+      _ -> nil
+    end)
+  end)
+  |> Enum.zip()
+  |> Enum.map(&Tuple.to_list/1)
+  |> Enum.map(fn column -> Enum.drop_while(column, &is_nil/1) end)
+  |> Enum.with_index(1)
+  |> Map.new(fn {v, k} -> {k, v} end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  1 => 'NWFRZSMD',
+  2 => 'SGQPW',
+  3 => 'CJNFQVRW',
+  4 => 'LDGCPZF',
+  5 => 'SPT',
+  6 => 'LRWFDH',
+  7 => 'CDNZ',
+  8 => 'QJSVFRNW',
+  9 => 'VWZGSMR'
+}
+```
+
+```elixir
+defmodule Day05 do
+  def move(%{count: count, from: from, to: to}, columns, reverse? \\ true) do
+    {moved, columns} = Access.get_and_update(columns, from, &Enum.split(&1, count))
+
+    moved = if reverse?, do: Enum.reverse(moved), else: moved
+
+    Map.update!(columns, to, &(moved ++ &1))
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day05, <<70, 79, 82, 49, 0, 0, 10, ...>>, {:move, 3}}
+```
+
+## Task 1
+
+```elixir
+moves
+|> Enum.reduce(crates, &Day05.move/2)
+|> Enum.sort()
+|> Enum.map(fn {_, v} -> hd(v) end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+'FWNSHLDNZ'
+```
+
+## Task 2
+
+```elixir
+moves
+|> Enum.reduce(crates, &Day05.move(&1, &2, false))
+|> Enum.sort()
+|> Enum.map(fn {_, v} -> hd(v) end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+'RNRGDNFQG'
+```
