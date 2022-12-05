@@ -37,13 +37,8 @@ moves =
   moves
   |> String.split("\n", trim: true)
   |> Enum.map(fn move ->
-    result = Regex.named_captures(~r/move (?<count>\d+) from (?<from>\d) to (?<to>\d)/, move)
-
-    %{
-      count: String.to_integer(result["count"]),
-      from: String.to_integer(result["from"]),
-      to: String.to_integer(result["to"])
-    }
+    Regex.named_captures(~r/move (?<count>\d+) from (?<from>\d) to (?<to>\d)/, move)
+    |> Map.new(fn {k, v} -> {String.to_atom(k), String.to_integer(v)} end)
   end)
 
 crates =
@@ -60,8 +55,7 @@ crates =
     end)
   end)
   |> Enum.zip()
-  |> Enum.map(&Tuple.to_list/1)
-  |> Enum.map(fn column -> Enum.drop_while(column, &is_nil/1) end)
+  |> Enum.map(fn column -> column |> Tuple.to_list() |> Enum.drop_while(&is_nil/1) end)
   |> Enum.with_index(1)
   |> Map.new(fn {v, k} -> {k, v} end)
 ```
@@ -91,22 +85,26 @@ defmodule Day05 do
 
     Map.update!(columns, to, &(moved ++ &1))
   end
+
+  def eval(crates, moves, reverse? \\ true) do
+    moves
+    |> Enum.reduce(crates, &Day05.move(&1, &2, reverse?))
+    |> Enum.sort()
+    |> Enum.map(fn {_, v} -> hd(v) end)
+  end
 end
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, Day05, <<70, 79, 82, 49, 0, 0, 10, ...>>, {:move, 3}}
+{:module, Day05, <<70, 79, 82, 49, 0, 0, 13, ...>>, {:eval, 3}}
 ```
 
 ## Task 1
 
 ```elixir
-moves
-|> Enum.reduce(crates, &Day05.move/2)
-|> Enum.sort()
-|> Enum.map(fn {_, v} -> hd(v) end)
+Day05.eval(crates, moves)
 ```
 
 <!-- livebook:{"output":true} -->
@@ -118,10 +116,7 @@ moves
 ## Task 2
 
 ```elixir
-moves
-|> Enum.reduce(crates, &Day05.move(&1, &2, false))
-|> Enum.sort()
-|> Enum.map(fn {_, v} -> hd(v) end)
+Day05.eval(crates, moves, false)
 ```
 
 <!-- livebook:{"output":true} -->
