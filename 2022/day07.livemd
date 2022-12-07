@@ -1,0 +1,307 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 07
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"7","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "7", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "$ cd /\n$ ls\ndir fts\ndir jnwr\ndir lrvl\ndir nzgprvw\ndir snwqjgj\n16394 tllvcdr.sjl\n195891 zbdp.gqb\ndir zddrb\n$ cd fts\n$ ls\ndir dlqtffw\ndir rbfmmjvd\n254713 wvwhrb.dhh\n$ cd dlqtffw\n$ ls\n73533 nqbvg.fgd\n$ cd ..\n$ cd rbfmmjvd\n$ ls\n290697 zcgrgff.fnf\n$ cd ..\n$ cd ..\n$ cd jnwr\n$ ls\n323577 ghmtnzr\n57588 tdcbdpnr\ndir wbv\ndir zzbvdcf\n$ cd wbv\n$ ls\ndir nmdwbnnr\n253584 slzdbm.ncn\n$ cd nmdwbnnr\n$ ls\n208370 scbcsb.pjg\n$ cd ..\n$ cd ..\n$ cd zzbvdcf\n$ ls\n8052 ssssrhwz\n$ cd ..\n$ cd ..\n$ cd lrvl\n$ ls\ndir bqqltcg\n189288 cwpwh\n90813 jhnddzml.lww\ndir pwc\ndir rjl\ndir rzvqvv\ndir slzdbm\ndir tcbjmq\n140665 zbdp.gqb\ndir zhbpqlnd\n$ cd bqqltcg\n$ ls\ndir dlbjblbf\ndir fdlw\ndir jnwr\ndir slzdbm\ndir zcgrgff\n$ cd dlbjblbf\n$ ls\n11732 rnsrrf.rtv\n$ cd ..\n$ cd fdlw\n$ ls\ndir hlvpfw\n228436 mzsfcvgv.pqw\n$ cd hlvpfw\n$ ls\ndir dhwq\n$ cd dhwq\n$ ls\n127459 cgdpqh.tct\n58310 jnwr.nqt\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd jnwr\n$ ls\n305998 ssssrhwz\n129135 vrt.qdt\n86204 wnvm.bld\n$ cd ..\n$ cd slzdbm\n$ ls\n40915 zbdp.gqb\n120991 zsvffwlt.rbp\n$ cd ..\n$ cd zcgrgff\n$ ls\n94614 jnwr.mqm\n191626 zbdp.gqb\ndir ztrslh\n$ cd ztrslh\n$ ls\ndir bhzn\n201167 dvcjtzvs.rvd\ndir slzdbm\ndir szrth\ndir zcp\n$ cd bhzn\n$ ls\n119164 qbgmrqw\n102090 zbdp.gqb\n$ cd ..\n$ cd slzdbm\n$ ls\n124928 gtdq\n$ cd ..\n$ cd szrth\n$ ls\ndir hpbbsq\ndir vlwlsdjp\ndir zcgrgff\n$ cd hpbbsq\n$ ls\n151717 qsdhff.jsv\n$ cd ..\n$ cd vlwlsdjp\n$ ls\n15049 glpdjtq.mwm\n302526 jnwr.tds\n9550 lhwtbh\n22857 ssssrhwz\n$ cd ..\n$ cd zcgrgff\n$ ls\n73640 mpq.cdn\ndir zcgrgff\n$ cd zcgrgff\n$ ls\n115955 rssmrfbq.trs\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd zcp\n$ ls\ndir qdjtmwrr\ndir wpdjttm\n$ cd qdjtmwrr\n$ ls\n138185 jnwr\n$ cd ..\n$ cd wpdjttm\n$ ls\n207755 vvwtghjb\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd pwc\n$ ls\n15911 fqw\n$ cd ..\n$ cd rjl\n$ ls\n119274 ssssrhwz\n$ cd ..\n$ cd rzvqvv\n$ ls\n273935 ssssrhwz\n$ cd ..\n$ cd slzdbm\n$ ls\ndir hlvpfw\n290414 lgzbzjvd.glj\ndir ljpmphn\n316440 slzdbm.tsj\n$ cd hlvpfw\n$ ls\ndir mhvmszgh\n107004 slzdbm\n$ cd mhvmszgh\n$ ls\ndir tftstdp\n$ cd tftstdp\n$ ls\n176794 mpq.cdn\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd ljpmphn\n$ ls\n37528 slfdb.bqt\n$ cd ..\n$ cd ..\n$ cd tcbjmq\n$ ls\n96506 lrz.nhb\n$ cd ..\n$ cd zhbpqlnd\n$ ls\n14027 ccswrthv.pfd\ndir clnqtjz\ndir fdsqmnn\ndir fwdt\ndir nljb\ndir npmsdrgp\n57812 slfdb.bqt\n184299 wmlmg\n241025 zcgrgff.wbh\ndir zggqfj\n$ cd clnqtjz\n$ ls\n62391 cbhw.wgr\n309318 jlm.lfq\ndir mzsfcvgv\ndir rrn\n307583 ssssrhwz\n$ cd mzsfcvgv\n$ ls\n1356 hrbh.wpz\ndir vnwqstw\n$ cd vnwqstw\n$ ls\n184434 hnhzdshl.lrl\n150624 wsrnprdb.pjf\n$ cd ..\n$ cd ..\n$ cd rrn\n$ ls\n105792 dzprqqc.rbh\n107482 ffdjdbc\ndir hnr\ndir rdmgtf\ndir rgrwp\n325147 shqr.pdj\n43186 slfdb.bqt\n236667 zcgrgff\n$ cd hnr\n$ ls\ndir gljrlhjm\n250526 mzsfcvgv.nsb\n43164 ssssrhwz\n$ cd gljrlhjm\n$ ls\ndir wjwqrnj\n$ cd wjwqrnj\n$ ls\n142366 gshl.qfc\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd rdmgtf\n$ ls\n193562 gdrdnc.vml\n123723 hmqfdht\ndir lzfntb\ndir mjfwsmgd\n208819 nqbgcn.qfq\ndir tqh\n$ cd lzfntb\n$ ls\ndir gwnpsvw\ndir rsgwzhp\n103487 scvllbjh.pnw\n$ cd gwnpsvw\n$ ls\ndir lqnz\n81937 zbdp.gqb\n$ cd lqnz\n$ ls\n27250 zcgrgff\n$ cd ..\n$ cd ..\n$ cd rsgwzhp\n$ ls\ndir hhz\n$ cd hhz\n$ ls\n46435 djvfz\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd mjfwsmgd\n$ ls\n25726 clcvm\n170085 zbdp.gqb\n$ cd ..\n$ cd tqh\n$ ls\n111272 gdq.llg\n3215 hdghs\ndir lpdcdr\ndir vhfr\n$ cd lpdcdr\n$ ls\n203902 hmqfdht\n$ cd ..\n$ cd vhfr\n$ ls\n91584 hmqfdht\ndir stmvj\n$ cd stmvj\n$ ls\n315660 wwpq.ffq\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd ..\n$ cd rgrwp\n$ ls\ndir dhwtfld\n187439 hmqfdht\ndir jnwr\ndir npr\ndir sdsppq\n228581 twd.nnc\n42349 wbf.cwb\n194162 zbdp.gqb\n224441 zcgrgff.qpg\n$ cd dhwtfld\n$ ls\n152381 dqdrd\n$ cd ..\n$ cd jnwr\n$ ls\n229758 hmvw.gdz\n92710 mzsfcvgv.cdd\n79954 stjtn.gft\n89831 zbdp.gqb\n$ cd ..\n$ cd npr\n$ ls\n52767 hlvpfw.rqb\ndir nrbjzvgq\n270579 pbsq.msg\n240181 slfdb.bqt\ndir znbwnh\n$ cd nrbjzvgq\n$ ls\n295237 bwqqvn\n229608 dhrjnvtt.lvm\n55391 nlvn\ndir zcgrgff\n$ cd zcgrgff\n$ ls\n124604 hlvpfw.mlw\n$ cd ..\n$ cd ..\n$ cd znbwnh\n$ ls\n228293 zcgrgff\n$ cd ..\n$ cd ..\n$ cd sdsppq\n$ ls\n235741 bcsdzpfj.lvd\ndir jnwr\ndir njtrhrfm\ndir tvq\ndir wshgn\n$ cd jnwr\n$ ls\n273541 brcps\ndir gjt\ndir hlvpfw\ndir nbsdvpnj\ndir zcgrgff\n$ cd gjt\n$ ls\n184707 zbdp.gqb\n$ cd ..\n$ cd hlvpfw\n$ ls\n242810 zcgrgff\n$ cd ..\n$ cd nbsdvpnj\n$ ls\n181797 hlvpfw.gsd\n294284 hmqfdht\n2150" <> ...}
+```
+
+```elixir
+defmodule FS do
+  def cd("/", _), do: []
+  def cd("..", [_ | path]), do: path
+  def cd(dir, path), do: [dir | path]
+
+  def file("dir " <> name, path, fs) do
+    put_in(fs, Enum.reverse([name | path]), %{})
+  end
+
+  def file(entry, path, fs) do
+    [size, name] = String.split(entry, " ", parts: 2)
+
+    put_in(fs, Enum.reverse([name | path]), String.to_integer(size))
+  end
+
+  def squash(fs) do
+    fs
+    |> Map.values()
+    |> Enum.reduce({0, []}, fn
+      fsize, {size, subdirs} when is_integer(fsize) ->
+        {size + fsize, subdirs}
+
+      subdir, {size, subdirs} ->
+        {dsize, _} = subdir = squash(subdir)
+
+        {size + dsize, [subdir | subdirs]}
+    end)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, FS, <<70, 79, 82, 49, 0, 0, 12, ...>>, {:squash, 1}}
+```
+
+```elixir
+fs =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.reduce({[], %{}}, fn
+    "$ cd " <> path, {cwd, fs} -> {FS.cd(path, cwd), fs}
+    "$ ls", acc -> acc
+    entry, {cwd, fs} -> {cwd, FS.file(entry, cwd, fs)}
+  end)
+  |> elem(1)
+  |> FS.squash()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{46592386,
+ [
+   {18070237,
+    [
+      {5362031,
+       [
+         {619773, [{295762, []}]},
+         {4327113,
+          [
+            {3365961,
+             [
+               {584534, []},
+               {464942, []},
+               {2036798,
+                [
+                  {1075736, [{20405, [{20405, []}]}]},
+                  {47204, []},
+                  {820238, [{481556, [{60750, []}]}, {6432, []}, {14084, []}]},
+                  {44434, []},
+                  {49186, []}
+                ]}
+             ]},
+            {512340, [{64408, []}, {398645, [{31665, []}]}, {49287, []}]},
+            {448812, []}
+          ]},
+         {415145, []}
+       ]},
+      {4095947,
+       [
+         {1171420, [{388084, []}]},
+         {1871858,
+          [
+            {241851, []},
+            {314621, []},
+            {90357, []},
+            {454015, []},
+            {240747, []},
+            {121723, []},
+            {408544, [{408544, []}]}
+          ]},
+         {37106, []},
+         {821426, [{181282, []}, {349919, []}]}
+       ]},
+      {7756031,
+       [
+         {6999588,
+          [
+            {603629, [{244001, []}]},
+            {1919401,
+             [{159354, []}, {779158, [{68393, []}, {432671, []}]}, {284951, [{284951, []}]}]},
+            {1015127, [{744818, [{744818, []}]}, {270309, []}]},
+            {3461431,
+             [
+               {101738, [{101738, [{101738, []}]}]},
+               {1781861,
+                [{198197, []}, {808768, []}, {774896, [{293633, []}, {188389, []}, {292874, []}]}]},
+               {915750, [{316131, []}, {306743, []}, {71772, [{71772, []}]}]}
+             ]}
+          ]},
+         {452018, [{358208, [{183686, []}]}]},
+         {150157, []}
+       ]}
+    ]},
+   {3078860,
+    [
+      {2260158,
+       [
+         {324522, [{324522, []}]},
+         {205684, []},
+         {213872, []},
+         {466588, [{51223, []}, {397589, []}, {17776, []}]}
+       ]},
+      {621970, [{277366, [{277366, []}]}, {69149, []}]},
+      {196732, []}
+    ]},
+   {1738868, [{473075, [{186613, []}, {47133, []}, {44509, []}]}, {278273, []}, {426097, []}]},
+   {22022022,
+    [
+      {17187447,
+       [
+         {2018419, [{861586, [{140610, []}]}, {449012, [{127216, []}]}, {521137, [{521137, []}]}]},
+         {1863430, [{1374035, [{438736, []}, {75020, []}, {105747, []}, {58981, []}]}, {4624, []}]},
+         {105380, []},
+         {1941889, [{146536, [{71403, []}]}, {720197, []}, {367058, [{63205, []}, {303853, []}]}]},
+         {868116, [{247470, []}, {28438, []}, {324132, []}]},
+         {9893050,
+          [
+            {8877344,
+             [
+               {5916357,
+                [
+                  {2898091,
+                   [
+                     {454565, [{245558, []}]},
+                     {448698, []},
+                     {178036, [{178036, []}]},
+                     {1581051, [{188814, []}, {691179, []}, {242810, []}, {184707, []}]}
+                   ]},
+                  {1496660, [{228293, []}, {704840, [{124604, []}]}]},
+                  {492253, []},
+                  {152381, []}
+                ]},
+               {1706657,
+                [
+                  {725633, [{407244, [{315660, []}]}, {203902, []}]},
+                  {195811, []},
+                  {259109, [{46435, [{46435, []}]}, {109187, [{27250, []}]}]}
+                ]},
+               {436056, [{142366, [{142366, []}]}]}
+             ]},
+            {336414, [{335058, []}]}
+          ]}
+       ]},
+      {96506, []},
+      {928180, [{37528, []}, {283798, [{176794, [{176794, []}]}]}]},
+      {273935, []},
+      {119274, []},
+      {15911, []},
+      {2980003,
+       [
+         {1870823,
+          [
+            {1584583,
+             [
+               {345940, [{207755, []}, {138185, []}]},
+               {691294, [{189595, [{115955, []}]}, {349982, []}, {151717, []}]},
+               {124928, []},
+               {221254, []}
+             ]}
+          ]},
+         {161906, []},
+         {521337, []},
+         {414205, [{185769, [{185769, []}]}]},
+         {11732, []}
+       ]}
+    ]},
+   {851171, [{8052, []}, {461954, [{208370, []}]}]},
+   {618943, [{290697, []}, {73533, []}]}
+ ]}
+```
+
+## Task 1
+
+```elixir
+defmodule DFS do
+  def size({size, subs}, total \\ 0) do
+    total =
+      if size < 100_000 do
+        total + size
+      else
+        total
+      end
+
+    Enum.reduce(subs, total, &size/2)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, DFS, <<70, 79, 82, 49, 0, 0, 8, ...>>, {:size, 2}}
+```
+
+```elixir
+DFS.size(fs)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+1642503
+```
+
+## Task 2
+
+```elixir
+defmodule DFS2 do
+  def dirs({size, subs}, needed) do
+    dirs({size, subs}, needed, size)
+  end
+
+  defp dirs({size, subs}, needed, curr) do
+    if size >= needed do
+      Enum.reduce(subs, min(curr, size), &dirs(&1, needed, &2))
+    else
+      curr
+    end
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, DFS2, <<70, 79, 82, 49, 0, 0, 8, ...>>, {:dirs, 3}}
+```
+
+```elixir
+max = 70_000_000
+current = 46_592_386
+needed = 30_000_000
+
+left =
+  (max - current)
+  |> IO.inspect(label: :left)
+
+DFS2.dirs(fs, needed - left)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+left: 23407614
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+6999588
+```
