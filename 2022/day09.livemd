@@ -1,0 +1,203 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 09
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Setup
+
+<!-- livebook:{"attrs":{"day":"9","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "9", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "L 1\nR 1\nL 1\nU 1\nR 2\nU 1\nD 2\nR 2\nU 1\nD 2\nU 2\nL 2\nD 1\nU 1\nD 2\nL 2\nD 1\nL 2\nD 2\nL 1\nU 2\nR 2\nL 1\nD 2\nL 2\nR 2\nD 2\nL 1\nU 1\nR 1\nU 1\nL 1\nD 1\nR 1\nU 2\nD 2\nR 1\nU 1\nR 1\nL 1\nU 1\nR 1\nD 1\nL 1\nU 1\nR 1\nD 1\nU 1\nD 1\nU 1\nR 2\nL 2\nD 2\nL 2\nR 1\nU 2\nL 2\nR 1\nU 1\nR 2\nD 2\nR 2\nL 2\nU 2\nR 2\nD 2\nR 1\nU 1\nL 2\nR 1\nU 1\nD 2\nU 2\nD 1\nR 2\nL 2\nD 2\nL 2\nR 2\nU 1\nR 2\nL 2\nD 2\nL 1\nD 1\nR 2\nL 1\nU 2\nR 1\nU 2\nD 1\nU 2\nD 1\nL 1\nR 2\nD 2\nR 2\nU 2\nR 1\nU 2\nR 2\nU 1\nR 1\nD 2\nU 2\nR 2\nU 1\nR 2\nD 2\nR 1\nL 1\nU 3\nL 2\nU 1\nL 2\nU 1\nD 1\nU 2\nD 1\nU 2\nR 2\nL 1\nU 3\nR 1\nU 1\nR 3\nL 3\nD 3\nL 2\nU 1\nD 3\nU 1\nR 1\nL 1\nR 2\nL 1\nR 3\nL 3\nD 1\nR 2\nL 3\nU 3\nD 1\nL 2\nU 2\nD 2\nL 2\nU 1\nR 1\nL 2\nR 3\nL 3\nD 3\nR 2\nD 3\nU 1\nL 3\nR 1\nU 2\nL 1\nD 3\nL 1\nU 1\nD 3\nL 3\nU 2\nD 1\nU 2\nL 3\nR 1\nU 2\nD 2\nR 3\nD 3\nU 2\nD 3\nL 3\nR 3\nL 1\nU 3\nL 1\nD 1\nL 2\nD 2\nR 1\nL 3\nR 2\nL 3\nR 3\nL 1\nD 1\nU 3\nL 2\nR 2\nL 2\nD 3\nU 3\nL 3\nU 3\nD 1\nU 2\nR 2\nU 1\nD 3\nL 3\nR 1\nL 3\nU 3\nD 1\nL 3\nD 2\nR 1\nU 1\nR 1\nD 2\nL 2\nU 1\nL 2\nR 2\nL 2\nD 3\nU 3\nD 4\nL 3\nD 4\nR 3\nL 2\nU 3\nR 3\nU 1\nR 4\nU 2\nD 1\nR 3\nL 1\nR 1\nD 3\nR 2\nD 1\nR 2\nL 2\nU 2\nD 1\nR 1\nU 2\nR 3\nL 2\nD 1\nU 3\nR 2\nD 4\nL 3\nU 1\nR 1\nD 2\nU 1\nR 3\nL 4\nD 2\nL 1\nU 3\nL 2\nU 3\nR 1\nD 1\nL 2\nR 4\nD 4\nU 1\nR 3\nU 3\nR 1\nU 3\nL 2\nU 3\nL 2\nD 4\nU 1\nR 1\nL 2\nR 2\nD 2\nL 2\nD 2\nU 4\nD 4\nL 2\nU 2\nD 3\nL 4\nU 4\nD 4\nR 1\nD 4\nR 1\nD 1\nL 1\nR 1\nL 1\nD 2\nL 4\nD 2\nR 3\nL 1\nD 2\nU 3\nL 2\nU 3\nR 4\nD 4\nU 1\nL 1\nU 4\nL 4\nU 3\nD 2\nR 3\nL 1\nD 3\nU 3\nR 1\nL 3\nU 1\nD 1\nR 1\nU 3\nR 2\nL 1\nD 1\nL 3\nU 1\nD 1\nL 2\nR 3\nU 4\nL 5\nD 5\nR 5\nD 3\nU 3\nD 1\nL 5\nR 2\nU 1\nL 2\nD 1\nL 1\nD 4\nR 1\nU 1\nL 1\nU 1\nD 3\nL 4\nD 1\nU 5\nL 1\nR 5\nL 2\nR 4\nD 5\nU 2\nD 3\nU 4\nL 1\nR 2\nU 4\nL 4\nD 3\nR 1\nU 1\nR 3\nD 3\nU 5\nL 3\nD 3\nU 5\nR 4\nL 1\nD 4\nU 1\nL 1\nR 4\nD 5\nL 5\nD 3\nR 5\nU 3\nR 2\nD 2\nU 2\nD 5\nR 5\nD 5\nR 2\nD 5\nU 2\nD 2\nR 1\nL 5\nD 2\nU 2\nR 5\nU 1\nD 5\nU 5\nL 2\nD 5\nL 1\nR 4\nU 4\nD 1\nL 5\nU 4\nL 1\nR 3\nL 3\nR 3\nL 3\nD 3\nR 4\nU 5\nL 2\nD 3\nU 2\nL 1\nR 5\nU 1\nL 3\nU 4\nL 4\nD 4\nR 1\nD 4\nR 5\nD 5\nU 5\nR 5\nL 3\nD 3\nU 2\nR 5\nU 5\nR 2\nD 5\nR 1\nU 2\nD 5\nL 3\nR 5\nU 5\nR 4\nD 6\nL 4\nU 4\nL 6\nR 2\nL 4\nU 5\nL 1\nU 6\nD 4\nR 3\nU 2\nR 1\nD 5\nL 4\nU 2\nR 6\nU 1\nL 2\nD 6\nU 1\nR 2\nL 3\nR 2\nL 5\nU 1\nR 3\nD 3\nL 4\nR 5\nU 1\nD 3\nR 6\nD 5\nR 4\nD 3\nU 2\nD 4\nR 5\nU 4\nR 2\nL 2\nU 5\nD 5\nU 6\nD 4\nU 5\nL 5\nR 1\nD 3\nR 3\nL 3\nD 3\nL 3\nU 6\nR 5\nD 6\nU 5\nL 1\nR 4\nL 1\nU 4\nL 5\nD 5\nU 4\nD 3\nR 3\nL 4\nR 4\nU 6\nL 5\nD 2\nU 3\nR 4\nU 5\nL 5\nD 6\nR 5\nD 5\nL 3\nU 6\nL 3\nU 5\nD 2\nU 4\nR 4\nU 3\nD 1\nR 2\nL 6\nR 2\nL 3\nU 5\nL 1\nR 4\nD 2\nU 5\nD 2\nR 4\nU 6\nR 6\nL 6\nU 6\nL 4\nR 5\nD 3\nU 1\nD 6\nL 1\nD 3\nL 4\nD 6\nU 3\nD 2\nL 2\nU 5\nD 2\nU 5\nD 6\nR 4\nD 1\nU 1\nD 5\nU 1\nL 7\nU 3\nR 3\nU 5\nD 2\nR 7\nD 6\nL 7\nR 6\nL 3\nR 3\nU 1\nL 4\nD 4\nL 6\nR 1\nU 4\nL 3\nR 3\nD 3\nL 2\nD 7\nU 7\nD 7\nR 2\nL 6\nD 2\nR 6\nD 6\nU 5\nL 4\nU 3\nD 6\nU 3\nD 1\nL 7\nU 7\nL 4\nR 3\nD 6\nU 2\nL 6\nD 3\nU 7\nD 2\nR 7\nD 4\nL 4\nR 4\nU 2\nD 3\nU 2\nL 4\nR 4\nL 4\nD 6\nR 4\nU 1\nR 7\nD 7\nU 7\nR 6\nD 4\nU 2\nD 4\nL 5\nU 4\nD 6\nR 4\nU 2\nR 1\nU 4\nD 5\nR 1\nD 7\nR 4\nU 1\nD 4\nU 6\nL 6\nR 1\nD 1\nR 1\nD 6\nR 6\nD 3\nU 1\nD 5\nR 4\nL 1\nD 6\nR 6\nL 8\nU 1\nD 7\nR 4\nL 2\nR 6\nU 7\nL 2\nD 5\nR 6\nD 3\nL 4\nR 5\nU 7\nL 3\nU 8\nL 1\nU 6\nL 8\nR 7\nD 2\nU 3\nR 4\nL 8\nD 4\nL 1\nU 1\nD 7\nU 8\nR 7\nD 2\nL 5\nU 6\nD 7\nR 4\nL 1\nR 3\nU 1\nR 2\nU 1\nD 7\nR 6\nU 7\nD 6\nL 2\nD 8\nU 4\nR 8\nL 5\nD 6\nL 7\nU 7\nR 8\nL 5\nD 5\nR 4\nL 5\nU 8\nD 4\nU 6\nD 2\nU 5\nR 7\nL 8\nU 7\nR 3\nL 8\nR 6\nD 4\nR 2\nD 6\nR 5\nD 2\nU 6\nL 4\nU 8\nR 3\nU 1\nL 6\nR 1\nL 3\nR 1\nU 3\nL 8\nD 5\nU 6\nL 8\nD 6\nR 2\nU 6\nR 4\nL 8\nD 1\nR 6\nD 8\nU 6\nD 6\nL 3\nU 4\nD 2\nL 2\nD 7\nL 5\nU 3\nR 8\nD 6\nR 5\nL 8\nU 5\nL 9\nR 7\nD 5\nR 2\nU 5\nL 3\nD 9\nR 4\nU 1\nL 3\nR 5\nL 7\nR 8\nD 1\nU 4\nL 4\nR 3\nU 8\nL 8\nD 8\nU 9\nR 6\nU 3\nR 2\nU 8\nD 9\nR 3\nL 2\nU 9\nR 9\nL 8\nD 2\nR 1\nL 8\nU 7\nR 3\nL 1\nR 9\nL 4\nR 2\nU 3\nD 8\nR 5\nU 9\nL 9\nR 1\nD 5\nR 5\nU 4\nL 9\nR 6\nD 5\nL 2\nR 6\nU 1\nD 5\nL 3\nR 1\nU 5\nR 4\nD 4\nU 8\nD 2\nU 6\nR 6\nU 5\nR 3\nU 5\nR 5\nL 8\nD 9\nL 7\nR 1\nU 7\nR 5\nU 6\nR 8\nU 2\nR 2\nU 8\nR 7\nD 3\nR 6\nL 8\nR 4\nL 8\nR 8\nU 8\nR 3\nL 3\nU 1\nL 9\nD 9\nR 9\nU 4\nR 1\nL 3\nD 4\nU 5\nR 7\nD 6\nL 9\nU 7\nL 4\nR 8\nU 8\nD 4\nL 5\nD 9\nU 2\nD 9\nR 4\nD 8\nR 8\nD 8\nU 9\nL 6\nR 6\nL 2\nU 9\nL 4\nU 10\nL 1\nR 10\nD 3\nU 6\nR 5\nD 3\nR 4\nL 4\nU 7\nD 9\nR 2\nD 10\nU 9\nL 7\nD 4\nR 2\nL 10\nD 5\nR 5\nU 9\nR 4\nL 7\nR 5\nD 3\nR 6\nD 8\nR 6\nD 10\nR 7\nU 4\nD 5\nU 6\nL 3\nD 3\nU 10\nR 10\nU 10\nD 9\nR 6\nD 2\nR 9\nD 8\nR 7\nU 10\nR 4\nU 6\nR 7\nU 2\nR 5\nU 6\nL 4\nU 8\nL 6\nD 8\nR 2\nU 2\nL 4\nU 4\nR 5\nU 10\nD 8\nU 7\nR 5\nD 3\nL 2\nR 9\nU 10\nL 1\nU 5\nL 1\nD 3\nL 9\nR 9\nU 2\nD 3\nU 8\nR 10\nL 2\nU 9\nD 4\nU 4\nD 10\nL 4\nD 3\nR 3\nL 2\nU 8\nL 4\nD 6\nR 2\nL 3\nD 6\nL 4\nD 5\nL 7\nU 9\nL 3\nD 4\nR 6\nL 10\nU 5\nL 3\nR 3\nD 6\nU 1\nL 3\nR 5\nD 8\nR 11\nU 2\nL 11\nR 7\nU 8\nR 4\nD 4\nU 6\nD 4\nU 9\nD 5\nR 9\nD 9\n" <> ...}
+```
+
+```elixir
+moves =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn line ->
+    [dir, steps] = String.split(line)
+
+    {dir, String.to_integer(steps)}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  {"L", 1},
+  {"R", 1},
+  {"L", 1},
+  {"U", 1},
+  {"R", 2},
+  {"U", 1},
+  {"D", 2},
+  {"R", 2},
+  {"U", 1},
+  {"D", 2},
+  {"U", 2},
+  {"L", 2},
+  {"D", 1},
+  {"U", 1},
+  {"D", 2},
+  {"L", 2},
+  {"D", 1},
+  {"L", 2},
+  {"D", 2},
+  {"L", 1},
+  {"U", 2},
+  {"R", 2},
+  {"L", 1},
+  {"D", 2},
+  {"L", 2},
+  {"R", 2},
+  {"D", 2},
+  {"L", 1},
+  {"U", 1},
+  {"R", 1},
+  {"U", 1},
+  {"L", 1},
+  {"D", 1},
+  {"R", 1},
+  {"U", 2},
+  {"D", 2},
+  {"R", 1},
+  {"U", 1},
+  {"R", 1},
+  {"L", 1},
+  {"U", 1},
+  {"R", 1},
+  {"D", 1},
+  {"L", 1},
+  {"U", 1},
+  {"R", 1},
+  {"D", 1},
+  {"U", 1},
+  {"D", ...},
+  {...},
+  ...
+]
+```
+
+```elixir
+defmodule Rope do
+  @start %{x: 0, y: 0}
+
+  defstruct segments: [%{x: 0, y: 0}, %{x: 0, y: 0}]
+
+  def new(length),
+    do: %__MODULE__{segments: List.duplicate(@start, length + 1)}
+
+  def last(%__MODULE__{segments: list}), do: List.last(list)
+
+  def move(%__MODULE__{segments: [%{x: x, y: y} | tails]}, dir) do
+    head =
+      case dir do
+        "U" -> %{x: x + 1, y: y}
+        "D" -> %{x: x - 1, y: y}
+        "L" -> %{x: x, y: y + 1}
+        "R" -> %{x: x, y: y - 1}
+      end
+
+    segments = move_tails([head | tails])
+
+    %__MODULE__{segments: segments}
+  end
+
+  defp move_tails([]), do: []
+  defp move_tails([head]), do: [head]
+
+  # When nothing else moves, then stop
+  defp move_tails([head, tail | _] = rope)
+       when abs(head.x - tail.x) < 2 and abs(head.y - tail.y) < 2,
+       do: rope
+
+  defp move_tails([head, tail | rest])
+       when abs(head.y - tail.y) < 2,
+       do: [head | move_tails([%{x: head.x - sgn(head.x - tail.x), y: head.y} | rest])]
+
+  defp move_tails([head, tail | rest])
+       when abs(head.x - tail.x) < 2,
+       do: [head | move_tails([%{x: head.x, y: head.y - sgn(head.y - tail.y)} | rest])]
+
+  defp move_tails([head, tail | rest]),
+    do: [
+      head
+      | move_tails([%{x: head.x - sgn(head.x - tail.x), y: head.y - sgn(head.y - tail.y)} | rest])
+    ]
+
+  def sgn(0), do: 0
+  def sgn(n) when n < 0, do: -1
+  def sgn(_), do: 1
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Rope, <<70, 79, 82, 49, 0, 0, 21, ...>>, {:sgn, 1}}
+```
+
+```elixir
+rope = Rope.new(1)
+
+{_rope, tail_positions} =
+  moves
+  |> Enum.flat_map(fn {dir, steps} -> List.duplicate(dir, steps) end)
+  |> Enum.reduce({rope, MapSet.new([Rope.last(rope)])}, fn dir, {rope, acc} ->
+    new_rope = Rope.move(rope, dir)
+
+    {new_rope, MapSet.put(acc, Rope.last(new_rope))}
+  end)
+
+MapSet.size(tail_positions)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+5960
+```
+
+## Task 2
+
+```elixir
+rope = Rope.new(9)
+
+{_rope, tail_positions} =
+  moves
+  |> Enum.flat_map(fn {dir, steps} -> List.duplicate(dir, steps) end)
+  |> Enum.reduce({rope, MapSet.new([Rope.last(rope)])}, fn dir, {rope, acc} ->
+    new_rope = Rope.move(rope, dir)
+
+    {new_rope, MapSet.put(acc, Rope.last(new_rope))}
+  end)
+
+MapSet.size(tail_positions)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+2327
+```

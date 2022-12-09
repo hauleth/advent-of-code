@@ -284,7 +284,7 @@ end
 
 ```elixir
 max = 70_000_000
-current = 46_592_386
+{current, _} = fs
 needed = 30_000_000
 
 left =
