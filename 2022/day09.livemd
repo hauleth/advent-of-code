@@ -39,89 +39,50 @@ moves =
 
     {dir, String.to_integer(steps)}
   end)
+  |> Enum.flat_map(fn {dir, steps} -> List.duplicate(dir, steps) end)
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-[
-  {"L", 1},
-  {"R", 1},
-  {"L", 1},
-  {"U", 1},
-  {"R", 2},
-  {"U", 1},
-  {"D", 2},
-  {"R", 2},
-  {"U", 1},
-  {"D", 2},
-  {"U", 2},
-  {"L", 2},
-  {"D", 1},
-  {"U", 1},
-  {"D", 2},
-  {"L", 2},
-  {"D", 1},
-  {"L", 2},
-  {"D", 2},
-  {"L", 1},
-  {"U", 2},
-  {"R", 2},
-  {"L", 1},
-  {"D", 2},
-  {"L", 2},
-  {"R", 2},
-  {"D", 2},
-  {"L", 1},
-  {"U", 1},
-  {"R", 1},
-  {"U", 1},
-  {"L", 1},
-  {"D", 1},
-  {"R", 1},
-  {"U", 2},
-  {"D", 2},
-  {"R", 1},
-  {"U", 1},
-  {"R", 1},
-  {"L", 1},
-  {"U", 1},
-  {"R", 1},
-  {"D", 1},
-  {"L", 1},
-  {"U", 1},
-  {"R", 1},
-  {"D", 1},
-  {"U", 1},
-  {"D", ...},
-  {...},
-  ...
-]
+["L", "R", "L", "U", "R", "R", "U", "D", "D", "R", "R", "U", "D", "D", "U", "U", "L", "L", "D", "U",
+ "D", "D", "L", "L", "D", "L", "L", "D", "D", "L", "U", "U", "R", "R", "L", "D", "D", "L", "L", "R",
+ "R", "D", "D", "L", "U", "R", "U", "L", "D", "R", ...]
 ```
 
 ```elixir
 defmodule Rope do
-  @start %{x: 0, y: 0}
+  @enforce_keys [:segments]
+  defstruct [:segments]
 
-  defstruct segments: [%{x: 0, y: 0}, %{x: 0, y: 0}]
+  @start %{x: 0, y: 0}
 
   def new(length),
     do: %__MODULE__{segments: List.duplicate(@start, length + 1)}
+
+  def run(rope, moves) do
+    {_rope, tail_positions} =
+      Enum.reduce(moves, {rope, MapSet.new([Rope.last(rope)])}, fn dir, {rope, acc} ->
+        new_rope = Rope.move(rope, dir)
+
+        {new_rope, MapSet.put(acc, Rope.last(new_rope))}
+      end)
+
+    MapSet.size(tail_positions)
+  end
 
   def last(%__MODULE__{segments: list}), do: List.last(list)
 
   def move(%__MODULE__{segments: [%{x: x, y: y} | tails]}, dir) do
     head =
       case dir do
-        "U" -> %{x: x + 1, y: y}
-        "D" -> %{x: x - 1, y: y}
-        "L" -> %{x: x, y: y + 1}
-        "R" -> %{x: x, y: y - 1}
+        "L" -> %{x: x + 1, y: y}
+        "R" -> %{x: x - 1, y: y}
+        "U" -> %{x: x, y: y + 1}
+        "D" -> %{x: x, y: y - 1}
       end
 
-    segments = move_tails([head | tails])
-
-    %__MODULE__{segments: segments}
+    %__MODULE__{segments: move_tails([head | tails])}
   end
 
   defp move_tails([]), do: []
@@ -132,45 +93,31 @@ defmodule Rope do
        when abs(head.x - tail.x) < 2 and abs(head.y - tail.y) < 2,
        do: rope
 
-  defp move_tails([head, tail | rest])
-       when abs(head.y - tail.y) < 2,
-       do: [head | move_tails([%{x: head.x - sgn(head.x - tail.x), y: head.y} | rest])]
-
-  defp move_tails([head, tail | rest])
-       when abs(head.x - tail.x) < 2,
-       do: [head | move_tails([%{x: head.x, y: head.y - sgn(head.y - tail.y)} | rest])]
-
-  defp move_tails([head, tail | rest]),
-    do: [
-      head
-      | move_tails([%{x: head.x - sgn(head.x - tail.x), y: head.y - sgn(head.y - tail.y)} | rest])
-    ]
+  defp move_tails([head, tail | rest]) do
+    {dx, dy} = step(head, tail)
+    [head | move_tails([%{x: head.x - dx, y: head.y - dy} | rest])]
+  end
 
   def sgn(0), do: 0
   def sgn(n) when n < 0, do: -1
   def sgn(_), do: 1
+
+  defp step(%{x: x1, y: y1}, %{x: x2, y: y2}) do
+    {sgn(div(x1 - x2, 2)), sgn(div(y1 - y2, 2))}
+  end
 end
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, Rope, <<70, 79, 82, 49, 0, 0, 21, ...>>, {:sgn, 1}}
+{:module, Rope, <<70, 79, 82, 49, 0, 0, 23, ...>>, {:step, 2}}
 ```
 
+## Task 1
+
 ```elixir
-rope = Rope.new(1)
-
-{_rope, tail_positions} =
-  moves
-  |> Enum.flat_map(fn {dir, steps} -> List.duplicate(dir, steps) end)
-  |> Enum.reduce({rope, MapSet.new([Rope.last(rope)])}, fn dir, {rope, acc} ->
-    new_rope = Rope.move(rope, dir)
-
-    {new_rope, MapSet.put(acc, Rope.last(new_rope))}
-  end)
-
-MapSet.size(tail_positions)
+Rope.run(Rope.new(1), moves)
 ```
 
 <!-- livebook:{"output":true} -->
@@ -182,18 +129,7 @@ MapSet.size(tail_positions)
 ## Task 2
 
 ```elixir
-rope = Rope.new(9)
-
-{_rope, tail_positions} =
-  moves
-  |> Enum.flat_map(fn {dir, steps} -> List.duplicate(dir, steps) end)
-  |> Enum.reduce({rope, MapSet.new([Rope.last(rope)])}, fn dir, {rope, acc} ->
-    new_rope = Rope.move(rope, dir)
-
-    {new_rope, MapSet.put(acc, Rope.last(new_rope))}
-  end)
-
-MapSet.size(tail_positions)
+Rope.run(Rope.new(9), moves)
 ```
 
 <!-- livebook:{"output":true} -->
