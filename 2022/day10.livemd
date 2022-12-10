@@ -1,0 +1,199 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 10
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"10","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "10", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "noop\naddx 7\naddx -1\naddx -1\naddx 5\nnoop\nnoop\naddx 1\naddx 3\naddx 2\nnoop\naddx 2\naddx 5\naddx 2\naddx 10\naddx -9\naddx 4\nnoop\nnoop\nnoop\naddx 3\naddx 5\naddx -40\naddx 26\naddx -23\naddx 2\naddx 5\naddx 26\naddx -35\naddx 12\naddx 2\naddx 17\naddx -10\naddx 3\nnoop\naddx 2\naddx 3\nnoop\naddx 2\naddx 3\nnoop\naddx 2\naddx 2\naddx -39\nnoop\naddx 15\naddx -12\naddx 2\naddx 10\nnoop\naddx -1\naddx -2\nnoop\naddx 5\nnoop\naddx 5\nnoop\nnoop\naddx 1\naddx 4\naddx -25\naddx 26\naddx 2\naddx 5\naddx 2\nnoop\naddx -3\naddx -32\naddx 1\naddx 4\naddx -2\naddx 3\nnoop\nnoop\naddx 3\nnoop\naddx 6\naddx -17\naddx 27\naddx -7\naddx 5\naddx 2\naddx 3\naddx -2\naddx 4\nnoop\nnoop\naddx 5\naddx 2\naddx -39\nnoop\nnoop\naddx 2\naddx 5\naddx 3\naddx -2\naddx 2\naddx 11\naddx -4\naddx -5\nnoop\naddx 10\naddx -18\naddx 19\naddx 2\naddx 5\naddx 2\naddx 2\naddx 3\naddx -2\naddx 2\naddx -37\nnoop\naddx 5\naddx 4\naddx -1\nnoop\naddx 4\nnoop\nnoop\naddx 1\naddx 4\nnoop\naddx 1\naddx 2\nnoop\naddx 3\naddx 5\nnoop\naddx -3\naddx 5\naddx 5\naddx 2\naddx 3\nnoop\naddx -32\nnoop\n"}
+```
+
+```elixir
+bytecode =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn
+    "noop" -> %{cycles: 1, inc: 0}
+    "addx " <> num -> %{cycles: 2, inc: String.to_integer(num)}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 7},
+  %{cycles: 2, inc: -1},
+  %{cycles: 2, inc: -1},
+  %{cycles: 2, inc: 5},
+  %{cycles: 1, inc: 0},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 1},
+  %{cycles: 2, inc: 3},
+  %{cycles: 2, inc: 2},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 5},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 10},
+  %{cycles: 2, inc: -9},
+  %{cycles: 2, inc: 4},
+  %{cycles: 1, inc: 0},
+  %{cycles: 1, inc: 0},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 3},
+  %{cycles: 2, inc: 5},
+  %{cycles: 2, inc: -40},
+  %{cycles: 2, inc: 26},
+  %{cycles: 2, inc: -23},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 5},
+  %{cycles: 2, inc: 26},
+  %{cycles: 2, inc: -35},
+  %{cycles: 2, inc: 12},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 17},
+  %{cycles: 2, inc: -10},
+  %{cycles: 2, inc: 3},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 3},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 3},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, inc: -39},
+  %{cycles: 1, inc: 0},
+  %{cycles: 2, inc: 15},
+  %{cycles: 2, inc: -12},
+  %{cycles: 2, inc: 2},
+  %{cycles: 2, ...},
+  %{...},
+  ...
+]
+```
+
+```elixir
+defmodule CRT do
+  def eval(bc, acc, func) do
+    Enum.reduce(
+      bc,
+      {{1, 0}, acc},
+      fn
+        inst, {{signal, cycles}, acc} ->
+          cycles = cycles + inst.cycles
+
+          {{signal + inst.inc, cycles}, func.({cycles, signal}, acc)}
+      end
+    )
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, CRT, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:eval, 3}}
+```
+
+## Task 1
+
+```elixir
+{_, {_, sum}} =
+  CRT.eval(
+    bytecode,
+    {Enum.to_list(20..220//40), 0},
+    fn
+      {cycles, x}, {[bp | bps], sum} ->
+        if bp >= cycles do
+          {bps, sum + x * bp}
+        else
+          {[bp | bps], sum}
+        end
+
+      _, acc ->
+        acc
+    end
+  )
+
+sum
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+5360
+```
+
+## Task 2
+
+```elixir
+{_, {_, screen}} =
+  CRT.eval(
+    bytecode,
+    {0, []},
+    fn {cycle, x}, {p, screen} ->
+      range = (x - 1)..(x + 1)
+
+      screen =
+        p..(cycle - 1)
+        |> Enum.reduce(screen, fn px, acc ->
+          line = div(px, 40) * 40
+          [(px - line) in range | acc]
+        end)
+
+      {cycle, screen}
+    end
+  )
+
+screen
+|> Enum.reduce([], fn
+  false, acc -> [?\s | acc]
+  true, acc -> [?█ | acc]
+end)
+|> Enum.chunk_every(40)
+|> Enum.join("\n")
+|> IO.puts()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+███   ██  ████ ████ █  █ █  █ ███  █  █ 
+█  █ █  █    █ █    █  █ █  █ █  █ █ █  
+█  █ █      █  ███  ████ █  █ █  █ ██   
+███  █ ██  █   █    █  █ █  █ ███  █ █  
+█ █  █  █ █    █    █  █ █  █ █ █  █ █  
+█  █  ███ ████ ████ █  █  ██  █  █ █  █ 
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
