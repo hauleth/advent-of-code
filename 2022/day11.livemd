@@ -1,0 +1,279 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 11
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"11","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "11", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "Monkey 0:\n  Starting items: 93, 98\n  Operation: new = old * 17\n  Test: divisible by 19\n    If true: throw to monkey 5\n    If false: throw to monkey 3\n\nMonkey 1:\n  Starting items: 95, 72, 98, 82, 86\n  Operation: new = old + 5\n  Test: divisible by 13\n    If true: throw to monkey 7\n    If false: throw to monkey 6\n\nMonkey 2:\n  Starting items: 85, 62, 82, 86, 70, 65, 83, 76\n  Operation: new = old + 8\n  Test: divisible by 5\n    If true: throw to monkey 3\n    If false: throw to monkey 0\n\nMonkey 3:\n  Starting items: 86, 70, 71, 56\n  Operation: new = old + 1\n  Test: divisible by 7\n    If true: throw to monkey 4\n    If false: throw to monkey 5\n\nMonkey 4:\n  Starting items: 77, 71, 86, 52, 81, 67\n  Operation: new = old + 4\n  Test: divisible by 17\n    If true: throw to monkey 1\n    If false: throw to monkey 6\n\nMonkey 5:\n  Starting items: 89, 87, 60, 78, 54, 77, 98\n  Operation: new = old * 7\n  Test: divisible by 2\n    If true: throw to monkey 1\n    If false: throw to monkey 4\n\nMonkey 6:\n  Starting items: 69, 65, 63\n  Operation: new = old + 6\n  Test: divisible by 3\n    If true: throw to monkey 7\n    If false: throw to monkey 2\n\nMonkey 7:\n  Starting items: 89\n  Operation: new = old * old\n  Test: divisible by 11\n    If true: throw to monkey 0\n    If false: throw to monkey 2\n"}
+```
+
+```elixir
+defmodule Monkey do
+  defstruct items: [],
+            operation: &Function.identity/1,
+            test: nil,
+            true: nil,
+            false: nil,
+            passes: 0
+
+  def parse(input) do
+    [
+      _,
+      "Starting items: " <> items,
+      "Operation: new = old " <> operation,
+      "Test: divisible by " <> test,
+      "If true: throw to monkey " <> if_true,
+      "If false: throw to monkey " <> if_false
+    ] =
+      input
+      |> String.split("\n", trim: true)
+      |> Enum.map(&String.trim/1)
+
+    %__MODULE__{
+      items: parse_items(items),
+      operation: parse_operation(operation),
+      test: String.to_integer(test),
+      true: String.to_integer(if_true),
+      false: String.to_integer(if_false)
+    }
+  end
+
+  def run(%__MODULE__{} = monkey, calming, lcm \\ 1) do
+    {true_val, false_val} =
+      monkey.items
+      |> Enum.map(fn item ->
+        item
+        |> then(monkey.operation)
+        |> div(calming)
+        |> rem(lcm)
+      end)
+      |> Enum.split_with(fn item ->
+        rem(item, monkey.test) == 0
+      end)
+
+    {struct(monkey, passes: monkey.passes + length(monkey.items), items: []),
+     {monkey.true, true_val}, {monkey.false, false_val}}
+  end
+
+  def add_items(%__MODULE__{} = monkey, new_items) do
+    struct(monkey, items: monkey.items ++ new_items)
+  end
+
+  defp parse_items(items) do
+    items
+    |> String.split(", ")
+    |> Enum.map(&String.to_integer/1)
+  end
+
+  defp parse_operation("* old"),
+    do: fn old -> old * old end
+
+  defp parse_operation("* " <> num) do
+    num = String.to_integer(num)
+
+    fn old -> old * num end
+  end
+
+  defp parse_operation("+ " <> num) do
+    num = String.to_integer(num)
+
+    fn old -> old + num end
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Monkey, <<70, 79, 82, 49, 0, 0, 24, ...>>, {:parse_operation, 1}}
+```
+
+```elixir
+monkeys =
+  puzzle_input
+  |> String.split("\n\n")
+  |> Enum.map(&Monkey.parse/1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %Monkey{
+    items: ']b',
+    operation: #Function<3.112681941/1 in Monkey.parse_operation/1>,
+    test: 19,
+    true: 5,
+    false: 3,
+    passes: 0
+  },
+  %Monkey{
+    items: '_HbRV',
+    operation: #Function<1.112681941/1 in Monkey.parse_operation/1>,
+    test: 13,
+    true: 7,
+    false: 6,
+    passes: 0
+  },
+  %Monkey{
+    items: 'U>RVFASL',
+    operation: #Function<1.112681941/1 in Monkey.parse_operation/1>,
+    test: 5,
+    true: 3,
+    false: 0,
+    passes: 0
+  },
+  %Monkey{
+    items: 'VFG8',
+    operation: #Function<1.112681941/1 in Monkey.parse_operation/1>,
+    test: 7,
+    true: 4,
+    false: 5,
+    passes: 0
+  },
+  %Monkey{
+    items: 'MGV4QC',
+    operation: #Function<1.112681941/1 in Monkey.parse_operation/1>,
+    test: 17,
+    true: 1,
+    false: 6,
+    passes: 0
+  },
+  %Monkey{
+    items: 'YW<N6Mb',
+    operation: #Function<3.112681941/1 in Monkey.parse_operation/1>,
+    test: 2,
+    true: 1,
+    false: 4,
+    passes: 0
+  },
+  %Monkey{
+    items: 'EA?',
+    operation: #Function<1.112681941/1 in Monkey.parse_operation/1>,
+    test: 3,
+    true: 7,
+    false: 2,
+    passes: 0
+  },
+  %Monkey{
+    items: 'Y',
+    operation: #Function<2.112681941/1 in Monkey.parse_operation/1>,
+    test: 11,
+    true: 0,
+    false: 2,
+    passes: 0
+  }
+]
+```
+
+```elixir
+defmodule MonkeyBusiness do
+  import Kernel, except: [round: 1]
+
+  defstruct monkeys: [], lcm: nil
+
+  def new(monkeys) do
+    lcm = Enum.reduce(monkeys, 1, &lcm(&1.test, &2))
+
+    %__MODULE__{
+      monkeys: monkeys,
+      lcm: lcm
+    }
+  end
+
+  def run(%__MODULE__{} = mb, rounds, calming) do
+    1..rounds
+    |> Enum.reduce(mb, fn r, mb ->
+      # IO.inspect(r, label: :round)
+      round(mb, calming)
+    end)
+    |> Map.get(:monkeys)
+    |> Enum.map(& &1.passes)
+    |> Enum.sort(:desc)
+    |> Enum.take(2)
+    |> Enum.reduce(&*/2)
+  end
+
+  defp round(%__MODULE__{} = mb, calming) do
+    0..(length(mb.monkeys) - 1)
+    |> Enum.reduce(mb, fn idx, mb ->
+      {monkey, {a, a_val}, {b, b_val}} =
+        mb.monkeys
+        |> Enum.at(idx)
+        |> Monkey.run(calming, mb.lcm)
+
+      mb
+      |> put_in([Access.key(:monkeys), Access.at(idx)], monkey)
+      |> update_in([Access.key(:monkeys), Access.at(a)], &Monkey.add_items(&1, a_val))
+      |> update_in([Access.key(:monkeys), Access.at(b)], &Monkey.add_items(&1, b_val))
+    end)
+  end
+
+  defp lcm(a, b), do: div(a * b, Integer.gcd(a, b))
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: variable "r" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  2022/day11.livemd#cell:wtmu5fny2ud5f5f6xet6khgysonm2y3n:17: MonkeyBusiness.run/3
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, MonkeyBusiness, <<70, 79, 82, 49, 0, 0, 21, ...>>, {:lcm, 2}}
+```
+
+## Task 1
+
+```elixir
+monkeys
+|> MonkeyBusiness.new()
+|> MonkeyBusiness.run(20, 3)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+78678
+```
+
+## Task 2
+
+```elixir
+monkeys
+|> MonkeyBusiness.new()
+|> MonkeyBusiness.run(10000, 1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+15333249714
+```
