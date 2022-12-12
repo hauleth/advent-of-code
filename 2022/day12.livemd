@@ -1,0 +1,320 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 12
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"},
+  {:libgraph, ">= 0.0.0"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"12","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "12", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "abccccaaacaccccaaaaacccccccaaccccccccaaaaaaccccccaaaaaccccccccccaaaaaaaaacccccccaaaaaaaaaaaaaaccaaaaaccccccccccccaccacccccccccccccccccccccccccccccccccccccccaaaaaa\nabccaacaaaaaccaaaaacccccaaaaaccccccccaaaaaaccccccaaaaaacccccccccaaaaaaaaaaaaacccaaaaaaaaaaaaaaaaaaaaaccccccccccccaaaacccccccccccccccccccccccccccccccccccccccaaaaaa\nabccaaaaaaaaccaaaaaacccccaaaaaccccccaaaaaaaacccccaaaaaaccccccccccaaaaaaaaaaaacccaaaaaacaaaaaacaaaaaaaaccccccccccaaaaacccccaccccccccccccccccccaaacccccccccccccaaaaa\nabcccaaaaaccccccaaaacccccaaaaacccccaaaaaaaaaaccccaaaaaacccccccccaaaaaaaaaaaaaacaaaaaaaaaaaaaacaaaaaaaaccccccccccaaaaaacccaaacccccccccccccccccaaaccccccccccccccaaaa\nabaaacaaaaacccccacccccccaaaaaccccccaaaaaaaaaaccccccaaaccccccccccaaaaaaaaacaaaaaaaaaaaaaaaaaaacccaaacaccaaaccccccaaaaaaaacaaacccccccccccaaccccaaacccccccccccccccaac\nabaaacaacaaaaccccccccccccccaaccccccacaaaaacccccaacccccccccccccccaaaacaaaaaaaaaacccaacccaaacaacccaaccccaaaaccccccccaacaaaaaaaaaaccccccccaaaaccaaaccccccccccccccaaac\nabaaccaaccaaacacccccccccccccccccccccccaaaacccaaaaaaccaaaccccccccccaacaaaaaaaaaacccaaccccccccccccccccccaaaaccccccccccccaaaaaaaaaccccccciiiiiaaaaacccccccccccccccccc\nabaaccccaaaaaaaacccccccccccccccccccccccaaccccaaaaaaccaaaaaccccacccaaccaaacaaaaacccccccccccccccaacccccccaaaccccccccccccccaaaaacccccccciiiiiiiiaaaaaccccccaaaccccccc\nabaaacccaaaaaaaacccccccccccccccccccccccccccccaaaaaacaaaaaccccaaaaaaaccaaccaaacccccccaaaaacacccaaccccccccccaacccccccccccaaaaaaccccccciiiiiiiiijjaaaaaccccaaacaccccc\nabaaaccccaaaaaaccccccccccccccccccccaaccccccccaaaaaccaaaaacccccaaaaaaaaccccccccccccccaaaaaaaaaaaaccccccccccaaacaaccccccaaaaaaaccccccciiinnnnoijjjjjjjjjjaaaaaaacccc\nabccccccccaaaaacccccaacccccccccccaaaacccccccccaaaacccaaaaaccccaaaaaaaaacccccccccccccaaaaaaaaaaaaaaccccccccaaaaaacccaacaaacaaacccccchhinnnnnoojjjjjjjjjkkaaaaaacccc\nabcccccccaaaaaacaaacaacccccccccccaaaaaaccccccccccccccaacccccccaaaaaaaaacaaccccccccccaaaaaaaaaaaaaaacccccaaaaaaacccaaaaccccccacaaccchhinnnnnoooojjjjjjkkkkaaaaccccc\nabaacccaccaaaccccaaaaaccccccccccccaaaaccccccccccccccccccccccccaaaaaaaacaaaaaaaccccccaaaaaaaaaaaaaaacccccaaaaaaacccaaaaccccaaacaaachhhnnntttuooooooooppkkkaaaaccccc\nabaacccaaaaaaaccccaaaaaacccccccccaaaaaccccccccccccccccccccccccaaaaaaacccaaaaacccccccccaaacaaaaaaaaccccccccaaaaacccaaaacccccaaaaacchhhnnnttttuooooooppppkkkaaaccccc\nabaacccaaaaaaccccaaaaaaacccccccccaacaaccccccccccccccccccccccaaaccaaaccaaaaaaacccccccccccccaaaaaaaccccccaacaacaaacccccccccccaaaaaahhhhnntttttuuouuuuupppkkkcccccccc\nabaaaacaaaaaaaaaaaaaaacccccccccccccccccccccccccccccccccccccaaaacccaaacaaaaaaaaccccccccccccaccaaaccccccaaacaaccccccccccccccaaaaaahhhhnnntttxxxuuuuuuupppkkkcccccccc\nabaaaacaaaaaaaaaaacaaacccaaacccccccccccccccccccccacccccccccaaaacccccccaaaaaaaaccccccccccccccccaaacccccaaacaaacccccccccccccaaaaaahhhhmnnttxxxxuuyuuuuuppkkkcccccccc\nabaaaccaaaaaaaaccccaaaccccaaaccacccccccccccaaaaaaaaccccccccaaaacccccccccaaacaacccccccccccccccccccccaaaaaaaaaacccccacccccccaacaghhhmmmmtttxxxxxxyyyuupppkkccccccccc\nabaaccaaaaaaaccccccccccccaaaaaaaacccccccccccaaaaaaccccccccccccccccccccccaaccccccaacccccccccccccccccaaaaaaaaacccccaaccccccccccagggmmmmttttxxxxxyyyyvvppkkkccccccccc\nabaacccaccaaacccccccccccaaaaaaaaccccccccccccaaaaaaccccccccccccccccccccccccccaaacaaaccccccccccccccccccaaaaaccccaaaaacaacccccccgggmmmmttttxxxxxyyyyvvpppiiiccccccccc\nSbaaaaaccccaaccccccccccaaaaaaaaacacccccccccaaaaaaaacccccccccccccccaacccccccccaaaaaccccccccccaaaacccccaaaaaacccaaaaaaaaccaaaccgggmmmsssxxxEzzzzyyvvvpppiiiccccccccc\nabaaaaaccccccccccccccccaaaaaaaaaaaaaaaaaccaaaaaaaaaacccccccccccaaaaacccccccccaaaaaaaccccccccaaaaaccccaaaaaaaccccaaaaacccaaaaagggmmmsssxxxxxyyyyyyvvqqqiiiccccccccc\nabaaaaacccccccccccccccccaaaaaaaacaaaaaacccaaaaaaaaaaccccccccccccaaaaacccccccaaaaaaaacccccccaaaaaaccccaaacaaacccaaaaacccaaaaaagggmmmssswwwwwyyyyyyyvvqqqiiicccccccc\nabaaaaccccccccccccccccccccaaaaaaaaaaaaacccacacaaacccccccccccccccaaaaacccccccaaaaaaaacccccccaaaaaaccccacccccccccaacaaaccaaaaaagggmmmsssswwwwyyyyyyyvvvqqiiicccccccc\nabaaaaacccccccccccccccccccaacccaaaaaaaaaccccccaaaccccccccccccccaaaaaccccccccaacaaacccccccccaaaaaacccccccccccccccccaaccccaaaaagggmmmmssssswwyywwvvvvvvqqiiicccccccc\nabaaaaacccccccccccccc" <> ...}
+```
+
+```elixir
+# puzzle_input = """
+# Sabqponm
+# abcryxxl
+# accszExk
+# acctuvwj
+# abdefghi
+# """
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+nil
+```
+
+```elixir
+min = ?a - ?a
+max = ?z - ?a
+
+{map, start, stop} =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(&to_charlist/1)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {line, y} ->
+    line
+    |> Enum.with_index()
+    |> Enum.map(fn {c, x} -> {{x, y}, c} end)
+  end)
+  |> Enum.reduce({%{}, nil, nil}, fn {p, v}, {map, s, e} ->
+    case v do
+      ?S -> {Map.put(map, p, min), p, e}
+      ?E -> {Map.put(map, p, max), s, p}
+      _ -> {Map.put(map, p, v - ?a), s, e}
+    end
+  end)
+
+graph =
+  map
+  |> Enum.reduce(Graph.new(), fn {p, v}, graph ->
+    {x, y} = p
+
+    graph =
+      if map[{x - 1, y}] && v + 1 >= map[{x - 1, y}],
+        do: Graph.add_edge(graph, {x, y}, {x - 1, y}, label: [v, map[{x - 1, y}]]),
+        else: graph
+
+    graph =
+      if map[{x + 1, y}] && v + 1 >= map[{x + 1, y}],
+        do: Graph.add_edge(graph, {x, y}, {x + 1, y}, label: [v, map[{x + 1, y}]]),
+        else: graph
+
+    graph =
+      if map[{x, y - 1}] && v + 1 >= map[{x, y - 1}],
+        do: Graph.add_edge(graph, {x, y}, {x, y - 1}, label: [v, map[{x, y - 1}]]),
+        else: graph
+
+    graph =
+      if map[{x, y + 1}] && v + 1 >= map[{x, y + 1}],
+        do: Graph.add_edge(graph, {x, y}, {x, y + 1}, label: [v, map[{x, y + 1}]]),
+        else: graph
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: variable "graph" is unused (there is a variable with the same name in the context, use the pin operator (^) to match on it or prefix this variable with underscore if it is not meant to be used)
+  2022/day12.livemd#cell:7urrvoyk6ltuxa4kdqc63nncfh37x2fn:30
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+#Graph<type: directed, num_vertices: 6642, num_edges: 24117>
+```
+
+## Task 1
+
+```elixir
+length(Graph.get_shortest_path(graph, start, stop)) - 1
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+437
+```
+
+```elixir
+graph.vertices
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  1148931603 => {118, 31},
+  15476201 => {158, 33},
+  3480980581 => {19, 26},
+  513279067 => {86, 0},
+  1642831488 => {111, 2},
+  669567979 => {38, 18},
+  1898334127 => {77, 28},
+  2414760132 => {41, 27},
+  1433989350 => {134, 33},
+  4010762779 => {100, 37},
+  1619384061 => {142, 27},
+  2736818014 => {105, 29},
+  3132807327 => {56, 13},
+  1603662291 => {94, 23},
+  183280155 => {35, 27},
+  2518352043 => {127, 27},
+  824501714 => {15, 33},
+  1813555375 => {70, 18},
+  733666720 => {72, 5},
+  4293490381 => {13, 24},
+  4037128590 => {87, 10},
+  1287605231 => {99, 3},
+  2697150767 => {19, 29},
+  3345146674 => {78, 5},
+  811252706 => {132, 14},
+  3035418479 => {156, 5},
+  2090318173 => {149, 1},
+  1306366779 => {71, 39},
+  113692275 => {158, 28},
+  1809958846 => {4, 0},
+  2979249361 => {95, 23},
+  712034521 => {2, 34},
+  838646858 => {127, 2},
+  2636390019 => {97, 34},
+  200998860 => {73, 23},
+  2440897975 => {91, 7},
+  2757930521 => {103, 38},
+  2626031906 => {92, 21},
+  4000959801 => {44, 20},
+  2762901234 => {69, 16},
+  3967362516 => {72, 9},
+  1858208296 => {81, 16},
+  3063825234 => {140, 14},
+  1669140133 => {46, 21},
+  684221776 => {146, 38},
+  623366404 => {63, 40},
+  3623360588 => {149, 6},
+  2885933829 => {137, 14},
+  3219344086 => {136, ...},
+  3451324297 => {...},
+  ...
+}
+```
+
+## Task 2
+
+```elixir
+tgraph = Graph.transpose(graph)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+#Graph<type: directed, num_vertices: 6642, num_edges: 24117>
+```
+
+```elixir
+lowest =
+  Enum.flat_map(map, fn
+    {p, 0} -> [p]
+    _ -> []
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[32256290, 409066827, 186924390, 1502865800, 887663648, 2543466388, 697356458, 1070575781,
+ 1659702078, 4000784021, 1947564743, 2361038489, 3904452243, 3615669650, 270460033, 1281654811,
+ 3153535741, 2393890474, 3946102901, 2210758189, 2982223724, 2654353783, 2656280720, 3935389969,
+ 2818948768, 4279780723, 3595206681, 3496428192, 2269119594, 2583881244, 3997991000, 520325395,
+ 457672928, 1453390554, 3289433936, 2574402082, 1560492086, 3242480874, 389839366, 4176230802,
+ 1147783117, 2469841095, 2034019869, 438932546, 1799582666, 1100008137, 467060197, 162439868,
+ 3928107970, 800548913, ...]
+```
+
+```elixir
+# Copied BF implementation from `libgraph` to optimise it 
+
+defmodule BellmanFord do
+  @moduledoc """
+  The Bellman–Ford algorithm is an algorithm that computes shortest paths from a single
+  source vertex to all of the other vertices in a weighted digraph.
+  It is capable of handling graphs in which some of the edge weights are negative numbers
+  Time complexity: O(VLogV)
+  """
+
+  @type distance :: %{Graph.vertex_id() => integer}
+
+  @doc """
+  Returns nil when graph has negative cycle.
+  """
+  @spec call(Graph.t(), Graph.vertex()) :: [Graph.vertex()] | nil
+  def call(%Graph{vertices: vs, edges: meta}, source) do
+    distances = source |> Graph.Utils.vertex_id() |> init_distances(vs)
+
+    weights = Enum.map(meta, &edge_weight/1)
+
+    distances =
+      for _ <- 1..map_size(vs),
+          {{u, v}, weight} <- weights,
+          reduce: distances do
+        distances ->
+          case distances do
+            %{^u => :infinity} ->
+              distances
+
+            %{^u => du, ^v => dv} when du + weight < dv ->
+              %{distances | v => du + weight}
+
+            _ ->
+              distances
+          end
+      end
+
+    if has_negative_cycle?(distances, weights) do
+      nil
+    else
+      Map.new(distances, fn {k, v} -> {Map.fetch!(vertices, k), v} end)
+    end
+  end
+
+  @spec init_distances(Graph.vertex(), Graph.vertices()) :: distance
+  defp init_distances(vertex_id, vertices) do
+    Map.new(vertices, fn
+      {id, _vertex} when id == vertex_id -> {id, 0}
+      {id, _} -> {id, :infinity}
+    end)
+  end
+
+  @spec edge_weight(term) :: float
+  defp edge_weight({e, edge_value}), do: {e, edge_value |> Map.values() |> List.first()}
+
+  defp has_negative_cycle?(%{} = distances, meta) do
+    Enum.any?(meta, fn {{u, v}, weight} ->
+      %{^u => du, ^v => dv} = distances
+
+      du != :infinity and du + weight < dv
+    end)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, BellmanFord, <<70, 79, 82, 49, 0, 0, 19, ...>>, {:has_negative_cycle?, 2}}
+```
+
+```elixir
+min_paths =
+  tgraph
+  # |> Graph.bellman_ford(stop)
+  |> BellmanFord.call(stop)
+  |> Map.take(lowest)
+  |> Map.values()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[:infinity, :infinity, :infinity, 454, :infinity, :infinity, :infinity, :infinity, :infinity,
+ :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
+ :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
+ :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
+ :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
+ :infinity, :infinity, :infinity, :infinity, :infinity, ...]
+```
+
+```elixir
+Enum.min(min_paths)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+430
+```
