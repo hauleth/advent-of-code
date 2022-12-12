@@ -100,7 +100,7 @@ graph =
 
 ```
 warning: variable "graph" is unused (there is a variable with the same name in the context, use the pin operator (^) to match on it or prefix this variable with underscore if it is not meant to be used)
-  2022/day12.livemd#cell:7urrvoyk6ltuxa4kdqc63nncfh37x2fn:30
+  2022/day12.livemd#cell:6nz6sdhe57lxfvshc57dctj7qaalwwz3:42
 
 ```
 
@@ -207,13 +207,59 @@ lowest =
 <!-- livebook:{"output":true} -->
 
 ```
-[32256290, 409066827, 186924390, 1502865800, 887663648, 2543466388, 697356458, 1070575781,
- 1659702078, 4000784021, 1947564743, 2361038489, 3904452243, 3615669650, 270460033, 1281654811,
- 3153535741, 2393890474, 3946102901, 2210758189, 2982223724, 2654353783, 2656280720, 3935389969,
- 2818948768, 4279780723, 3595206681, 3496428192, 2269119594, 2583881244, 3997991000, 520325395,
- 457672928, 1453390554, 3289433936, 2574402082, 1560492086, 3242480874, 389839366, 4176230802,
- 1147783117, 2469841095, 2034019869, 438932546, 1799582666, 1100008137, 467060197, 162439868,
- 3928107970, 800548913, ...]
+[
+  {59, 38},
+  {38, 5},
+  {76, 17},
+  {66, 36},
+  {54, 26},
+  {10, 18},
+  {3, 21},
+  {42, 40},
+  {73, 32},
+  {43, 36},
+  {2, 9},
+  {80, 31},
+  {20, 12},
+  {63, 11},
+  {5, 15},
+  {76, 4},
+  {136, 4},
+  {3, 9},
+  {90, 11},
+  {85, 39},
+  {24, 29},
+  {91, 28},
+  {55, 27},
+  {108, 10},
+  {84, 4},
+  {9, 9},
+  {161, 38},
+  {3, 33},
+  {68, 22},
+  {143, 3},
+  {49, 8},
+  {70, 26},
+  {39, 25},
+  {18, 13},
+  {88, 0},
+  {32, 21},
+  {96, 3},
+  {84, 40},
+  {53, 1},
+  {88, 30},
+  {120, 10},
+  {36, 4},
+  {115, 13},
+  {112, 3},
+  {42, 0},
+  {4, 17},
+  {35, 12},
+  {114, 19},
+  {20, ...},
+  {...},
+  ...
+]
 ```
 
 ```elixir
@@ -258,7 +304,7 @@ defmodule BellmanFord do
     if has_negative_cycle?(distances, weights) do
       nil
     else
-      Map.new(distances, fn {k, v} -> {Map.fetch!(vertices, k), v} end)
+      Map.new(distances, fn {k, v} -> {Map.fetch!(vs, k), v} end)
     end
   end
 
@@ -286,31 +332,79 @@ end
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, BellmanFord, <<70, 79, 82, 49, 0, 0, 19, ...>>, {:has_negative_cycle?, 2}}
+{:module, BellmanFord, <<70, 79, 82, 49, 0, 0, 18, ...>>, {:has_negative_cycle?, 2}}
 ```
 
 ```elixir
-min_paths =
+paths =
   tgraph
   # |> Graph.bellman_ford(stop)
   |> BellmanFord.call(stop)
-  |> Map.take(lowest)
-  |> Map.values()
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-[:infinity, :infinity, :infinity, 454, :infinity, :infinity, :infinity, :infinity, :infinity,
- :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
- :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
- :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
- :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity, :infinity,
- :infinity, :infinity, :infinity, :infinity, :infinity, ...]
+%{
+  {76, 13} => :infinity,
+  {38, 2} => :infinity,
+  {1, 26} => 430,
+  {140, 11} => 100,
+  {32, 15} => 388,
+  {89, 14} => 328,
+  {35, 30} => 392,
+  {156, 9} => :infinity,
+  {4, 5} => 454,
+  {74, 12} => :infinity,
+  {11, 39} => 425,
+  {131, 5} => 323,
+  {22, 38} => 413,
+  {29, 25} => 403,
+  {86, 10} => :infinity,
+  {83, 36} => 366,
+  {29, 26} => 402,
+  {47, 27} => :infinity,
+  {9, 34} => 426,
+  {137, 16} => 12,
+  {90, 0} => :infinity,
+  {103, 39} => 289,
+  {126, 13} => :infinity,
+  {47, 38} => :infinity,
+  {128, 35} => 268,
+  {20, 3} => 412,
+  {145, 20} => 24,
+  {143, 39} => 247,
+  {79, 17} => 335,
+  {75, 0} => :infinity,
+  {150, 18} => 167,
+  {147, 10} => 178,
+  {148, 26} => 75,
+  {76, 2} => :infinity,
+  {138, 9} => 104,
+  {58, 33} => 372,
+  {150, 5} => 296,
+  {54, 31} => 374,
+  {22, 37} => 412,
+  {75, 36} => :infinity,
+  {91, 35} => :infinity,
+  {143, 4} => :infinity,
+  {121, 27} => 283,
+  {91, 38} => :infinity,
+  {159, 26} => 268,
+  {131, 24} => 124,
+  {58, 10} => 367,
+  {111, 14} => :infinity,
+  {75, ...} => 345,
+  {...} => 411,
+  ...
+}
 ```
 
 ```elixir
-Enum.min(min_paths)
+paths
+|> Map.take(lowest)
+|> Map.values()
+|> Enum.min()
 ```
 
 <!-- livebook:{"output":true} -->
