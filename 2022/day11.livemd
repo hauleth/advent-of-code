@@ -206,7 +206,7 @@ defmodule MonkeyBusiness do
 
   def run(%__MODULE__{} = mb, rounds, calming) do
     1..rounds
-    |> Enum.reduce(mb, fn r, mb ->
+    |> Enum.reduce(mb, fn _, mb ->
       # IO.inspect(r, label: :round)
       round(mb, calming)
     end)
@@ -214,7 +214,7 @@ defmodule MonkeyBusiness do
     |> Enum.map(& &1.passes)
     |> Enum.sort(:desc)
     |> Enum.take(2)
-    |> Enum.reduce(&*/2)
+    |> Enum.product()
   end
 
   defp round(%__MODULE__{} = mb, calming) do
@@ -239,15 +239,7 @@ end
 <!-- livebook:{"output":true} -->
 
 ```
-warning: variable "r" is unused (if the variable is not meant to be used, prefix it with an underscore)
-  2022/day11.livemd#cell:wtmu5fny2ud5f5f6xet6khgysonm2y3n:17: MonkeyBusiness.run/3
-
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-{:module, MonkeyBusiness, <<70, 79, 82, 49, 0, 0, 21, ...>>, {:lcm, 2}}
+{:module, MonkeyBusiness, <<70, 79, 82, 49, 0, 0, 20, ...>>, {:lcm, 2}}
 ```
 
 ## Task 1
