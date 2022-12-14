@@ -1,0 +1,189 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 14
+
+```elixir
+Mix.install(
+  [
+    {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"},
+    :image
+  ],
+  consolidate_protocols: false
+)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Setup
+
+<!-- livebook:{"attrs":{"day":"14","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "14", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n481,92 -> 481,96 -> 476,96 -> 476,99 -> 487,99 -> 487,96 -> 485,96 -> 485,92\n460,73 -> 460,70 -> 460,73 -> 462,73 -> 462,69 -> 462,73 -> 464,73 -> 464,65 -> 464,73 -> 466,73 -> 466,65 -> 466,73 -> 468,73 -> 468,64 -> 468,73 -> 470,73 -> 470,68 -> 470,73 -> 472,73 -> 472,68 -> 472,73\n470,76 -> 470,80 -> 466,80 -> 466,84 -> 481,84 -> 481,80 -> 474,80 -> 474,76\n492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n495,155 -> 499,155\n460,73 -> 460,70 -> 460,73 -> 462,73 -> 462,69 -> 462,73 -> 464,73 -> 464,65 -> 464,73 -> 466,73 -> 466,65 -> 466,73 -> 468,73 -> 468,64 -> 468,73 -> 470,73 -> 470,68 -> 470,73 -> 472,73 -> 472,68 -> 472,73\n500,138 -> 505,138\n484,39 -> 484,38 -> 484,39 -> 486,39 -> 486,33 -> 486,39 -> 488,39 -> 488,30 -> 488,39 -> 490,39 -> 490,35 -> 490,39 -> 492,39 -> 492,38 -> 492,39 -> 494,39 -> 494,30 -> 494,39 -> 496,39 -> 496,36 -> 496,39\n481,92 -> 481,96 -> 476,96 -> 476,99 -> 487,99 -> 487,96 -> 485,96 -> 485,92\n492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n460,73 -> 460,70 -> 460,73 -> 462,73 -> 462,69 -> 462,73 -> 464,73 -> 464,65 -> 464,73 -> 466,73 -> 466,65 -> 466,73 -> 468,73 -> 468,64 -> 468,73 -> 470,73 -> 470,68 -> 470,73 -> 472,73 -> 472,68 -> 472,73\n492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n460,73 -> 460,70 -> 460,73 -> 462,73 -> 462,69 -> 462,73 -> 464,73 -> 464,65 -> 464,73 -> 466,73 -> 466,65 -> 466,73 -> 468,73 -> 468,64 -> 468,73 -> 470,73 -> 470,68 -> 470,73 -> 472,73 -> 472,68 -> 472,73\n492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n489,115 -> 489,119 -> 481,119 -> 481,126 -> 494,126 -> 494,119 -> 493,119 -> 493,115\n492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n485,112 -> 485,102 -> 485,112 -> 487,112 -> 487,111 -> 487,112 -> 489,112 -> 489,105 -> 489,112\n481,92 -> 481,96 -> 476,96 -> 476,99 -> 487,99 -> 487,96 -> 485,96 -> 485,92\n484,39 -> 484,38 -> 484,39 -> 486,39 -> 486,33 -> 486,39 -> 488,39 -> 488,30 -> 488,39 -> 490,39 -> 490,35 -> 490,39 -> 492,39 -> 492,38 -> 492,39 -> 494,39 -> 494,30 -> 494,39 -> 496,39 -> 496,36 -> 496,39\n470,49 -> 470,53 -> 468,53 -> 468,60 -> 477,60 -> 477,53 -> 476,53 -> 476,49\n483,160 -> 487,160\n492,26 -> 492,17 -> 492,26 -> 494,26 -> 494,16 -> 494,26 -> 496,26 -> 496,22 -> 496,26 -> 498,26 -> 498,17 -> 498,26 -> 500,26 -> 500,20 -> 500,26 -> 502,26 -> 502,25 -> 502,26 -> 504,26 -> 504,23 -> 504,26 -> 506,26 -> 506,21 -> 506,26 -> 508,26 -> 508,16 -> 508,26 -> 510,26 -> 510,24 -> 510,26\n460,73 -> 460,70 -> 460,73 -> 462,73 -> 462,69 -> 462,73 -> 464,73 -> 464,65 -> 464,73 -> 466,73 -> 466,65 -> 466,73 -> 468,73 -> 468,64 -> 468,73 -> 47" <> ...}
+```
+
+```elixir
+defmodule Cave do
+  defstruct map: MapSet.new(), occupied: MapSet.new(), width: nil, height: 0, start: {500, 0}
+
+  def parse(input, start \\ {500, 0}) do
+    map =
+      input
+      |> String.split("\n", trim: true)
+      |> Enum.map(&Cave.parse_line/1)
+      |> Enum.reduce(&MapSet.union/2)
+
+    {width, height} =
+      for {x, y} <- map,
+          reduce: {nil, nil} do
+        {nil, nil} ->
+          {x..x, y}
+
+        {min_x..max_x, max_y} ->
+          {min(min_x, x)..max(max_x, x), max(max_y, y)}
+      end
+
+    %__MODULE__{map: map, occupied: map, start: start, width: width, height: height}
+  end
+
+  def add_line(%__MODULE__{} = cave, line) do
+    {width, height} =
+      Enum.reduce(line, {cave.width, cave.height}, fn {x, y}, {x0..x1, h} ->
+        {min(x, x0)..max(x, x1), max(y, h)}
+      end)
+
+    struct(cave,
+      width: width,
+      height: height,
+      map: MapSet.union(cave.map, line),
+      occupied: MapSet.union(cave.occupied, line)
+    )
+  end
+
+  def parse_point(str) do
+    [x, y] = String.split(str, ",")
+
+    {String.to_integer(x), String.to_integer(y)}
+  end
+
+  def parse_line(line) do
+    points =
+      line
+      |> String.split(" -> ")
+      |> Enum.map(&parse_point/1)
+      |> Enum.chunk_every(2, 1, :discard)
+      |> Enum.flat_map(fn
+        [{x, y1}, {x, y2}] ->
+          for y <- y1..y2, do: {x, y}
+
+        [{x1, y}, {x2, y}] ->
+          for x <- x1..x2, do: {x, y}
+      end)
+      |> MapSet.new()
+
+    points
+  end
+
+  def drop_sand(%__MODULE__{} = cave), do: drop_sand(cave, cave.start)
+
+  def drop_sand(%__MODULE__{height: h, width: x0..x1} = cave, {sx, sy})
+      when sx not in x0..x1 or sy >= h,
+      do: {:fall_out, cave}
+
+  def drop_sand(%__MODULE__{} = cave, {sx, sy}) do
+    cond do
+      {sx, sy + 1} not in cave.occupied -> drop_sand(cave, {sx, sy + 1})
+      {sx - 1, sy + 1} not in cave.occupied -> drop_sand(cave, {sx - 1, sy + 1})
+      {sx + 1, sy + 1} not in cave.occupied -> drop_sand(cave, {sx + 1, sy + 1})
+      true -> {{sx, sy}, struct(cave, occupied: MapSet.put(cave.occupied, {sx, sy}))}
+    end
+  end
+end
+
+defimpl Kino.Render, for: Cave do
+  def to_livebook(%@for{} = cave) do
+    x0..x1 = cave.width
+    {sx, sy} = cave.start
+    image = Image.new!(x1 - x0 + 3, cave.height + 3)
+
+    {:ok, image} =
+      Image.mutate(image, fn im ->
+        Image.Draw.point(im, sx - x0 + 1, sy + 1, color: :red)
+
+        for {x, y} <- cave.occupied do
+          Image.Draw.point(im, x - x0 + 1, y + 1, color: :tan)
+        end
+
+        for {x, y} <- cave.map do
+          Image.Draw.point(im, x - x0 + 1, y + 1, color: :white)
+        end
+
+        :ok
+      end)
+
+    buf =
+      image
+      |> Image.resize!(4, interpolate: :nearest)
+      |> Image.write!(:memory, suffix: ".png")
+
+    Kino.Output.image(buf, "image/png")
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Kino.Render.Cave, <<70, 79, 82, 49, 0, 0, 16, ...>>, {:to_livebook, 1}}
+```
+
+```elixir
+cave = Cave.parse(puzzle_input)
+```
+
+## Task 1
+
+```elixir
+Stream.unfold(cave, &Cave.drop_sand/1)
+|> Enum.take_while(&(&1 != :fall_out))
+|> length()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+768
+```
+
+## Task 2
+
+```elixir
+floor_y = cave.height + 2
+
+floor = for x <- 0..(cave.width.last * 2), into: MapSet.new(), do: {x, floor_y}
+
+cave = Cave.add_line(cave, floor)
+
+Stream.unfold(cave, &Cave.drop_sand/1)
+|> Enum.take_while(&(&1 != cave.start))
+|> length()
+|> then(&(&1 + 1))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+26686
+```
