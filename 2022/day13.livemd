@@ -440,10 +440,9 @@ signals =
 
 ```elixir
 defmodule Signal do
-  def compare([], []), do: :eq
-  def compare([], [_ | _]), do: :lt
   def compare(a, a), do: :eq
   def compare(a, b) when is_integer(a) and is_integer(b) and a < b, do: :lt
+  def compare([], [_ | _]), do: :lt
   def compare([a | as], [b | bs]), do: with(:eq <- compare(a, b), do: compare(as, bs))
 
   def compare(a, b)
