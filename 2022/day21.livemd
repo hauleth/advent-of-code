@@ -1,0 +1,173 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 21
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"21","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "21", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "jqtt: tnwg * mbnq\nvsww: jmrn + twmm\nppws: qtfb * rdsp\nljqm: 14\nbsvb: tbqb - fqqm\nwfpq: hgdp * ddvm\njhtm: 2\nslnm: rrtr * lhwh\nlgzs: jtrw * dfmw\nrmwf: pmsv - llsm\nprzw: bqwv + ghcz\nrqwg: 6\npsrl: 4\njddv: plnt * gcfc\nvtbv: rwmn + zcwm\nhgtf: qrlv + brzm\nhhlf: 2\nqnwv: vhwb + thlf\nsbwr: ppws * rlvq\ncpld: gwmj + rhcd\nnnmv: gjsm * jrpf\nltft: rfvj * cttp\nsjzd: 2\nfnnl: rpmq * zgms\nthmv: 3\nslsp: 5\nqnhh: crqv + hdgl\nlzmd: 2\ncfjz: 18\nnftb: 3\nwndb: ztgl * cwnt\nbjbh: hhnq + wchj\nhcsl: sbtp + wrnf\nwljw: wrmd / ffct\nfctr: 2\nwnmz: 17\nmhfl: 3\ncrfw: sdvt * gvrz\nvqdv: 3\nzswr: 4\ntbgc: hqzm * qtsc\nbcmz: jqbf + vchc\nfltj: jlgw / prsv\npnbd: 2\nvqcc: 3\npdhb: 11\nmssc: hjbb * zzsf\nfbcp: pfhh + fhbm\nqjlj: 2\nbwmp: gwqd + zttp\nqqnm: fftd * mbst\nrmwh: tcnh - pcmh\nssrc: 2\ntlhm: tjfv + zpsf\nrnbd: jjvt + hmzp\ngbwn: cvlv + djwh\npfpd: 4\nnfvs: cpmc + vzhf\nssts: 3\nhvbh: 3\nfnwt: shzp * thgj\nbwjj: wfnf * dtqb\ndvll: 1\nrjtf: 3\ngtrh: lcqd + prrn\npbqm: 1\nnlrm: 5\ndftz: mzng * tncp\nrlsl: ppmh / pvnb\nhhgf: dwnr * qbrj\nlddg: tbzq * ncwd\npclv: qqnt - gcqz\nblhb: rnzq + mhqz\ndrnr: zlhg + mvcq\nhgwl: jqtl + wzsr\nzswf: blqr * lvsb\nfdbt: pwfs * gnhq\nfwlm: 1\nwpzv: 3\ncdwp: gfhs + wtbp\nhzch: fdbd + nrth\npdsl: 3\nphql: hbmw * wrlt\nztvt: 1\nfgfp: 13\nwfjt: 3\nwrmd: fhrp * jrdr\ncldc: fmgr + cdjg\nvfvb: zlgm - stzg\nqfrh: hbhc * gnhc\njrdr: 2\nfcdv: 3\nhjjp: cvmd * qnjb\nftmr: qtbj + gnfr\ngqfw: 3\nzgzh: phsj + jzrn\ncqvn: 7\nbbhr: jdbt * ccrh\nvrvs: 5\nrlvz: pwvl * lczp\nsmhn: 2\nrzhg: 6\nqbmc: 3\nwtvv: 4\nnqnb: 4\nzshh: ngfn + ljqm\nrpph: hbwt * fwfh\nlqqw: grqf * jwfc\njwgt: lwjj * fsfh\nwqmw: 4\nnzjs: 2\ngcvc: 2\npwvl: 16\ngwqd: 10\nprrn: 4\nbtrp: 5\nmpjh: 2\nfbcl: 2\nmwbr: 2\nlcgw: zpmm + lwfw\ndlsw: 1\nvwtr: rgsj / vfcg\nvhjq: wrvz * dmzh\nmdvc: 5\nsldj: 5\nfwpv: 11\npvqb: qwdt + srzd\nptqg: 12\nchzc: 2\nvfsz: 3\nhjlt: mrgj * ffdp\nmvtd: 5\njldc: dvvw * zbwz\nbsft: 2\nsvsd: 9\nqcbl: fztd * cpld\nhjzq: 3\nctmh: 2\ncnss: 2\nzqrj: mhhq * fjfc\njsgj: 5\nqrmb: 7\nnszq: rdhf * zstr\nmgsm: 5\nzmhz: cglq * cttz\nmsjt: 3\nczrh: cvbr / djtb\nlslt: grfq / hsgj\nnfcm: 3\nncsj: 14\nvgjt: 3\nldzh: 4\nlzdj: 8\nglrq: 5\ncjjr: 11\ndnwc: 8\npldf: vcdj * chzc\nrfwr: rqcp * qpwg\nzblf: 2\nswbp: wggc + qcnf\nhcjq: jfft * hhll\nfjlz: vjdq + dzsp\nzswq: wbmt + scrh\ntzrc: fflf + mpbq\nzsjl: jmdd * mpwj\ntmwj: 4\njfvd: 3\njqzf: 2\nhtzv: tlps + sjjp\ngmwm: 7\nqbrj: 2\ncmdr: lswp * lljh\nrtpp: 1\nqrdg: slst + bbrq\nhqzm: 2\nvdsw: 3\nhzhv: 6\nhumn: 927\ndzsp: 5\nlpsb: 5\njqcq: 5\nmvcq: 12\ncfhv: 2\nqrrf: vqvn - wprq\nmznq: sfjb * hvtd\nbzfw: 4\nnctp: 4\nbzjg: hcnm + jtbm\ngppp: fnfn * qqnm\nghzf: szlh * bgcc\nrfls: gjnf / hffp\nnfjz: 4\npqzg: 4\nfrhd: twtc * rrmn\nmvds: 1\nhqlh: pwvn * qtvf\nwfgr: twsv * tntz\nmfsl: dlsw + hlmh\nlzlf: szvt + qwcz\ncgwz: 14\nwvjb: 4\nhsnr: 4\ndhdl: hmcr * lscn\nqmwp: cbdg * mplg\njfft: qjfq + vzpv\ntttw: 6\nqcsp: 12\ncmtc: qtrv * fcfl\nzttp: jnbr * sldj\ncnrm: 3\nmqtj: nhhv * bsdz\ntwmm: mhbm * ltwj\nvphb: fcdv * wgpg\nrcpt: 2\nsglw: wplj + ffmd\ngwqw: pntz - dwzg\nbwdq: 3\ngjdr: mpqg + qsvs\nmgtw: ddgp + cqlr\ncgzf: 4\nvmpw: btrp + wlhb\ncvbn: 4\njcsn: lntg * tmqv\npgdh: frmz + sqth\nfqbc: lgzs + zttz\nllpw: 8\nhbnz: 12\nzdll: 19\npbnr: 5\npzcv: 1\nwlwl: 2\nljcq: 6\nvwgp: 8\nthlf: 2\nmzqq: pgdh + rmch\ndhrn: 5\njbrv: mttw * rjhz\npbgz: 2\ntmnw: dfdq - ljmt\nssqj: 6\nsplf: nlzg / jvrb\npflc: 2\nssmt: rlwg + rppv\ngpwh: 3\nnncw: 11\nggzr: sqvs * ctcq\nvjcm: 2\nzdlm: nsrp - nptq\npwfb: 3\nglpb: 5\nccrm: ztzh * mjjv\ntpnw: smdm + zblf\nmnmm: 2\nprnd: mwvp / lddf\nchfq: sbzg * qqcw\ngtcw: drhz + hmqm\nlpwm: 4\nlnpt: lpcg - gvrg\nbmsr: cqrt + mqst\nhbsb: lztz * tmll\nvcrf: 4\nsjwd: 3\nmjdq: fcvf * ghzf\ndpng: qjvl * htzv\nlvsb: 4\nmsmz: zbvr * ndpr\ngzgd: jtvv + djmv\nftsd: 2\ntjfh: 2\njggn: cqsq * szrw\nvjzc: 5\ncvqj: fwlm + qpdm\nngzd: jdvr + hzld\ngdzl: 3\nsvvl: hcsl + tqvn\nldqv: ncqc * pvcl\nfgqr: nwsb - glnr\nrzmw: 4\nrzlb: 5\nmvtf: 7\ntsbg: tshn * lspr\nglmh: 4\nmwjj: lfgq + wqqz\nrmnq: vmpw + vwtr\nlfsd: 3\nwdnd: 2\njfps: 2\nwzmg: jznb + ntth\nlmnv: wmwb * hlgs\nzghz: scnm + jgpj\nwgjp: slnt + wccg\ncmnb: 2\ngjnf: jzzv * cfrs\nlfwr: cwht + bmsr\nqqcw: 2\nhmzn: gwjs * tqfv\nvvjt: ftmz + bzmt\nvdvv: 2\nwnmv: 4\nvgnz: 3\nfmgr: 4\nsqvc: dzzd + jrhp\njsgr: znft * lhcl\nlfcf: 5\ndhhr: rmwf + ffjt\nrcbh: tvdm + wccm\nlntg: cqpv / gghf\nvqqr: dgct + vnjw\ntjsp: 2\npnjw: 18\npvfm: 2\ntzsj: 2\nrcnm: 2\nzt" <> ...}
+```
+
+```elixir
+data =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Map.new(fn <<name::4-binary>> <> ": " <> rest ->
+    Regex.named_captures(~r"(?<num>\d+)|(?<a>.{4}) (?<op>[-+*/]) (?<b>.{4})", rest)
+    |> case do
+      %{"num" => "", "op" => op, "a" => a, "b" => b} -> {op, a, b}
+      %{"num" => num} -> String.to_integer(num)
+    end
+    |> then(&{name, &1})
+  end)
+
+map_size(data)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+2773
+```
+
+```elixir
+defmodule Evaluator do
+  def eval(key, map) do
+    case Map.fetch!(map, key) do
+      {op, a, b} ->
+        va = eval(a, map)
+        vb = eval(b, map)
+
+        do_math(op, va, vb)
+
+      num ->
+        num
+    end
+  end
+
+  defp do_math(op, a, b) when not is_integer(a) or not is_integer(b), do: {op, a, b}
+  defp do_math("+", a, b), do: a + b
+  defp do_math("-", a, b), do: a - b
+  defp do_math("*", a, b), do: a * b
+  defp do_math("/", a, b), do: div(a, b)
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Evaluator, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:do_math, 3}}
+```
+
+## Task 1
+
+```elixir
+Evaluator.eval("root", data)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+110181395003396
+```
+
+## Task 2
+
+```elixir
+{_, a, b} = data["root"]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{"+", "tlpd", "jjmw"}
+```
+
+```elixir
+vb = Evaluator.eval(b, %{data | "humn" => nil})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+22931068684876
+```
+
+So we see that `b` is independent from `humn`.
+
+```elixir
+defmodule Solver do
+  def unravel(:humn, value), do: value
+
+  def unravel({"/", a, b}, value) when is_integer(b), do: unravel(a, value * b)
+  def unravel({"+", a, b}, value) when is_integer(b), do: unravel(a, value - b)
+  def unravel({"+", a, b}, value) when is_integer(a), do: unravel(b, value - a)
+  def unravel({"-", a, b}, value) when is_integer(b), do: unravel(a, value + b)
+  def unravel({"-", a, b}, value) when is_integer(a), do: unravel(b, a - value)
+  def unravel({"*", a, b}, value) when is_integer(b), do: unravel(a, div(value, b))
+  def unravel({"*", a, b}, value) when is_integer(a), do: unravel(b, div(value, a))
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Solver, <<70, 79, 82, 49, 0, 0, 8, ...>>, {:unravel, 2}}
+```
+
+```elixir
+va = Evaluator.eval(a, %{data | "humn" => :humn})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{"/",
+ {"+",
+  {"*",
+   {"-", 87250326333032,
+    {"*",
+     {"-",
+      {"/",
+       {"+", 892,
+        {"*", 3,
+         {"+", 203,
+          {"/",
+           {"-",
+            {"/",
+             {"+", 660,
+              {"*", 2, {"-", {"*", 3, {"+", {"/", {"-", {"/", {"+", ...}, 2}, 85}, 5}, 124}}, 126}}},
+             2}, 183}, 3}}}}, 5}, 444}, 6}}, 2}, 808}, 2}
+```
+
+```elixir
+Solver.unravel(va, vb)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+3721298272959
+```
