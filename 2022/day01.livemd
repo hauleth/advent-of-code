@@ -4,19 +4,13 @@
 
 ```elixir
 Mix.install([
-  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+  {:kino_aoc, ">= 0.0.0"}
 ])
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-:ok
 ```
 
 ## Setup
 
-<!-- livebook:{"attrs":{"day":"1","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"day":"1","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 {:ok, puzzle_input} =

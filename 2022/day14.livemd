@@ -10,6 +10,17 @@ Mix.install(
   ],
   consolidate_protocols: false
 )
+
+# defimpl Kino.Render, for: Vix.Vips.Image do
+#   alias Vix.Vips.Image, as: VImg
+
+#   def to_livebook(image) do
+#     format = "png"
+
+#     {:ok, image_bin} = VImg.write_to_buffer(image, ".#{format}")
+#     Kino.Output.image(image_bin, "image/#{format}")
+#   end
+# end
 ```
 
 <!-- livebook:{"output":true} -->
@@ -20,7 +31,7 @@ Mix.install(
 
 ## Setup
 
-<!-- livebook:{"attrs":{"day":"14","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"day":"14","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 {:ok, puzzle_input} =
@@ -36,17 +47,17 @@ Mix.install(
 
 ```elixir
 defmodule Cave do
-  defstruct map: MapSet.new(), occupied: MapSet.new(), width: nil, height: 0, start: {500, 0}
+  defstruct map: %{}, width: nil, height: 0, start: {500, 0}
 
   def parse(input, start \\ {500, 0}) do
     map =
       input
       |> String.split("\n", trim: true)
       |> Enum.map(&Cave.parse_line/1)
-      |> Enum.reduce(&MapSet.union/2)
+      |> Enum.reduce(&Map.merge/2)
 
     {width, height} =
-      for {x, y} <- map,
+      for {{x, y}, _} <- map,
           reduce: {nil, nil} do
         {nil, nil} ->
           {x..x, y}
@@ -55,21 +66,7 @@ defmodule Cave do
           {min(min_x, x)..max(max_x, x), max(max_y, y)}
       end
 
-    %__MODULE__{map: map, occupied: map, start: start, width: width, height: height}
-  end
-
-  def add_line(%__MODULE__{} = cave, line) do
-    {width, height} =
-      Enum.reduce(line, {cave.width, cave.height}, fn {x, y}, {x0..x1, h} ->
-        {min(x, x0)..max(x, x1), max(y, h)}
-      end)
-
-    struct(cave,
-      width: width,
-      height: height,
-      map: MapSet.union(cave.map, line),
-      occupied: MapSet.union(cave.occupied, line)
-    )
+    %__MODULE__{map: map, start: start, width: width, height: height}
   end
 
   def parse_point(str) do
@@ -91,30 +88,28 @@ defmodule Cave do
         [{x1, y}, {x2, y}] ->
           for x <- x1..x2, do: {x, y}
       end)
-      |> MapSet.new()
+      |> Map.new(&{&1, :rock})
 
     points
   end
 
   def drop_sand(%__MODULE__{} = cave), do: drop_sand(cave, cave.start)
 
-  def drop_sand(%__MODULE__{height: h, width: x0..x1} = cave, {sx, sy})
-      when sx not in x0..x1 or sy >= h,
-      do: {:fall_out, cave}
+  def drop_sand(%__MODULE__{height: h} = cave, {_, sy} = p)
+      when sy >= h,
+      do: {p, struct(cave, map: Map.put(cave.map, p, :sand))}
 
-  def drop_sand(%__MODULE__{} = cave, {sx, sy}) do
+  def drop_sand(%__MODULE__{map: map} = cave, {sx, sy} = p) do
     cond do
-      {sx, sy + 1} not in cave.occupied -> drop_sand(cave, {sx, sy + 1})
-      {sx - 1, sy + 1} not in cave.occupied -> drop_sand(cave, {sx - 1, sy + 1})
-      {sx + 1, sy + 1} not in cave.occupied -> drop_sand(cave, {sx + 1, sy + 1})
-      true -> {{sx, sy}, struct(cave, occupied: MapSet.put(cave.occupied, {sx, sy}))}
+      not Map.has_key?(map, {sx, sy + 1}) -> drop_sand(cave, {sx, sy + 1})
+      not Map.has_key?(map, {sx - 1, sy + 1}) -> drop_sand(cave, {sx - 1, sy + 1})
+      not Map.has_key?(map, {sx + 1, sy + 1}) -> drop_sand(cave, {sx + 1, sy + 1})
+      true -> {p, struct(cave, map: Map.put(cave.map, p, :sand))}
     end
   end
-end
 
-defimpl Kino.Render, for: Cave do
-  def to_livebook(%@for{} = cave) do
-    x0..x1 = cave.width
+  def to_image(%__MODULE__{} = cave) do
+    {{{x0, _}, _}, {{x1, _}, _}} = Enum.min_max_by(cave.map, fn {{x, _}, _} -> x end)
     {sx, sy} = cave.start
     image = Image.new!(x1 - x0 + 3, cave.height + 3)
 
@@ -122,23 +117,28 @@ defimpl Kino.Render, for: Cave do
       Image.mutate(image, fn im ->
         Image.Draw.point(im, sx - x0 + 1, sy + 1, color: :red)
 
-        for {x, y} <- cave.occupied do
-          Image.Draw.point(im, x - x0 + 1, y + 1, color: :tan)
-        end
-
-        for {x, y} <- cave.map do
-          Image.Draw.point(im, x - x0 + 1, y + 1, color: :white)
-        end
+        cave.map
+        |> Enum.sort()
+        |> Enum.each(fn {{x, y}, type} ->
+          case type do
+            :rock -> Image.Draw.point(im, x - x0 + 1, y + 1, color: :white)
+            :sand -> Image.Draw.point(im, x - x0 + 1, y + 1, color: :tan)
+          end
+        end)
 
         :ok
       end)
 
-    buf =
-      image
-      |> Image.resize!(4, interpolate: :nearest)
-      |> Image.write!(:memory, suffix: ".png")
+    image
+  end
+end
 
-    Kino.Output.image(buf, "image/png")
+defimpl Kino.Render, for: Cave do
+  def to_livebook(%@for{} = cave) do
+    cave
+    |> @for.to_image()
+    |> Image.resize!(4, interpolate: :nearest)
+    |> Kino.Render.to_livebook()
   end
 end
 ```
@@ -146,19 +146,38 @@ end
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, Kino.Render.Cave, <<70, 79, 82, 49, 0, 0, 16, ...>>, {:to_livebook, 1}}
+{:module, Kino.Render.Cave, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:to_livebook, 1}}
 ```
 
 ```elixir
 cave = Cave.parse(puzzle_input)
+
+floor = cave.height + 1
+
+cave = struct(cave, height: floor)
 ```
 
 ## Task 1
 
 ```elixir
-Stream.unfold(cave, &Cave.drop_sand/1)
-|> Enum.take_while(&(&1 != :fall_out))
-|> length()
+frame = Kino.Frame.new() |> Kino.render()
+
+image = Cave.to_image(cave)
+
+cave
+|> Stream.unfold(fn cave ->
+  {_, new_cave} = ret = Cave.drop_sand(cave)
+
+  {ret, new_cave}
+end)
+|> Enum.reduce_while(0, fn {{_x, y}, cave}, acc ->
+  if y < cave.height do
+    {:cont, acc + 1}
+  else
+    Kino.Frame.render(frame, Image.resize!(Cave.to_image(cave), 4, interpolate: :nearest))
+    {:halt, acc}
+  end
+end)
 ```
 
 <!-- livebook:{"output":true} -->
@@ -170,20 +189,37 @@ Stream.unfold(cave, &Cave.drop_sand/1)
 ## Task 2
 
 ```elixir
-floor_y = cave.height + 2
+{grains, pyramid} =
+  Stream.unfold(cave, fn cave ->
+    {_, new_cave} = ret = Cave.drop_sand(cave)
 
-floor = for x <- 0..(cave.width.last * 2), into: MapSet.new(), do: {x, floor_y}
+    {ret, new_cave}
+  end)
+  |> Enum.reduce_while(0, fn {p, cave}, acc ->
+    if p != {500, 0} do
+      {:cont, acc + 1}
+    else
+      {:halt, {acc + 1, cave}}
+    end
+  end)
 
-cave = Cave.add_line(cave, floor)
-
-Stream.unfold(cave, &Cave.drop_sand/1)
-|> Enum.take_while(&(&1 != cave.start))
-|> length()
-|> then(&(&1 + 1))
+grains
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
 26686
+```
+
+```elixir
+Kino.render(pyramid)
+
+:ok
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
 ```

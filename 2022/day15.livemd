@@ -16,7 +16,7 @@ Mix.install([
 
 ## Section
 
-<!-- livebook:{"attrs":{"day":"15","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"day":"15","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 {:ok, puzzle_input} =
@@ -107,6 +107,13 @@ defmodule RangeSet do
 
     a
   end
+
+  def continuous?(%__MODULE__{ranges: []}), do: true
+  def continuous?(%__MODULE__{ranges: [_]}), do: true
+  def continuous?(%__MODULE__{ranges: _}), do: false
+
+  def gaps(%__MODULE__{ranges: []} = set), do: set
+  def gaps(%__MODULE__{ranges: [_]}), do: %__MODULE__{ranges: []}
 
   def gaps(%__MODULE__{ranges: ranges}) do
     gaps =
@@ -199,7 +206,7 @@ end
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, RangeSet, <<70, 79, 82, 49, 0, 0, 37, ...>>, {:squash, 1}}
+{:module, RangeSet, <<70, 79, 82, 49, 0, 0, 39, ...>>, {:squash, 1}}
 ```
 
 ```elixir
@@ -272,8 +279,15 @@ beacons_at_line =
 
 circles
 |> Beacons.covered_at_line(a_y)
+|> IO.inspect()
 |> RangeSet.remove(beacons_at_line)
 |> RangeSet.length()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%RangeSet{ranges: [-101830..5006266]}
 ```
 
 <!-- livebook:{"output":true} -->
@@ -293,14 +307,20 @@ range = 4_000_000..0//-1
   |> Enum.find_value(fn y ->
     covered = Beacons.covered_at_line(circles, y)
 
-    gaps = RangeSet.gaps(covered)
-
-    if not RangeSet.empty?(gaps) do
+    if not RangeSet.continuous?(covered) do
+      gaps = RangeSet.gaps(covered)
       {y, RangeSet.to_list(gaps)}
     end
   end)
+  |> Kino.render()
 
 x * 4_000_000 + y
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{2650264, [2638485]}
 ```
 
 <!-- livebook:{"output":true} -->

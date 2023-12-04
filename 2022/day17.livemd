@@ -1,0 +1,188 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 17
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+* Getting kino_aoc (https://github.com/ljgago/kino_aoc)
+remote: Enumerating objects: 103, done.        
+remote: Counting objects: 100% (103/103), done.        
+remote: Compressing objects: 100% (68/68), done.        
+remote: Total 103 (delta 40), reused 84 (delta 25), pack-reused 0        
+origin/HEAD set to main
+Resolving Hex dependencies...
+Resolution completed in 0.336s
+New:
+  castore 1.0.3
+  finch 0.16.0
+  hpax 0.1.2
+  jason 1.4.1
+  kino 0.10.0
+  mime 2.0.5
+  mint 1.5.1
+  nimble_options 1.0.2
+  nimble_pool 1.0.0
+  req 0.3.10
+  table 0.1.2
+  telemetry 1.2.1
+* Getting kino (Hex package)
+* Getting req (Hex package)
+* Getting finch (Hex package)
+* Getting jason (Hex package)
+* Getting mime (Hex package)
+* Getting castore (Hex package)
+* Getting mint (Hex package)
+* Getting nimble_options (Hex package)
+* Getting nimble_pool (Hex package)
+* Getting telemetry (Hex package)
+* Getting hpax (Hex package)
+* Getting table (Hex package)
+==> table
+Compiling 5 files (.ex)
+Generated table app
+==> mime
+Compiling 1 file (.ex)
+Generated mime app
+==> nimble_options
+Compiling 3 files (.ex)
+Generated nimble_options app
+==> kino
+Compiling 41 files (.ex)
+Generated kino app
+===> Analyzing applications...
+===> Compiling telemetry
+==> jason
+Compiling 10 files (.ex)
+Generated jason app
+==> hpax
+Compiling 4 files (.ex)
+Generated hpax app
+==> nimble_pool
+Compiling 2 files (.ex)
+Generated nimble_pool app
+==> castore
+Compiling 1 file (.ex)
+Generated castore app
+==> mint
+Compiling 1 file (.erl)
+Compiling 19 files (.ex)
+Generated mint app
+==> finch
+Compiling 13 files (.ex)
+Generated finch app
+==> req
+Compiling 5 files (.ex)
+Generated req app
+==> kino_aoc
+Compiling 3 files (.ex)
+Generated kino_aoc app
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"17","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "17", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ ">><<<>><<<<>>><>><>>><<<>>>><>>><<><<<>>>><<<><<<><<><<<>>>><<><<>>><<<<>><<>><<<><<<<>><<<<><>>><<<<>>><<<>>>><<<>>>><<<<>>><<>>><<>>>><<<<>>>><<<<>><>>>><<<<>>><<>><>>><>>><<<<>>><<>>><>><<<>>>><<>>>><<<>>><<<>>>><<<<><<<><<>>><>><<<<>><>><<><<<<>>><<>>><<<>>>><<<<>>><<>>>><<<<>><>><<<><<>><<<>>>><<<>><<<<>>>><<<><<<<>>><<><>>><<>><<<>>><<<<>>><<>>>><<<>>><<<<>>><<>>>><<<<>><<>>>><<<>>>><<>>><<><<<>>><<<<>>>><<<<>>><<<>>>><<<<>><<<>>>><>>><><<>>><<<><<>>>><<<>>>><<><<<<>>>><<<><<>><<<<>>>><<>>><>>>><<<<>><<>>><<>>><<>><>><><<<<>>>><<<>><<>>><<><<<<>>>><<<<><<<<>>>><><<>>><><>>><<>>><>>><>>>><<>><><<>><>>><<>>>><<>>>><<<<><<<>>>><>><>>>><<<<><<<><<<>>>><<><<>><<<>>><<<<>>><<<<><<>>><<<>>>><<><<<<>><<<<>><<<><>><>>>><><<<>>><<<<><<<<>><>>><<<>><<<<><<<>>>><<<>>>><<<>><<>><<<<>><<<<>><>>>><<>>>><<<<>>><<>>>><<>>>><>><<<>>>><<<<>>><<<<><>>>><<><<<>><<<<>>>><<<<>><>>>><<<>>>><<<<>>>><<<<>>><<<<>><>>><<<<><>>>><<><>>>><>><<>>>><>>>><<>><<>>><<<>>>><<><<<>>>><<><<>><<<<>>><<<>>><<<<>><<<><<<>>><<><<>>>><<<>>><<>>><<<><<<<>>><>>>><<<>>><<<>>>><<><><<>>>><<>>>><<>>>><<>>><<>><<><<<>>><>>><<<<>>>><>>>><<<>><>><<<<>>><<<<>>><<>>><<<<><<<>>><>>>><<>><<<<>><<<<>><<<<><>><<<<>>>><<>>><>><<<>><<>><<<<>><<>>><<<<>>><<<<>>><<><<<>>><<><<<><<>>>><>><<><<<<><<>><<<>>>><><<<<><><><>>><<<>>><<>>><<<>>>><<><<>><<>><<<><<<<>>>><>>>><<>>>><<<>>>><<>>>><<<>><>><<<>>><<>>>><<><<>>>><<<><<<<>>><<<>>>><<<>>><<<><>>><<>>><<<>>>><<<>>>><<<>>>><<<>><>><<<>>><<<<>>>><><<<>>>><<>>>><><>>><<>>>><<>><<>>>><<<>><<<>>>><<>>>><<<<>><<<>><<<>><<>><<<>>><<><>>><<><<><>>>><<<>>>><<<<>><<>>>><<<<>><><<<>>><<<<>><<>>><<<>><<>><<>><>>>><<><<>>>><>>>><<><><<<><<<<>>>><<<<>><<><<><<>>>><>>><<<><<<<><<>><<<><<>><><<><<<>>>><>>>><<>>>><>><><><<<><<><<>>><<<<><<>><<<>>>><<><<<<>>>><<<<>><><<<<>><<>><>><<<<>>>><<>>>><<<<><<<>><<>>><<<>>><>>><<>>>><<<><<<<><<>>>><<<<>><<<>>>><<<>><<<<><<<>><<<<>><<<>>>><<>>>><><>>><>>><<<>>>><<>>><<<>><>>>><<<>>>><<<<><<<>>><<<<>><<>><<>><<<><<<<>>><><>><<<><<<>>><<<><<<<>>>><><<<<>><<>><>>><<<>>>><<>>><<<>><<<<>>><<<>><<>><<>><<<<><<>>><>><<>>><<><<<><<<>><<<<>>><>><><<<<>>>><<<><<<>><>><<>>>><<<>>>><<<><<<>>><<>>><><>><<<>><>>>><<<<>>>><<<<>>><<<<>>><<<<>><<<<><><<>><>><<>>><<>><<><<<<>>>><<<<>>>><<>>>><<<<>>>><<>>>><>>>><<>><<><<<><><>><<<><<<<>>>><<<<>><<<>>>><<<<>>>><>>>><><<<<>><>>><<<<><<>>>><>><<<<>><<<><<<>>>><<>><<>>><>>>><<><>>>><<<<><<><<<>>>><<<>>>><<><>><<<>><<<>><<<<><<>>><>><<>>><<>>><>>>><<<>>><<>><<><><<>>>><<<>>><<<>><<<>>><<<>>>><<>>><>>>><>>>><>>><<>>>><<<>><<<<>><<<<>><<>>>><><>>>><<>>>><<<><<<<><<>>>><<<<>><<<<>>>><><<<><>><<<<>>>><>>>><<<<>>>><<><>><<<<><<<>>><<<<>><>><>>>><<>>>><>>><>>>><>><<>>><<<><>><>>>><<<>><<<>><<<<><<<<>>><<<>>><<<>>>><>><>>><<<<>><<<><<>>><>>><<><>>>><<<>>>><<<<>>>><><<<>>><<<<>>><>><>>>><<<>><<>>>><>>><<<<>>>><<<>><<<>>>><<<<>><<<>>><<<<><<<<>>>><><<<>>><<<<>>>><<<<>><<>><<<>>><>>><>><<>>><<<>><><<><>><<>><>><<<><<<<>>><<<>><<<><<<>>>><<>>><<<<><<><<<>>><<<<>>><<>><>>><>>><<<><<>>>><<<>><<<<><<<>><<<<>><>><<>><>>>><>>>><<>>><<<<>>><><><><<<>>><<<>><<>>><<<<>>>><>><<<>>>><<>><<<<>><<>><>><<<>>>><>>><<<<>>><>><<>>><<<>><<<<>>>><<<>><<>><>><<<<>><<<><<<>><>><<<><<<>>>><<<<>>><<><<<<><<<<>>>><<<><>><<><>>><<<><<><<<<>>><<>>>><>><<<<>><<<<>>><<>>>><>>><<<>>><<<>>>><<>>><>>>><<<<><>><<>>>><<<>>><>>><>><<<>>>><<><<<>>>><<><<<<>>>><<<<>>>><><<<<>>>><<<>>>><<><<<>>>><<>><>><>>><<<<><<<>>>><<<<>>>><<<><<>>>><<<><>>>><<<<>>>><>>><<<>><<<<><<>>><<>>><<>>><>>><<<><><><<<>>>><<>>>><<<<><>>>><<<>><<>>>><<><<<<><<<<>><><<<<><<>>>><<<>><<<<>><<>><<><<>>>><<><<<><<<<><<<<>>><<<>>>><<<<>>><><<<>>><>>>><>>><<<<>>><<<>>><<<<><<<<><<>><><<<>>><>>><<><<><<>><<<<>>>><<<>><<<><<<<>>><<<<>>><<>><<<<>><>>>><>><<<><>>>><<<>>><<><<>><<<><<<>><<<<>><<<<>><<<<><>>>><<><<<>><<<><<<>><<<<><<>>>><<<>><<<><<<>>><<<><<<<>>>><<>>>><<<>><<<<>>><<><<<<>>>><<<<>>>><<>><<><<>>><<>>>><<>>><<>>><<<>>>><<>>><<><<>>><<<>><<<<>>><<>>><<<>>><<<>>><>>>><<<>>>><<<<>>>><>>>><<<>>>><<<>>>><>>>><>>>><<<><<>><><>><<>><><<<>>>><><>>>><><<<><>>><<<>>><<<>>><<<<>><<<<><<<>>><<>><<<<>>><<<>><<>>>><<><<<<>>><>><<<>>>><<>><<<<>>><<<<>>><>>>><<>" <> ...}
+```
+
+```elixir
+well = [0, 0, 0, 0, 0, 0, 0]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[0, 0, 0, 0, 0, 0, 0]
+```
+
+```elixir
+defmodule Tetris do
+  def fit(well, n, :dash) when n in 0..3 do
+    max =
+      well
+      |> Enum.drop(n)
+      |> Enum.take(4)
+      |> Enum.max()
+
+    well
+    |> List.replace_at(n, max + 1)
+    |> List.replace_at(n + 1, max + 1)
+    |> List.replace_at(n + 2, max + 1)
+    |> List.replace_at(n + 3, max + 1)
+  end
+
+  def fit(well, n, :plus) when n in 0..4 do
+    bottom =
+      well
+      |> Enum.drop(n)
+      |> Enum.take(3)
+      |> case do
+        [a, b, c] when b < a and b < c -> max(a, b) - 1
+        [_, b, _] -> b
+      end
+
+    well
+    |> List.replace_at(n, bottom + 2)
+    |> List.replace_at(n + 1, bottom + 3)
+    |> List.replace_at(n + 2, bottom + 2)
+  end
+
+  def fit(well, n, :l), do: well
+
+  def fit(well, n, :i), do: well
+
+  def fit(well, n, :o), do: well
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: variable "n" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  2022/day17.livemd#cell:yqwk3yzwldnf4hstvs2cj6qm5r3go5yp:32: Tetris.fit/3
+
+warning: variable "n" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  2022/day17.livemd#cell:yqwk3yzwldnf4hstvs2cj6qm5r3go5yp:34: Tetris.fit/3
+
+warning: variable "n" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  2022/day17.livemd#cell:yqwk3yzwldnf4hstvs2cj6qm5r3go5yp:36: Tetris.fit/3
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Tetris, <<70, 79, 82, 49, 0, 0, 10, ...>>, {:fit, 3}}
+```
+
+```elixir
+Tetris.fit([2, 1, 2, 0, 0, 0, 0], 0, :plus)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[3, 4, 3, 0, 0, 0, 0]
+```

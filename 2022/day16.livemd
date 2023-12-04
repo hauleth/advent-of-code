@@ -1,0 +1,985 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 16
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"},
+  {:libgraph, github: "hauleth/libgraph", ref: "perf/bellman-ford-implementation"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Setup
+
+<!-- livebook:{"attrs":{"day":"16","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "16", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "Valve QJ has flow rate=11; tunnels lead to valves HB, GL\nValve VZ has flow rate=10; tunnel leads to valve NE\nValve TX has flow rate=19; tunnels lead to valves MG, OQ, HM\nValve ZI has flow rate=5; tunnels lead to valves BY, ON, RU, LF, JR\nValve IH has flow rate=0; tunnels lead to valves YB, QS\nValve QS has flow rate=22; tunnel leads to valve IH\nValve QB has flow rate=0; tunnels lead to valves QX, ES\nValve NX has flow rate=0; tunnels lead to valves UH, OP\nValve PJ has flow rate=0; tunnels lead to valves OC, UH\nValve OR has flow rate=6; tunnels lead to valves QH, BH, HB, JD\nValve OC has flow rate=7; tunnels lead to valves IZ, JR, TA, ZH, PJ\nValve UC has flow rate=0; tunnels lead to valves AA, BY\nValve QX has flow rate=0; tunnels lead to valves AA, QB\nValve IZ has flow rate=0; tunnels lead to valves OC, SX\nValve AG has flow rate=13; tunnels lead to valves NW, GL, SM\nValve ON has flow rate=0; tunnels lead to valves MO, ZI\nValve XT has flow rate=18; tunnels lead to valves QZ, PG\nValve AX has flow rate=0; tunnels lead to valves UH, MO\nValve JD has flow rate=0; tunnels lead to valves OR, SM\nValve HM has flow rate=0; tunnels lead to valves TX, QH\nValve LF has flow rate=0; tunnels lead to valves ZI, UH\nValve QH has flow rate=0; tunnels lead to valves OR, HM\nValve RT has flow rate=21; tunnel leads to valve PG\nValve NE has flow rate=0; tunnels lead to valves VZ, TA\nValve OQ has flow rate=0; tunnels lead to valves TX, GE\nValve AA has flow rate=0; tunnels lead to valves QZ, UC, OP, QX, EH\nValve UH has flow rate=17; tunnels lead to valves PJ, NX, AX, LF\nValve GE has flow rate=0; tunnels lead to valves YB, OQ\nValve EH has flow rate=0; tunnels lead to valves AA, MO\nValve MG has flow rate=0; tunnels lead to valves TX, NW\nValve YB has flow rate=20; tunnels lead to valves IH, GE, XG\nValve MO has flow rate=15; tunnels lead to valves EH, ON, AX, ZH, CB\nValve JR has flow rate=0; tunnels lead to valves ZI, OC\nValve GL has flow rate=0; tunnels lead to valves AG, QJ\nValve SM has flow rate=0; tunnels lead to valves JD, AG\nValve HB has flow rate=0; tunnels lead to valves OR, QJ\nValve TA has flow rate=0; tunnels lead to valves OC, NE\nValve PG has flow rate=0; tunnels lead to valves RT, XT\nValve XG has flow rate=0; tunnels lead to valves CB, YB\nValve ES has flow rate=9; tunnels lead to valves QB, FL\nValve BH has flow rate=0; tunnels lead to valves RU, OR\nValve FL has flow rate=0; tunnels lead to valves SX, ES\nValve CB has flow rate=0; tunnels lead to valves MO, XG\nValve QZ has flow rate=0; tunnels lead to valves AA, XT\nValve BY has flow rate=0; tunnels lead to valves UC, ZI\nValve ZH has flow rate=0; tunnels lead to valves MO, OC\nValve OP has flow rate=0; tunnels lead to valves NX, AA\nValve NW has flow rate=0; tunnels lead to valves MG, AG\nValve RU has flow rate=0; tunnels lead to valves ZI, BH\nValve SX has flow rate=16; tunnels lead to valves IZ, FL"}
+```
+
+```elixir
+# puzzle_input = """
+# Valve AA has flow rate=0; tunnels lead to valves DD, II, BB
+# Valve BB has flow rate=13; tunnels lead to valves CC, AA
+# Valve CC has flow rate=2; tunnels lead to valves DD, BB
+# Valve DD has flow rate=20; tunnels lead to valves CC, AA, EE
+# Valve EE has flow rate=3; tunnels lead to valves FF, DD
+# Valve FF has flow rate=0; tunnels lead to valves EE, GG
+# Valve GG has flow rate=0; tunnels lead to valves FF, HH
+# Valve HH has flow rate=22; tunnel leads to valve GG
+# Valve II has flow rate=0; tunnels lead to valves AA, JJ
+# Valve JJ has flow rate=21; tunnel leads to valve II
+# """
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+nil
+```
+
+```elixir
+{{start, _}, valves} =
+  valves =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Kino.render()
+  |> Enum.map(fn line ->
+    %{
+      "name" => name,
+      "rate" => rate,
+      "routes" => routes
+    } =
+      Regex.named_captures(
+        ~r/Valve (?<name>..).*rate=(?<rate>\d+);.*valves? (?<routes>.*)$/,
+        line
+      )
+
+    {name, %{rate: String.to_integer(rate), routes: String.split(routes, ~r/,\s*/, trim: true)}}
+  end)
+  |> then(&{hd(&1), Map.new(&1)})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["Valve QJ has flow rate=11; tunnels lead to valves HB, GL",
+ "Valve VZ has flow rate=10; tunnel leads to valve NE",
+ "Valve TX has flow rate=19; tunnels lead to valves MG, OQ, HM",
+ "Valve ZI has flow rate=5; tunnels lead to valves BY, ON, RU, LF, JR",
+ "Valve IH has flow rate=0; tunnels lead to valves YB, QS",
+ "Valve QS has flow rate=22; tunnel leads to valve IH",
+ "Valve QB has flow rate=0; tunnels lead to valves QX, ES",
+ "Valve NX has flow rate=0; tunnels lead to valves UH, OP",
+ "Valve PJ has flow rate=0; tunnels lead to valves OC, UH",
+ "Valve OR has flow rate=6; tunnels lead to valves QH, BH, HB, JD",
+ "Valve OC has flow rate=7; tunnels lead to valves IZ, JR, TA, ZH, PJ",
+ "Valve UC has flow rate=0; tunnels lead to valves AA, BY",
+ "Valve QX has flow rate=0; tunnels lead to valves AA, QB",
+ "Valve IZ has flow rate=0; tunnels lead to valves OC, SX",
+ "Valve AG has flow rate=13; tunnels lead to valves NW, GL, SM",
+ "Valve ON has flow rate=0; tunnels lead to valves MO, ZI",
+ "Valve XT has flow rate=18; tunnels lead to valves QZ, PG",
+ "Valve AX has flow rate=0; tunnels lead to valves UH, MO",
+ "Valve JD has flow rate=0; tunnels lead to valves OR, SM",
+ "Valve HM has flow rate=0; tunnels lead to valves TX, QH",
+ "Valve LF has flow rate=0; tunnels lead to valves ZI, UH",
+ "Valve QH has flow rate=0; tunnels lead to valves OR, HM",
+ "Valve RT has flow rate=21; tunnel leads to valve PG",
+ "Valve NE has flow rate=0; tunnels lead to valves VZ, TA",
+ "Valve OQ has flow rate=0; tunnels lead to valves TX, GE",
+ "Valve AA has flow rate=0; tunnels lead to valves QZ, UC, OP, QX, EH",
+ "Valve UH has flow rate=17; tunnels lead to valves PJ, NX, AX, LF",
+ "Valve GE has flow rate=0; tunnels lead to valves YB, OQ",
+ "Valve EH has flow rate=0; tunnels lead to valves AA, MO",
+ "Valve MG has flow rate=0; tunnels lead to valves TX, NW",
+ "Valve YB has flow rate=20; tunnels lead to valves IH, GE, XG",
+ "Valve MO has flow rate=15; tunnels lead to valves EH, ON, AX, ZH, CB",
+ "Valve JR has flow rate=0; tunnels lead to valves ZI, OC",
+ "Valve GL has flow rate=0; tunnels lead to valves AG, QJ",
+ "Valve SM has flow rate=0; tunnels lead to valves JD, AG",
+ "Valve HB has flow rate=0; tunnels lead to valves OR, QJ",
+ "Valve TA has flow rate=0; tunnels lead to valves OC, NE",
+ "Valve PG has flow rate=0; tunnels lead to valves RT, XT",
+ "Valve XG has flow rate=0; tunnels lead to valves CB, YB",
+ "Valve ES has flow rate=9; tunnels lead to valves QB, FL",
+ "Valve BH has flow rate=0; tunnels lead to valves RU, OR",
+ "Valve FL has flow rate=0; tunnels lead to valves SX, ES",
+ "Valve CB has flow rate=0; tunnels lead to valves MO, XG",
+ "Valve QZ has flow rate=0; tunnels lead to valves AA, XT",
+ "Valve BY has flow rate=0; tunnels lead to valves UC, ZI",
+ "Valve ZH has flow rate=0; tunnels lead to valves MO, OC",
+ "Valve OP has flow rate=0; tunnels lead to valves NX, AA",
+ "Valve NW has flow rate=0; tunnels lead to valves MG, AG",
+ "Valve RU has flow rate=0; tunnels lead to valves ZI, BH",
+ "Valve SX has flow rate=16; tunnels lead to valves IZ, FL"]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{{"QJ", %{rate: 11, routes: ["HB", "GL"]}},
+ %{
+   "CB" => %{rate: 0, routes: ["MO", "XG"]},
+   "EH" => %{rate: 0, routes: ["AA", "MO"]},
+   "YB" => %{rate: 20, routes: ["IH", "GE", "XG"]},
+   "ON" => %{rate: 0, routes: ["MO", "ZI"]},
+   "ES" => %{rate: 9, routes: ["QB", "FL"]},
+   "XG" => %{rate: 0, routes: ["CB", "YB"]},
+   "TX" => %{rate: 19, routes: ["MG", "OQ", "HM"]},
+   "RT" => %{rate: 21, routes: ["PG"]},
+   "GL" => %{rate: 0, routes: ["AG", "QJ"]},
+   "XT" => %{rate: 18, routes: ["QZ", "PG"]},
+   "BY" => %{rate: 0, routes: ["UC", "ZI"]},
+   "QJ" => %{rate: 11, routes: ["HB", "GL"]},
+   "QB" => %{rate: 0, routes: ["QX", "ES"]},
+   "QH" => %{rate: 0, routes: ["OR", "HM"]},
+   "SX" => %{rate: 16, routes: ["IZ", "FL"]},
+   "ZI" => %{rate: 5, routes: ["BY", "ON", "RU", "LF", "JR"]},
+   "OC" => %{rate: 7, routes: ["IZ", "JR", "TA", "ZH", "PJ"]},
+   "NW" => %{rate: 0, routes: ["MG", "AG"]},
+   "UH" => %{rate: 17, routes: ["PJ", "NX", "AX", "LF"]},
+   "VZ" => %{rate: 10, routes: ["NE"]},
+   "MO" => %{rate: 15, routes: ["EH", "ON", "AX", "ZH", "CB"]},
+   "ZH" => %{rate: 0, routes: ["MO", "OC"]},
+   "RU" => %{rate: 0, routes: ["ZI", "BH"]},
+   "FL" => %{rate: 0, routes: ["SX", "ES"]},
+   "SM" => %{rate: 0, routes: ["JD", "AG"]},
+   "AA" => %{rate: 0, routes: ["QZ", "UC", "OP", "QX", "EH"]},
+   "JR" => %{rate: 0, routes: ["ZI", "OC"]},
+   "QS" => %{rate: 22, routes: ["IH"]},
+   "AG" => %{rate: 13, routes: ["NW", "GL", "SM"]},
+   "JD" => %{rate: 0, routes: ["OR", "SM"]},
+   "QZ" => %{rate: 0, routes: ["AA", "XT"]},
+   "MG" => %{rate: 0, routes: ["TX", "NW"]},
+   "UC" => %{rate: 0, routes: ["AA", "BY"]},
+   "AX" => %{rate: 0, routes: ["UH", "MO"]},
+   "HM" => %{rate: 0, routes: ["TX", "QH"]},
+   "LF" => %{rate: 0, routes: ["ZI", "UH"]},
+   "BH" => %{rate: 0, routes: ["RU", "OR"]},
+   "OR" => %{rate: 6, routes: ["QH", "BH", "HB", "JD"]},
+   "GE" => %{rate: 0, routes: ["YB", "OQ"]},
+   "QX" => %{rate: 0, routes: ["AA", "QB"]},
+   "IZ" => %{rate: 0, routes: ["OC", "SX"]},
+   "PG" => %{rate: 0, routes: ["RT", "XT"]},
+   "NX" => %{rate: 0, routes: ["UH", "OP"]},
+   "OP" => %{rate: 0, routes: ["NX", "AA"]},
+   "TA" => %{rate: 0, routes: ["OC", ...]},
+   "IH" => %{rate: 0, routes: [...]},
+   "HB" => %{rate: 0, ...},
+   "PJ" => %{...},
+   ...
+ }}
+```
+
+```elixir
+graph = Graph.new(type: :directed)
+
+edges =
+  Enum.flat_map(valves, fn {a, %{routes: routes}} ->
+    for b <- routes, p <- [{a, b, weight: 1}, {b, a, weight: 1}], do: p
+  end)
+
+graph =
+  Graph.add_edges(graph, edges)
+  |> Kino.render()
+
+paths =
+  for v <- Graph.vertices(graph), into: %{} do
+    routes =
+      graph
+      |> Graph.bellman_ford(v)
+      |> Enum.filter(fn {k, _} -> valves[k].rate > 0 and k != v end)
+      |> Map.new()
+
+    {v, routes}
+  end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+#Graph<type: directed, vertices: ["LF", "CB", "AX", "ZI", "ZH", "VZ", "AA", "UH", "OC", "IH", "FL",
+ "JR", "QB", "EH", "QH", "ON", "TA", "PJ", "SX", "YB", "UC", "BH", "MO", "OQ", "HM", "JD", "OR",
+ "NE", "QS", "XT", "IZ", "QZ", "BY", "PG", "NW", "HB", "AG", "QJ", "RT", "TX", "GE", "QX", "XG",
+ "NX", "GL", "RU", "SM", "ES", "MG",
+ "OP"], edges: ["LF" -> "UH", "LF" -> "ZI", "CB" -> "MO", "CB" -> "XG", "AX" -> "UH", "AX" -> "MO", "ZI" -> "BY", "ZI" -> "RU", "ZI" -> "ON", "ZI" -> "LF", "ZI" -> "JR", "ZH" -> "OC", "ZH" -> "MO", "VZ" -> "NE", "AA" -> "UC", "AA" -> "EH", "AA" -> "QX", "AA" -> "OP", "AA" -> "QZ", "UH" -> "LF", "UH" -> "PJ", "UH" -> "AX", "UH" -> "NX", "OC" -> "ZH", "OC" -> "IZ", "OC" -> "TA", "OC" -> "PJ", "OC" -> "JR", "IH" -> "YB", "IH" -> "QS", "FL" -> "SX", "FL" -> "ES", "JR" -> "OC", "JR" -> "ZI", "QB" -> "QX", "QB" -> "ES", "EH" -> "MO", "EH" -> "AA", "QH" -> "OR", "QH" -> "HM", "ON" -> "MO", "ON" -> "ZI", "TA" -> "OC", "TA" -> "NE", "PJ" -> "OC", "PJ" -> "UH", "SX" -> "IZ", "SX" -> "FL", "YB" -> "GE", "YB" -> "IH", "YB" -> "XG", "UC" -> "BY", "UC" -> "AA", "BH" -> "OR", "BH" -> "RU", "MO" -> "ZH", "MO" -> "EH", "MO" -> "ON", "MO" -> "CB", "MO" -> "AX", "OQ" -> "GE", "OQ" -> "TX", "HM" -> "TX", "HM" -> "QH", "JD" -> "OR", "JD" -> "SM", "OR" -> "BH", "OR" -> "HB", "OR" -> "JD", "OR" -> "QH", "NE" -> "TA", "NE" -> "VZ", "QS" -> "IH", "XT" -> "QZ", "XT" -> "PG", "IZ" -> "OC", "IZ" -> "SX", "QZ" -> "AA", "QZ" -> "XT", "BY" -> "UC", "BY" -> "ZI", "PG" -> "RT", "PG" -> "XT", "NW" -> "MG", "NW" -> "AG", "HB" -> "OR", "HB" -> "QJ", "AG" -> "SM", "AG" -> "GL", "AG" -> "NW", "QJ" -> "GL", "QJ" -> "HB", "RT" -> "PG", "TX" -> "OQ", "TX" -> "MG", "TX" -> "HM", "GE" -> "OQ", "GE" -> "YB", "QX" -> "QB", "QX" -> "AA", "XG" -> "YB", "XG" -> "CB", "NX" -> "UH", "NX" -> "OP", "GL" -> "QJ", "GL" -> "AG", "RU" -> "BH", "RU" -> "ZI", "SM" -> "AG", "SM" -> "JD", "ES" -> "QB", "ES" -> "FL", "MG" -> "NW", "MG" -> "TX", "OP" -> "AA", "OP" -> "NX"]>
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  "CB" => %{
+    "AG" => 8,
+    "ES" => 6,
+    "MO" => 1,
+    "OC" => 3,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 4,
+    "RT" => 7,
+    "SX" => 5,
+    "TX" => 5,
+    "UH" => 3,
+    "VZ" => 6,
+    "XT" => 5,
+    "YB" => 2,
+    "ZI" => 3
+  },
+  "EH" => %{
+    "AG" => 9,
+    "ES" => 4,
+    "MO" => 1,
+    "OC" => 3,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 6,
+    "RT" => 5,
+    "SX" => 5,
+    "TX" => 7,
+    "UH" => 3,
+    "VZ" => 6,
+    "XT" => 3,
+    "YB" => 4,
+    "ZI" => 3
+  },
+  "YB" => %{
+    "AG" => 6,
+    "ES" => 8,
+    "MO" => 3,
+    "OC" => 5,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 2,
+    "RT" => 9,
+    "SX" => 7,
+    "TX" => 3,
+    "UH" => 5,
+    "VZ" => 8,
+    "XT" => 7,
+    "ZI" => 5
+  },
+  "ON" => %{
+    "AG" => 7,
+    "ES" => 6,
+    "MO" => 1,
+    "OC" => 3,
+    "OR" => 4,
+    "QJ" => 6,
+    "QS" => 6,
+    "RT" => 7,
+    "SX" => 5,
+    "TX" => 7,
+    "UH" => 3,
+    "VZ" => 6,
+    "XT" => 5,
+    "YB" => 4,
+    "ZI" => 1
+  },
+  "ES" => %{
+    "AG" => 12,
+    "MO" => 5,
+    "OC" => 4,
+    "OR" => 9,
+    "QJ" => 11,
+    "QS" => 10,
+    "RT" => 7,
+    "SX" => 2,
+    "TX" => 11,
+    "UH" => 6,
+    "VZ" => 7,
+    "XT" => 5,
+    "YB" => 8,
+    "ZI" => 6
+  },
+  "XG" => %{
+    "AG" => 7,
+    "ES" => 7,
+    "MO" => 2,
+    "OC" => 4,
+    "OR" => 7,
+    "QJ" => 9,
+    "QS" => 3,
+    "RT" => 8,
+    "SX" => 6,
+    "TX" => 4,
+    "UH" => 4,
+    "VZ" => 7,
+    "XT" => 6,
+    "YB" => 1,
+    "ZI" => 4
+  },
+  "TX" => %{
+    "AG" => 3,
+    "ES" => 11,
+    "MO" => 6,
+    "OC" => 8,
+    "OR" => 3,
+    "QJ" => 5,
+    "QS" => 5,
+    "RT" => 12,
+    "SX" => 10,
+    "UH" => 8,
+    "VZ" => 11,
+    "XT" => 10,
+    "YB" => 3,
+    "ZI" => 6
+  },
+  "RT" => %{
+    "AG" => 13,
+    "ES" => 7,
+    "MO" => 6,
+    "OC" => 8,
+    "OR" => 10,
+    "QJ" => 12,
+    "QS" => 11,
+    "SX" => 9,
+    "TX" => 12,
+    "UH" => 7,
+    "VZ" => 11,
+    "XT" => 2,
+    "YB" => 9,
+    "ZI" => 7
+  },
+  "GL" => %{
+    "AG" => 1,
+    "ES" => 12,
+    "MO" => 8,
+    "OC" => 8,
+    "OR" => 3,
+    "QJ" => 1,
+    "QS" => 9,
+    "RT" => 13,
+    "SX" => 10,
+    "TX" => 4,
+    "UH" => 8,
+    "VZ" => 11,
+    "XT" => 11,
+    "YB" => 7,
+    "ZI" => 6
+  },
+  "XT" => %{
+    "AG" => 11,
+    "ES" => 5,
+    "MO" => 4,
+    "OC" => 6,
+    "OR" => 8,
+    "QJ" => 10,
+    "QS" => 9,
+    "RT" => 2,
+    "SX" => 7,
+    "TX" => 10,
+    "UH" => 5,
+    "VZ" => 9,
+    "YB" => 7,
+    "ZI" => 5
+  },
+  "BY" => %{
+    "AG" => 7,
+    "ES" => 5,
+    "MO" => 3,
+    "OC" => 3,
+    "OR" => 4,
+    "QJ" => 6,
+    "QS" => 8,
+    "RT" => 6,
+    "SX" => 5,
+    "TX" => 7,
+    "UH" => 3,
+    "VZ" => 6,
+    "XT" => 4,
+    "YB" => 6,
+    "ZI" => 1
+  },
+  "QJ" => %{
+    "AG" => 2,
+    "ES" => 11,
+    "MO" => 7,
+    "OC" => 7,
+    "OR" => 2,
+    "QS" => 10,
+    "RT" => 12,
+    "SX" => 9,
+    "TX" => 5,
+    "UH" => 7,
+    "VZ" => 10,
+    "XT" => 10,
+    "YB" => 8,
+    "ZI" => 5
+  },
+  "QB" => %{
+    "AG" => 11,
+    "ES" => 1,
+    "MO" => 4,
+    "OC" => 5,
+    "OR" => 8,
+    "QJ" => 10,
+    "QS" => 9,
+    "RT" => 6,
+    "SX" => 3,
+    "TX" => 10,
+    "UH" => 5,
+    "VZ" => 8,
+    "XT" => 4,
+    "YB" => 7,
+    "ZI" => 5
+  },
+  "QH" => %{
+    "AG" => 4,
+    "ES" => 10,
+    "MO" => 6,
+    "OC" => 6,
+    "OR" => 1,
+    "QJ" => 3,
+    "QS" => 7,
+    "RT" => 11,
+    "SX" => 8,
+    "TX" => 2,
+    "UH" => 6,
+    "VZ" => 9,
+    "XT" => 9,
+    "YB" => 5,
+    "ZI" => 4
+  },
+  "SX" => %{
+    "AG" => 10,
+    "ES" => 2,
+    "MO" => 4,
+    "OC" => 2,
+    "OR" => 7,
+    "QJ" => 9,
+    "QS" => 9,
+    "RT" => 9,
+    "TX" => 10,
+    "UH" => 4,
+    "VZ" => 5,
+    "XT" => 7,
+    "YB" => 7,
+    "ZI" => 4
+  },
+  "ZI" => %{
+    "AG" => 6,
+    "ES" => 6,
+    "MO" => 2,
+    "OC" => 2,
+    "OR" => 3,
+    "QJ" => 5,
+    "QS" => 7,
+    "RT" => 7,
+    "SX" => 4,
+    "TX" => 6,
+    "UH" => 2,
+    "VZ" => 5,
+    "XT" => 5,
+    "YB" => 5
+  },
+  "OC" => %{
+    "AG" => 8,
+    "ES" => 4,
+    "MO" => 2,
+    "OR" => 5,
+    "QJ" => 7,
+    "QS" => 7,
+    "RT" => 8,
+    "SX" => 2,
+    "TX" => 8,
+    "UH" => 2,
+    "VZ" => 3,
+    "XT" => 6,
+    "YB" => 5,
+    "ZI" => 2
+  },
+  "NW" => %{
+    "AG" => 1,
+    "ES" => 13,
+    "MO" => 8,
+    "OC" => 9,
+    "OR" => 4,
+    "QJ" => 3,
+    "QS" => 7,
+    "RT" => 14,
+    "SX" => 11,
+    "TX" => 2,
+    "UH" => 9,
+    "VZ" => 12,
+    "XT" => 12,
+    "YB" => 5,
+    "ZI" => 7
+  },
+  "UH" => %{
+    "AG" => 8,
+    "ES" => 6,
+    "MO" => 2,
+    "OC" => 2,
+    "OR" => 5,
+    "QJ" => 7,
+    "QS" => 7,
+    "RT" => 7,
+    "SX" => 4,
+    "TX" => 8,
+    "VZ" => 5,
+    "XT" => 5,
+    "YB" => 5,
+    "ZI" => 2
+  },
+  "VZ" => %{
+    "AG" => 11,
+    "ES" => 7,
+    "MO" => 5,
+    "OC" => 3,
+    "OR" => 8,
+    "QJ" => 10,
+    "QS" => 10,
+    "RT" => 11,
+    "SX" => 5,
+    "TX" => 11,
+    "UH" => 5,
+    "XT" => 9,
+    "YB" => 8,
+    "ZI" => 5
+  },
+  "MO" => %{
+    "AG" => 8,
+    "ES" => 5,
+    "OC" => 2,
+    "OR" => 5,
+    "QJ" => 7,
+    "QS" => 5,
+    "RT" => 6,
+    "SX" => 4,
+    "TX" => 6,
+    "UH" => 2,
+    "VZ" => 5,
+    "XT" => 4,
+    "YB" => 3,
+    "ZI" => 2
+  },
+  "ZH" => %{
+    "AG" => 9,
+    "ES" => 5,
+    "MO" => 1,
+    "OC" => 1,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 6,
+    "RT" => 7,
+    "SX" => 3,
+    "TX" => 7,
+    "UH" => 3,
+    "VZ" => 4,
+    "XT" => 5,
+    "YB" => 4,
+    "ZI" => 3
+  },
+  "RU" => %{
+    "AG" => 5,
+    "ES" => 7,
+    "MO" => 3,
+    "OC" => 3,
+    "OR" => 2,
+    "QJ" => 4,
+    "QS" => 8,
+    "RT" => 8,
+    "SX" => 5,
+    "TX" => 5,
+    "UH" => 3,
+    "VZ" => 6,
+    "XT" => 6,
+    "YB" => 6,
+    "ZI" => 1
+  },
+  "FL" => %{
+    "AG" => 11,
+    "ES" => 1,
+    "MO" => 5,
+    "OC" => 3,
+    "OR" => 8,
+    "QJ" => 10,
+    "QS" => 10,
+    "RT" => 8,
+    "SX" => 1,
+    "TX" => 11,
+    "UH" => 5,
+    "VZ" => 6,
+    "XT" => 6,
+    "YB" => 8,
+    "ZI" => 5
+  },
+  "SM" => %{
+    "AG" => 1,
+    "ES" => 11,
+    "MO" => 7,
+    "OC" => 7,
+    "OR" => 2,
+    "QJ" => 3,
+    "QS" => 9,
+    "RT" => 12,
+    "SX" => 9,
+    "TX" => 4,
+    "UH" => 7,
+    "VZ" => 10,
+    "XT" => 10,
+    "YB" => 7,
+    "ZI" => 5
+  },
+  "AA" => %{
+    "AG" => 9,
+    "ES" => 3,
+    "MO" => 2,
+    "OC" => 4,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 7,
+    "RT" => 4,
+    "SX" => 5,
+    "TX" => 8,
+    "UH" => 3,
+    "VZ" => 7,
+    "XT" => 2,
+    "YB" => 5,
+    "ZI" => 3
+  },
+  "JR" => %{
+    "AG" => 7,
+    "ES" => 5,
+    "MO" => 3,
+    "OC" => 1,
+    "OR" => 4,
+    "QJ" => 6,
+    "QS" => 8,
+    "RT" => 8,
+    "SX" => 3,
+    "TX" => 7,
+    "UH" => 3,
+    "VZ" => 4,
+    "XT" => 6,
+    "YB" => 6,
+    "ZI" => 1
+  },
+  "QS" => %{
+    "AG" => 8,
+    "ES" => 10,
+    "MO" => 5,
+    "OC" => 7,
+    "OR" => 8,
+    "QJ" => 10,
+    "RT" => 11,
+    "SX" => 9,
+    "TX" => 5,
+    "UH" => 7,
+    "VZ" => 10,
+    "XT" => 9,
+    "YB" => 2,
+    "ZI" => 7
+  },
+  "AG" => %{
+    "ES" => 12,
+    "MO" => 8,
+    "OC" => 8,
+    "OR" => 3,
+    "QJ" => 2,
+    "QS" => 8,
+    "RT" => 13,
+    "SX" => 10,
+    "TX" => 3,
+    "UH" => 8,
+    "VZ" => 11,
+    "XT" => 11,
+    "YB" => 6,
+    "ZI" => 6
+  },
+  "JD" => %{
+    "AG" => 2,
+    "ES" => 10,
+    "MO" => 6,
+    "OC" => 6,
+    "OR" => 1,
+    "QJ" => 3,
+    "QS" => 9,
+    "RT" => 11,
+    "SX" => 8,
+    "TX" => 4,
+    "UH" => 6,
+    "VZ" => 9,
+    "XT" => 9,
+    "YB" => 7,
+    "ZI" => 4
+  },
+  "QZ" => %{
+    "AG" => 10,
+    "ES" => 4,
+    "MO" => 3,
+    "OC" => 5,
+    "OR" => 7,
+    "QJ" => 9,
+    "QS" => 8,
+    "RT" => 3,
+    "SX" => 6,
+    "TX" => 9,
+    "UH" => 4,
+    "VZ" => 8,
+    "XT" => 1,
+    "YB" => 6,
+    "ZI" => 4
+  },
+  "MG" => %{
+    "AG" => 2,
+    "ES" => 12,
+    "MO" => 7,
+    "OC" => 9,
+    "OR" => 4,
+    "QJ" => 4,
+    "QS" => 6,
+    "RT" => 13,
+    "SX" => 11,
+    "TX" => 1,
+    "UH" => 9,
+    "VZ" => 12,
+    "XT" => 11,
+    "YB" => 4,
+    "ZI" => 7
+  },
+  "UC" => %{
+    "AG" => 8,
+    "ES" => 4,
+    "MO" => 3,
+    "OC" => 4,
+    "OR" => 5,
+    "QJ" => 7,
+    "QS" => 8,
+    "RT" => 5,
+    "SX" => 6,
+    "TX" => 8,
+    "UH" => 4,
+    "VZ" => 7,
+    "XT" => 3,
+    "YB" => 6,
+    "ZI" => 2
+  },
+  "AX" => %{
+    "AG" => 9,
+    "ES" => 6,
+    "MO" => 1,
+    "OC" => 3,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 6,
+    "RT" => 7,
+    "SX" => 5,
+    "TX" => 7,
+    "UH" => 1,
+    "VZ" => 6,
+    "XT" => 5,
+    "YB" => 4,
+    "ZI" => 3
+  },
+  "HM" => %{
+    "AG" => 4,
+    "ES" => 11,
+    "MO" => 7,
+    "OC" => 7,
+    "OR" => 2,
+    "QJ" => 4,
+    "QS" => 6,
+    "RT" => 12,
+    "SX" => 9,
+    "TX" => 1,
+    "UH" => 7,
+    "VZ" => 10,
+    "XT" => 10,
+    "YB" => 4,
+    "ZI" => 5
+  },
+  "LF" => %{
+    "AG" => 7,
+    "ES" => 7,
+    "MO" => 3,
+    "OC" => 3,
+    "OR" => 4,
+    "QJ" => 6,
+    "QS" => 8,
+    "RT" => 8,
+    "SX" => 5,
+    "TX" => 7,
+    "UH" => 1,
+    "VZ" => 6,
+    "XT" => 6,
+    "YB" => 6,
+    ...
+  },
+  "BH" => %{
+    "AG" => 4,
+    "ES" => 8,
+    "MO" => 4,
+    "OC" => 4,
+    "OR" => 1,
+    "QJ" => 3,
+    "QS" => 9,
+    "RT" => 9,
+    "SX" => 6,
+    "TX" => 4,
+    "UH" => 4,
+    "VZ" => 7,
+    "XT" => 7,
+    ...
+  },
+  "OR" => %{
+    "AG" => 3,
+    "ES" => 9,
+    "MO" => 5,
+    "OC" => 5,
+    "QJ" => 2,
+    "QS" => 8,
+    "RT" => 10,
+    "SX" => 7,
+    "TX" => 3,
+    "UH" => 5,
+    "VZ" => 8,
+    "XT" => 8,
+    ...
+  },
+  "GE" => %{
+    "AG" => 5,
+    "ES" => 9,
+    "MO" => 4,
+    "OC" => 6,
+    "OR" => 5,
+    "QJ" => 7,
+    "QS" => 3,
+    "RT" => 10,
+    "SX" => 8,
+    "TX" => 2,
+    "UH" => 6,
+    ...
+  },
+  "QX" => %{
+    "AG" => 10,
+    "ES" => 2,
+    "MO" => 3,
+    "OC" => 5,
+    "OR" => 7,
+    "QJ" => 9,
+    "QS" => 8,
+    "RT" => 5,
+    "SX" => 4,
+    "TX" => 9,
+    ...
+  },
+  "IZ" => %{
+    "AG" => 9,
+    "ES" => 3,
+    "MO" => 3,
+    "OC" => 1,
+    "OR" => 6,
+    "QJ" => 8,
+    "QS" => 8,
+    "RT" => 9,
+    "SX" => 1,
+    ...
+  },
+  "PG" => %{
+    "AG" => 12,
+    "ES" => 6,
+    "MO" => 5,
+    "OC" => 7,
+    "OR" => 9,
+    "QJ" => 11,
+    "QS" => 10,
+    "RT" => 1,
+    ...
+  },
+  "NX" => %{"AG" => 9, "ES" => 5, "MO" => 3, "OC" => 3, "OR" => 6, "QJ" => 8, "QS" => 8, ...},
+  "OP" => %{"AG" => 10, "ES" => 4, "MO" => 3, "OC" => 4, "OR" => 7, "QJ" => 9, ...},
+  "TA" => %{"AG" => 9, "ES" => 5, "MO" => 3, "OC" => 1, "OR" => 6, ...},
+  "IH" => %{"AG" => 7, "ES" => 9, "MO" => 4, "OC" => 6, ...},
+  "HB" => %{"AG" => 3, "ES" => 10, "MO" => 6, ...},
+  "PJ" => %{"AG" => 9, "ES" => 5, ...},
+  "OQ" => %{"AG" => 4, ...},
+  "NE" => %{...}
+}
+```
+
+## Task 1
+
+```elixir
+defmodule Alone do
+  def visit(current, valves, paths, left, opened) when left >= 0 do
+    {left, rate, opened} =
+      case valves[current].rate do
+        0 -> {left, 0, opened}
+        other -> {left - 1, other, Map.put(opened, current, left - 1)}
+      end
+
+    rate = rate * left
+
+    paths[current]
+    |> Enum.map(fn
+      {next, weight} when weight + 1 < left and not is_map_key(opened, next) ->
+        {val, opened} = visit(next, valves, paths, left - weight, opened)
+        {val + rate, opened}
+
+      _ ->
+        {rate, opened}
+    end)
+    |> Enum.max_by(&elem(&1, 0))
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Valves, <<70, 79, 82, 49, 0, 0, 11, ...>>, {:visit, 5}}
+```
+
+```elixir
+{t, v} = Alone.visit("AA", valves, paths, 30, %{})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{1820, %{"AG" => 6, "MO" => 23, "QJ" => 3, "QS" => 16, "TX" => 10, "UH" => 26, "YB" => 19}}
+```
+
+## Task 2
+
+```elixir
+defmodule Alone do
+  def visit(current, valves, paths, left, opened) when left >= 0 do
+    {left, rate, opened} =
+      case valves[current].rate do
+        0 -> {left, 0, opened}
+        other -> {left - 1, other, Map.put(opened, current, left - 1)}
+      end
+
+    rate = rate * left
+
+    paths[current]
+    |> Enum.map(fn
+      {next, weight} when weight + 1 < left and not is_map_key(opened, next) ->
+        {val, opened} = visit(next, valves, paths, left - weight, opened)
+        {val + rate, opened}
+
+      _ ->
+        {rate, opened}
+    end)
+    |> Enum.max_by(&elem(&1, 0))
+  end
+end
+```

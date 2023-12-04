@@ -1,0 +1,230 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 19
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"day":"19","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2022", "19", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "Blueprint 1: Each ore robot costs 3 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 15 clay. Each geode robot costs 2 ore and 8 obsidian.\nBlueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 17 clay. Each geode robot costs 3 ore and 10 obsidian.\nBlueprint 3: Each ore robot costs 2 ore. Each clay robot costs 2 ore. Each obsidian robot costs 2 ore and 20 clay. Each geode robot costs 2 ore and 14 obsidian.\nBlueprint 4: Each ore robot costs 4 ore. Each clay robot costs 4 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 4 ore and 15 obsidian.\nBlueprint 5: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 13 clay. Each geode robot costs 3 ore and 15 obsidian.\nBlueprint 6: Each ore robot costs 2 ore. Each clay robot costs 2 ore. Each obsidian robot costs 2 ore and 15 clay. Each geode robot costs 2 ore and 7 obsidian.\nBlueprint 7: Each ore robot costs 3 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 9 clay. Each geode robot costs 3 ore and 7 obsidian.\nBlueprint 8: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 2 ore and 16 clay. Each geode robot costs 2 ore and 8 obsidian.\nBlueprint 9: Each ore robot costs 2 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 20 clay. Each geode robot costs 4 ore and 18 obsidian.\nBlueprint 10: Each ore robot costs 3 ore. Each clay robot costs 3 ore. Each obsidian robot costs 2 ore and 11 clay. Each geode robot costs 2 ore and 19 obsidian.\nBlueprint 11: Each ore robot costs 4 ore. Each clay robot costs 4 ore. Each obsidian robot costs 2 ore and 7 clay. Each geode robot costs 3 ore and 10 obsidian.\nBlueprint 12: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 11 clay. Each geode robot costs 2 ore and 16 obsidian.\nBlueprint 13: Each ore robot costs 3 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 16 clay. Each geode robot costs 3 ore and 15 obsidian.\nBlueprint 14: Each ore robot costs 4 ore. Each clay robot costs 3 ore. Each obsidian robot costs 4 ore and 18 clay. Each geode robot costs 3 ore and 13 obsidian.\nBlueprint 15: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 13 clay. Each geode robot costs 2 ore and 20 obsidian.\nBlueprint 16: Each ore robot costs 3 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 14 clay. Each geode robot costs 4 ore and 10 obsidian.\nBlueprint 17: Each ore robot costs 4 ore. Each clay robot costs 3 ore. Each obsidian robot costs 2 ore and 17 clay. Each geode robot costs 3 ore and 16 obsidian.\nBlueprint 18: Each ore robot costs 2 ore. Each clay robot costs 4 ore. Each obsidian robot costs 3 ore and 20 clay. Each geode robot costs 2 ore and 17 obsidian.\nBlueprint 19: Each ore robot costs 2 ore. Each clay robot costs 4 ore. Each obsidian robot costs 2 ore and 16 clay. Each geode robot costs 4 ore and 12 obsidian.\nBlueprint 20: Each ore robot costs 3 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 16 clay. Each geode robot costs 3 ore and 20 obsidian.\nBlueprint 21: Each ore robot costs 3 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 18 clay. Each geode robot costs 4 ore and 12 obsidian.\nBlueprint 22: Each ore robot costs 3 ore. Each clay robot costs 4 ore. Each obsidian robot costs 3 ore and 13 clay. Each geode robot costs 3 ore and 19 obsidian.\nBlueprint 23: Each ore robot costs 3 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 18 clay. Each geode robot costs 3 ore and 8 obsidian.\nBlueprint 24: Each ore robot costs 4 ore. Each clay robot costs 3 ore. Each obsidian robot costs 2 ore and 13 clay. Each geode robot costs 2 ore and 9 obsidian.\nBlueprint 25: Each ore robot costs 4 ore. Each clay robot costs 4 ore. Each obsidian robot costs 4 ore and 5 clay. Each geode robot costs 3 ore and 15 obsidian.\nBlueprint 26: Each ore robot costs 4 ore. Each clay robot costs " <> ...}
+```
+
+```elixir
+puzzle_input = """
+Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
+Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.
+"""
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.\nBlueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian.\n"
+```
+
+```elixir
+regex =
+  ~r/ore robot.*(?<ore_ore>\d+) ore.*clay robot.*(?<clay_ore>\d+) ore.*obsidian robot.*(?<obsidian_ore>\d+) ore and (?<obsidian_clay>\d+) clay.*geode robot.*(?<geode_ore>\d+) ore and (?<geode_obsidian>\d+) obsidian/
+
+plans =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Kino.render()
+  |> Enum.map(fn line ->
+    blueprint =
+      Regex.named_captures(regex, line)
+      |> Map.new(fn {k, v} ->
+        {String.to_atom(k), String.to_integer(v)}
+      end)
+
+    %{
+      ore: %{ore: blueprint.ore_ore},
+      clay: %{ore: blueprint.clay_ore},
+      obsidian: %{ore: blueprint.obsidian_ore, clay: blueprint.obsidian_clay},
+      geode: %{ore: blueprint.geode_ore, obsidian: blueprint.geode_obsidian},
+      max: %{
+        ore:
+          Enum.max([
+            blueprint.ore_ore,
+            blueprint.clay_ore,
+            blueprint.obsidian_ore,
+            blueprint.geode_ore
+          ]),
+        clay: blueprint.obsidian_clay,
+        obsidian: blueprint.geode_obsidian
+      }
+    }
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["Blueprint 1: Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.",
+ "Blueprint 2: Each ore robot costs 2 ore. Each clay robot costs 3 ore. Each obsidian robot costs 3 ore and 8 clay. Each geode robot costs 3 ore and 12 obsidian."]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{
+    clay: %{ore: 2},
+    geode: %{obsidian: 7, ore: 2},
+    max: %{clay: 14, obsidian: 7, ore: 4},
+    obsidian: %{clay: 14, ore: 3},
+    ore: %{ore: 4}
+  },
+  %{
+    clay: %{ore: 3},
+    geode: %{obsidian: 12, ore: 3},
+    max: %{clay: 8, obsidian: 12, ore: 3},
+    obsidian: %{clay: 8, ore: 3},
+    ore: %{ore: 2}
+  }
+]
+```
+
+```elixir
+defmodule Blueprint do
+  def produce(plan, time, machines) do
+    produce(plan, time, machines, %{ore: 0, clay: 0, obsidian: 0, geode: 0})
+  end
+
+  def produce(_plan, 0, machines, stash) do
+    %{machines: machines, stash: stash}
+  end
+
+  def produce(plan, time_left, machines, stash) do
+    do_shopping(plan, stash)
+    |> Enum.filter(fn {k, _} -> (machines[k] || 0) < plan.max[k] end)
+    |> Enum.flat_map(fn {machine, new_stash} ->
+      # if machine in [:obsidian, :geode], do: IO.inspect(new_stash)
+      [
+        produce(
+          plan,
+          time_left - 1,
+          add_machine(machine, machines),
+          update_stash(machines, new_stash)
+        )
+      ]
+    end)
+    # |> tap(fn list ->
+    #   Enum.filter(list, & &1.obsidian > 0)
+    #   |> Enum.map(&IO.inspect/1)
+    # end)
+    |> Enum.max_by(& &1.stash.geode)
+  end
+
+  defp add_machine(nil, machines), do: machines
+  defp add_machine(name, machines), do: Map.update(machines, name, 1, &(&1 + 1))
+
+  defp update_stash(machines, stash) do
+    Enum.reduce(machines, stash, fn {k, v}, acc ->
+      Map.update(acc, k, v, &(&1 + v))
+    end)
+  end
+
+  def do_shopping(plan, stash)
+      when stash.ore >= plan.geode.ore and stash.obsidian >= plan.geode.obsidian,
+      do: [{:geode, buy(plan.geode, stash)}]
+
+  def do_shopping(plan, stash)
+      when stash.ore >= plan.obsidian.ore and stash.clay >= plan.obsidian.clay,
+      do: [{:obsidian, buy(plan.obsidian, stash)}, {nil, stash}]
+
+  def do_shopping(plan, stash) do
+    [
+      {nil, stash}
+      | Enum.flat_map([:ore, :clay], fn k ->
+          if stash.ore >= plan[k].ore do
+            [{k, %{stash | ore: stash.ore - plan[k].ore}}]
+          else
+            []
+          end
+        end)
+    ]
+  end
+
+  defp buy(price, stash) do
+    Map.merge(stash, price, fn _k, v1, v2 -> v1 - v2 end)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Blueprint, <<70, 79, 82, 49, 0, 0, 22, ...>>, {:buy, 2}}
+```
+
+```elixir
+plan = hd(plans) |> Kino.inspect()
+stash = %{clay: 35, geode: 0, obsidian: 0, ore: 4}
+
+Blueprint.do_shopping(plan, stash)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  clay: %{ore: 2},
+  geode: %{obsidian: 7, ore: 2},
+  max: %{clay: 14, obsidian: 7, ore: 4},
+  obsidian: %{clay: 14, ore: 3},
+  ore: %{ore: 4}
+}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  obsidian: %{clay: 21, geode: 0, obsidian: 0, ore: 1},
+  nil: %{clay: 35, geode: 0, obsidian: 0, ore: 4}
+]
+```
+
+```elixir
+plans
+# |> Enum.drop(1)
+|> Enum.take(1)
+|> Kino.inspect()
+|> Enum.map(fn plan -> Blueprint.produce(plan, 24, %{ore: 1}) end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{
+    clay: %{ore: 2},
+    geode: %{obsidian: 7, ore: 2},
+    max: %{clay: 14, obsidian: 7, ore: 4},
+    obsidian: %{clay: 14, ore: 3},
+    ore: %{ore: 4}
+  }
+]
+```

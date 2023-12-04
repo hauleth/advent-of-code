@@ -11,12 +11,89 @@ Mix.install([
 <!-- livebook:{"output":true} -->
 
 ```
+* Getting kino_aoc (https://github.com/ljgago/kino_aoc)
+remote: Enumerating objects: 78, done.        
+remote: Counting objects: 100% (78/78), done.        
+remote: Compressing objects: 100% (50/50), done.        
+remote: Total 78 (delta 25), reused 67 (delta 18), pack-reused 0        
+origin/HEAD set to main
+Resolving Hex dependencies...
+Dependency resolution completed:
+New:
+  castore 0.1.20
+  finch 0.14.0
+  hpax 0.1.2
+  jason 1.4.0
+  kino 0.8.0
+  mime 2.0.3
+  mint 1.4.2
+  nimble_options 0.5.2
+  nimble_pool 0.2.6
+  req 0.3.4
+  table 0.1.2
+  telemetry 1.2.0
+* Getting kino (Hex package)
+* Getting req (Hex package)
+* Getting finch (Hex package)
+* Getting jason (Hex package)
+* Getting mime (Hex package)
+* Getting castore (Hex package)
+* Getting mint (Hex package)
+* Getting nimble_options (Hex package)
+* Getting nimble_pool (Hex package)
+* Getting telemetry (Hex package)
+* Getting hpax (Hex package)
+* Getting table (Hex package)
+==> table
+Compiling 5 files (.ex)
+Generated table app
+==> mime
+Compiling 1 file (.ex)
+Generated mime app
+==> nimble_options
+Compiling 3 files (.ex)
+Generated nimble_options app
+==> kino
+Compiling 37 files (.ex)
+Generated kino app
+===> Analyzing applications...
+===> Compiling telemetry
+==> jason
+Compiling 10 files (.ex)
+Generated jason app
+==> hpax
+Compiling 4 files (.ex)
+Generated hpax app
+==> nimble_pool
+Compiling 2 files (.ex)
+Generated nimble_pool app
+==> castore
+Compiling 1 file (.ex)
+Generated castore app
+==> mint
+Compiling 1 file (.erl)
+Compiling 19 files (.ex)
+Generated mint app
+==> finch
+Compiling 13 files (.ex)
+Generated finch app
+==> req
+Compiling 5 files (.ex)
+Generated req app
+==> kino_aoc
+Compiling 3 files (.ex)
+Generated kino_aoc app
+```
+
+<!-- livebook:{"output":true} -->
+
+```
 :ok
 ```
 
 ## Section
 
-<!-- livebook:{"attrs":{"day":"21","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+<!-- livebook:{"attrs":{"day":"21","session_secret":"ADVENT_OF_CODE_SESSION","variable":"puzzle_input","year":"2022"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
 
 ```elixir
 {:ok, puzzle_input} =

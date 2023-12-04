@@ -1,0 +1,15 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 24
+
+```elixir
+Mix.install([
+  {:kino_aoc, git: "https://github.com/ljgago/kino_aoc"}
+])
+```
+
+## Section
+
+```elixir
+
+```
