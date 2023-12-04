@@ -1,0 +1,102 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 01
+
+```elixir
+Mix.install([
+  {:kino_aoc, ">= 0.0.0"}
+])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"1","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "1", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "two934seven1\n8825eightknfv\nsevenoneqbfzntsix55\nfoursqpqvv192rdrbtcccfourone\n9jpzhpxqthreelmrnlhfqmn4\nonedpsckg3xdhmgtsixthreefivejlncszkxeight\n4twofour\n7eighttwo17fournsmrznntgjrdpkdjvx\n573\nninethree3\n3gngzkpkgrf\nqeightwo2xjvfkfiveone\ntwoonej26\nsgoneightfoureight5sevenjzsqghg\nbnrb36xtjd7four9\nthreepprhsff3prbpfivesevenseven4\n38sevennineninemnfzklttkxnine3\n8mllzkfqklhonefivemv4\nonedcqlqcrzn66three\n1fourjthreefc2gbtbdzsix\neight7two4258\n4hmfzdzf\n26dsmdzznm7\nplckvxznnineh34eight2\ndhrvd4eightgxznhqmh\n5fxhhkghvm3nineshpcxhtwo6fourhrktpbq\nqklhmhmdlgeighttwoonetwo52five\n86threemmpchhzdvsvxfzrj\n9clvchpgrslnkhdmfkjmlrvgnf\n8ncpdtspfivethree\ngtbtkqcgvh8945\nsevencrkbt3btljpdpgstlf\n8nine37bpkmtghhnc2hnreightwohvs\n5qxmsrthreempcmpdcnnv41\n8threezrxhxgx4g\njhsb3onep1\neight71rnz\n7p16lrxktlr6\n8one5fivelvdbjzz\n1nine2twodhnineonesixkqfcbgdlfg\nfour8sixfourfive\npjdmt4one8sdsdhhqxlqgzpk6qrtdvxm\nsixzfourkdpmnn92qbjkjqfqpn\n42threefiveh\n5fhgzt8threemzhblb6\nbbc3kxhvbfrn8four6five\n91fknhthreefour\nsix9fttmqpninethreevhgtrxklbvxbljsp1\nfour5five1471mtfv\n3bjkggcntwo3ptmjhmthree7\nfour2eightone\nthreedrzktlgbz4five\ndmpgttqfivekcdjbf49six\n9bplkkgrxgjqjqb3seven\n4861sx4six\nhjzmxtxvxkkpbvgpvmgb4two8bqxlvponesq\nlkxxtkctlphjfivepjlrg1\nxszdbbvxjrfxs2vrmmbfourpzcfmgppk33eightwors\n966fourflbfsk3\n1bskshtjseven5qlbjhqgzhbzxvlxsvtcmmzseven\n56two28cbhfsdcjsix2four\n6s5qcmvjltqeightslhnzmvbfvcmxj\ntwosevenjxk6lhrkknnkq\nkjkj2lkkldqbgzhglmthree9\nftxhnpms1onetwoxg2\nthree9sixsevenmrgggztckzgzv7\nstvgmjgnine2vvsnjhlzkstwo5szsbvzjdzb\nv6\nthreetwolscvhrlmm3r\ntwo17kblkphfninefour6six1\none6fiveeight9sixjzljjfknrhkzxr\ndgpqm43xthreekxgspjzrzcsix\n2two8fourpppb2\nfiveseven5four\n5rttwofivefnmbkn8nine2eight\n43threeninelgnpzrdtbc1lbkjkvqrdcd\n1seventx\nnctwonefourjzgskmxjmq2\nrpzpht2tdxczzfthreeseven\ntwo1seven\n6bjztkxhsixkgnkroneightht\n9mqzkgmv4vxqrpf4\n49hlj\n46gv\n75sixfddn75\neight87xzjkdpnnjjfqeight\n9pfcdhxbcrnpsnmvkqnsqsninedgtlmmc5\nxmfbn34\n99lvrrndpqcnhznn\nqsmxhxfph24three\nlql25\n8five1dhrkm\ntwoninefourcxksqfmn1\n7eightdclrvn\none2seveneight3ninemcpnmonetwo\n33fivefivenftbczsdstlxzbp\n9r97five\n5fivessskxvnt6qqbkkqrggxg9gsdtbptpn\nthreesjdpjdkczjgthree6\ntwojqm86\nbttrx15qfznmdncnz5\nppckphrtzhstd3xvthzrxxlrrjtk\nqkm6ckeight7gnmqkltz6jsrgjhbck\nzdjjjlpmjtphbjpm9threeskqrphxbfqqeightone\nkonesix1three\nfour24391rzxtffour\nhsevenfive36fqrbjpfj7\ndxdcssixbcnp8two639\nhnvg2\nsixeighthmqkjjsix6tbvdhzone2vsn\ndfzlxq7pjmq5\n5n3\ntwovjcgxdsdngt2smfxfqxeight\nftpjlnvg5qshclfzqtc2eightninefivecsrgk\nzzgsjsjffpvcgfmjtnpkrsqlmpzlt9four\n4btrhpznzr8oneightg\npph2one\n5seveneighteight\n31sfrfrcgmseven\nfour7bdqgrhfive3\nnbrzbggpseven9prthjvknq\n3sixonefourh\nfourgkrpkzdmhtwoseven6txplz\nfour84ldbhnkxjph\n6eightonesrb\ngnmckftk62jgsjxzpk\nbzctx9onetmcnzhxkrtchjgqxv66\n1three5\n27two\n34eightwox\n6ndgrbmfkfive2ksxfbnjbl7fkrm\nkxpz4gjmgcgzzq63five\nnfvmfrbc151one8nggsdqvm\n4clnctseven5nsn5\nhcrpbvqmmdbstlxccthkththreebm6\ngdnmh6cslzhjhdl8nine\nsevenninethreefive4bgknpbnine\n2sevent6three1\n2jbrmdxgpnine7\nnshlgtbkmcmgkmqone3\ndklhc9sevenrxxzzxltsnlltqcjrbgprnx\ngmrjhlvzppmklnl39\nkv86eight3dcdpp6pmdzcvsix\nfiveseven2sevensix6952\n3xrtthnsevenjxsxpzvc\n256nmzrlzbczv\n4dp7onesixvpcf\n25onesevenonexvnst4smvlfszcrv\nlcxncproneseven37five\nninezjsrptfivenhsqxrdz7one\ncscdmnfrcxfqdtkmhkldgjlxdjqsxslhdzvvt4\nsixfnjnfkqm67blkmnqtwo\nfivethree7\n2five5ninegcmqbkpp61npkpml9\n3qktrxninefour\nqdhmxstwo44two\n21nine\nrbnineone3xppvtbmv3sevenvxkkgmgklg\nmcvzplmpvptwo38\nsv176threeone\n5vksixqsccgdkrrfourcgnpsfxbvj\nxxtwone6eight\nthreeonespkbnsj9onesevenpz5\nfivenncrfvhfdsevengxzkxbkrklgsfvllrkbx4\n69kp1seven8dqkrx\ndmb9ccghdjjpjxfivehtwo4\n6nhgdkpdone\ntfvqdqdqcszxbrdmmrninesct2\n8sevenfour2eight8rskc\ncpmgffcvln9sjdsgfivesix5rppfsfmmqtffive\n5two7\n7threecrkljthreetwo\n6qgqzsdhprd\n959zgjscgtm\nfourtwoppfrdqgtseven9\n8bbchvoneeightr\ngtddrb1rznsdjtonethree5four\n8rrskfzlmlbrsninezdzpt3\n6njhmkpp4onefive8two\n4cqpnkcxjtwoqzqmjnqccfs256hcnqpfm\nnineeightseven62sixhlxlps\ndtqplzzf87threecthree\nmqptgzjxddxgxpjr5\n9194jbjjktwofive\nfive514foursevendzxlh2\n6nineeight85zvx\nfour8gsgrstfmdv99hpkfgptzqkhsmgsnlggrseven\n9three298\n3fpttzk35\nrbtckzonexkqmfxrnsbsrkqbq66sixkcqfzjfour\nsixkdcrrrppcsix399fccnsbhfxvfiveft\nxfjxbfvmb" <> ...}
+```
+
+## Part 1
+
+```elixir
+puzzle_input
+|> String.split()
+|> Enum.map(fn line ->
+  for <<c <- line>>, c in ?0..?9, do: c - ?0
+end)
+|> Enum.map(fn nums -> List.first(nums) * 10 + List.last(nums) end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+52974
+```
+
+## Part 2
+
+The tricky part there is that words can overlap, and we need to take that up to the account. It took me way too much time to understand that.
+
+```elixir
+defmodule Part2 do
+  def parse(""), do: []
+  def parse(<<c>> <> rest) when c in ?1..?9, do: [c - ?0 | parse(rest)]
+
+  words = ~w[one two three four five six seven eight nine]
+
+  for {word, idx} <- Enum.with_index(words, 1) do
+    def parse(unquote(word) <> _ = str) do
+      <<_>> <> rest = str
+      [unquote(idx) | parse(rest)]
+    end
+  end
+
+  def parse(<<_>> <> rest), do: parse(rest)
+end
+
+puzzle_input
+|> String.split()
+|> Enum.map(&Part2.parse/1)
+|> Enum.map(fn nums -> List.first(nums) * 10 + List.last(nums) end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+53340
+```
+
+```elixir
+words = ~w[one two three four five six seven eight nine]
+pattern = Enum.concat(1..9, words) |> Enum.join("|")
+
+to_num = fn n ->
+  if v = Enum.find_index(words, &(&1 == n)), do: v + 1, else: String.to_integer(n)
+end
+
+puzzle_input
+|> String.split()
+|> Enum.map(&Regex.scan(~r/^.*?(#{pattern}).*(#{pattern}).*?$/, &1))
+|> dbg()
+|> Enum.map(fn
+  [[_, a, b]] ->
+    to_num.(a) * 10 + to_num.(b)
+
+  [[_, a]] ->
+    a = to_num.(a)
+    a * 10 + a
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"offset":6289,"stamp":{"token":"XCP.8wDt6KmmXvHba68hXcGnXNOf4ySnrVXFg3xBlBhffIp7QdMVOlpx87HS35zyFWnNl8D6ubMeKZ0nbHD6o1BhtUMF4AvpCD9FtMxlHIqrB6hrbn7N6ZkPZqriythIFxCvpA","version":2}} -->
