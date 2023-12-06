@@ -1,0 +1,107 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 06
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"6","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "6", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok, "Time:        44     80     65     72\nDistance:   208   1581   1050   1102"}
+```
+
+```elixir
+# puzzle_input =
+"""
+Time:      7  15   30
+Distance:  9  40  200
+"""
+|> String.trim()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"Time:      7  15   30\nDistance:  9  40  200"
+```
+
+```elixir
+defmodule Day06 do
+  def solve(t, d) do
+    delta = t ** 2 - 4 * d
+
+    sq_delta = :math.sqrt(delta)
+
+    diff = if sq_delta == floor(sq_delta), do: 1, else: 0
+
+    x1 = (-t + sq_delta) / -2
+    x2 = (-t - sq_delta) / -2
+
+    ceil(x2) - ceil(x1) - diff
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day06, <<70, 79, 82, 49, 0, 0, 8, ...>>, {:solve, 2}}
+```
+
+## Part 1
+
+```elixir
+puzzle_input
+|> String.split("\n")
+|> Enum.map(fn line ->
+  line
+  |> String.split(" ", trim: true)
+  |> tl()
+  |> Enum.map(&String.to_integer/1)
+end)
+|> Enum.zip()
+|> Enum.map(fn {t, d} -> Day06.solve(t, d) end)
+|> Enum.product()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+32076
+```
+
+## Part 2
+
+```elixir
+[t, d] =
+  puzzle_input
+  |> String.split("\n")
+  |> Enum.map(fn line ->
+    line
+    |> String.split(" ", trim: true)
+    |> tl()
+    |> Enum.join()
+    |> String.to_integer()
+  end)
+
+Day06.solve(t, d)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+34278221
+```
+
+<!-- livebook:{"offset":1728,"stamp":{"token":"XCP.RVwRJJq0k3Evn9IAmQDOmuVfBQ2xs0pbIqwAVIMLYEO8Olj2RUttefJ6ky9G2BD-EzyDh-ZjERuBL8PVkFPkYz8g7hdsY0keFA-TEIL4GC3n2j_IwPT1JHFDQ0FwiPBw5g","version":2}} -->
