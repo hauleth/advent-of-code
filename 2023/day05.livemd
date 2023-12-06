@@ -3,7 +3,7 @@
 # Day 05
 
 ```elixir
-Mix.install([:kino_aoc, {:range_set, path: "../range_set"}])
+Mix.install([:kino_aoc, {:range_set, github: "hauleth/range_set"}])
 ```
 
 ## Parse
@@ -23,43 +23,43 @@ Mix.install([:kino_aoc, {:range_set, path: "../range_set"}])
 ```
 
 ```elixir
-puzzle_input =
-  """
-  seeds: 79 14 55 13
+# puzzle_input =
+"""
+seeds: 79 14 55 13
 
-  seed-to-soil map:
-  50 98 2
-  52 50 48
+seed-to-soil map:
+50 98 2
+52 50 48
 
-  soil-to-fertilizer map:
-  0 15 37
-  37 52 2
-  39 0 15
+soil-to-fertilizer map:
+0 15 37
+37 52 2
+39 0 15
 
-  fertilizer-to-water map:
-  49 53 8
-  0 11 42
-  42 0 7
-  57 7 4
+fertilizer-to-water map:
+49 53 8
+0 11 42
+42 0 7
+57 7 4
 
-  water-to-light map:
-  88 18 7
-  18 25 70
+water-to-light map:
+88 18 7
+18 25 70
 
-  light-to-temperature map:
-  45 77 23
-  81 45 19
-  68 64 13
+light-to-temperature map:
+45 77 23
+81 45 19
+68 64 13
 
-  temperature-to-humidity map:
-  0 69 1
-  1 0 69
+temperature-to-humidity map:
+0 69 1
+1 0 69
 
-  humidity-to-location map:
-  60 56 37
-  56 93 4
-  """
-  |> String.trim()
+humidity-to-location map:
+60 56 37
+56 93 4
+"""
+|> String.trim()
 ```
 
 <!-- livebook:{"output":true} -->
@@ -72,116 +72,47 @@ puzzle_input =
 defmodule Mapping do
   @behaviour Access
 
+  import Kernel, except: [apply: 2]
+
   defstruct [:values]
 
   def from_list(lst) do
-    # true = Enum.all?(lst, fn {a, b} -> Range.size(a) == Range.size(b) end)
     %__MODULE__{values: Enum.sort(lst)}
   end
 
-  def squash(%__MODULE__{values: from}, %__MODULE__{values: to}) do
-    from_list(do_squash(from, to))
-  end
-
-  defp do_squash([], rest), do: rest
-  defp do_squash(rest, []), do: rest
-
-  #        a---b
-  # c---d
-  defp do_squash([{_src, a.._b} | _] = xs, [{_c..d, _out} = v | ys]) when d < a do
-    [v | do_squash(xs, ys)]
-  end
-
-  # a---b
-  #        c---d
-  defp do_squash([{_src, _a..b} = v | xs], [{c.._d, _out} | _] = ys) when b < c do
-    [v | do_squash(xs, ys)]
-  end
-
-  # a---b
-  # c---d
-  defp do_squash([{src, range} | xs], [{range, out} | ys]) do
-    [{src, out} | do_squash(xs, ys)]
-  end
-
-  # a------b
-  #   c--d
-  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when a <= c and b >= d do
-    range_match(src, [
-      a..(c - 1),
-      out,
-      (d + 1)..b
-    ])
-    |> Enum.concat(do_squash(xs, ys))
-  end
-
-  #   a--b
-  # c------d
-  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when a >= c and b <= d do
-    range_match(
-      [
-        c..(a - 1),
-        src,
-        (b + 1)..d
-      ],
-      out
-    )
-    |> Enum.concat(do_squash(xs, ys))
-  end
-
-  # a---b
-  #   c---d
-  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when c in a..b and b in c..d do
-    {s1, s2} = Range.split(src, Range.size(a..c) - 1)
-    {o1, o2} = Range.split(out, Range.size(c..b))
-
-    [
-      {s1, a..(c - 1)},
-      {s2, o1},
-      {(b + 1)..d, o2}
-    ]
-    |> Enum.concat(do_squash(xs, ys))
-  end
-
-  #   a---b
-  # c---d
-  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when a > c and b > d do
-    IO.puts("foo")
-    {of, ol} = Range.split(out, Range.size(c..a) - 1)
-    {sf, sl} = Range.split(src, Range.size(a..d))
-
-    [
-      {c..(a - 1), of},
-      {sf, ol},
-      {sl, (d + 1)..b}
-    ]
-    |> Enum.concat(do_squash(xs, ys))
-  end
-
-  defp range_match(list, a.._) when is_list(list) do
-    Enum.reduce(list, {[], a}, fn
-      _.._//1 = range, {acc, s} ->
-        to = s + Range.size(range) - 1
-        {[{range, s..to} | acc], to + 1}
-
-      _, acc ->
-        acc
-    end)
-    |> elem(0)
-  end
-
-  defp range_match(_.._ = range, list) when is_list(list) do
-    for {a, b} <- range_match(list, range), do: {b, a}
-  end
+  defp apply({a.._, to}, v), do: v - a + to
 
   @impl Access
   def fetch(%__MODULE__{values: list}, key) when is_integer(key) do
-    val =
-      with {a.._, b.._} <- Enum.find(list, key, fn {range, _} -> key in range end) do
-        key - a + b
-      end
+    {:ok, sorted_find(list, key)}
+  end
 
-    {:ok, val}
+  def fetch(%__MODULE__{values: map}, %RangeSet{ranges: ranges}) do
+    ranges
+    |> Enum.flat_map(&map_range(&1, map))
+    |> RangeSet.new()
+    |> then(&{:ok, &1})
+  end
+
+  defp sorted_find([], n), do: n
+  defp sorted_find([{a..b, _} = result | _], n) when n in a..b, do: apply(result, n)
+  defp sorted_find([{a.._, _} | _], n) when n < a, do: n
+  defp sorted_find([_ | rest], n), do: sorted_find(rest, n)
+
+  defp map_range(range, []), do: [range]
+  defp map_range(_..hi = range, [{lo.._, _} | _]) when lo > hi, do: [range]
+  defp map_range(lo.._ = range, [{_..hi, _} | rest]) when lo > hi, do: map_range(range, rest)
+
+  defp map_range(arg_range, [{fun_range, _} = fun_def | maps]) do
+    fun_lo..fun_hi = fun_range
+    arg_lo..arg_hi = arg_range
+    lo = max(fun_lo, arg_lo)
+    hi = min(fun_hi, arg_hi)
+
+    [
+      apply(fun_def, lo)..apply(fun_def, hi)
+      | if(hi < arg_hi, do: map_range((hi + 1)..arg_hi, maps), else: [])
+    ]
   end
 end
 
@@ -198,12 +129,10 @@ mappings =
     |> Enum.map(&String.split/1)
     |> Enum.map(fn line ->
       [to, from, len] = Enum.map(line, &String.to_integer/1)
-      {from..(from + len - 1), to..(to + len - 1)}
+      {from..(from + len - 1), to}
     end)
     |> Mapping.from_list()
   end)
-
-[seed2soil, soil2fert, fert2water, water2light, light2temp, temp2hum, hum2loc] = mappings
 
 seeds =
   seeds
@@ -226,47 +155,9 @@ warning: function pop/2 required by behaviour Access is not implemented (in modu
 <!-- livebook:{"output":true} -->
 
 ```
-[79, 14, 55, 13]
-```
-
-```elixir
-a = Mapping.from_list([{1..10, 31..40}])
-b = Mapping.from_list([{25..35, 65..75}])
-
-k = 30
-
-dbg(b[dbg(a[k])])
-dbg(Mapping.squash(a, b))[k]
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-30
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-70
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-foo
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-%Mapping{values: [{1..5, 71..75}, {6..10, 36..40}, {25..30, 65..70}]}
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-70
+[1310704671, 312415190, 1034820096, 106131293, 682397438, 30365957, 2858337556, 1183890307,
+ 665754577, 13162298, 2687187253, 74991378, 1782124901, 3190497, 208902075, 226221606, 4116455504,
+ 87808390, 2403629707, 66592398]
 ```
 
 ## Part 1
@@ -280,164 +171,24 @@ seeds
 <!-- livebook:{"output":true} -->
 
 ```
-35
+51752125
 ```
 
-```elixir
-squashed = Enum.reduce(mappings, &Mapping.squash/2)
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-foo
-foo
-foo
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-%Mapping{
-  values: [
-    {0..0, 27..27},
-    {0..5, 28..33},
-    {1..10, 40..49},
-    {6..59, 7..60},
-    {7..10, 59..62},
-    {11..14, 52..55},
-    {11..52, 0..41},
-    {15..41, 0..26},
-    {18..24, 90..96},
-    {25..55, 18..48},
-    {45..58, 74..87},
-    {49..51, 34..36},
-    {52..53, 37..38},
-    {53..60, 49..56},
-    {54..56, 56..58},
-    {56..64, 61..69},
-    {59..63, 95..99},
-    {60..80, 53..73},
-    {61..67, 63..69},
-    {64..76, 70..82},
-    {65..92, 69..96},
-    {69..69, 39..39},
-    {77..99, 45..67},
-    {81..87, 83..89},
-    {93..96, 49..52},
-    {95..97, 97..99},
-    {98..99, 50..51}
-  ]
-}
-```
+## Part 2
 
 ```elixir
 seeds
-|> Enum.map(&squashed[&1])
-|> Enum.min()
+|> Enum.chunk_every(2)
+|> Enum.map(fn [start, length] -> start..(start + length - 1) end)
+|> RangeSet.new()
+|> then(&Enum.reduce(mappings, &1, fn map, r -> map[r] end))
+|> RangeSet.min()
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-14
+12634632
 ```
 
-```elixir
-Enum.map(seeds, &squashed[&1])
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-[72, 15, 56, 14]
-```
-
-```elixir
-seeds =
-  Enum.chunk_every(seeds, 2)
-  |> Enum.map(fn [a, b] -> a..(a + b) end)
-  |> RangeSet.new()
-
-mappings
-|> Enum.reduce(seeds, fn map, curr ->
-  IO.puts("")
-  IO.inspect(map, label: :map)
-  IO.inspect(curr, label: :curr)
-  inputs = RangeSet.new(for {from, _} <- map.values, do: from)
-  mapped = IO.inspect(RangeSet.intersection(inputs, curr), label: :inter)
-  left = IO.inspect(RangeSet.difference(curr, mapped), label: :diff)
-
-  mapped =
-    mapped.ranges
-    |> Enum.map(fn a..b -> map[a]..map[b]//1 end)
-    |> RangeSet.new()
-    |> IO.inspect(label: :mapped)
-
-  IO.inspect(RangeSet.union(left, mapped))
-end)
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-
-map: %Mapping{values: [{50..97, 52..99}, {98..99, 50..51}]}
-curr: RangeSet.new([55..68, 79..93])
-inter: RangeSet.new([55..68, 79..93])
-diff: RangeSet.new([])
-mapped: RangeSet.new([57..70, 81..95])
-RangeSet.new([57..70, 81..95])
-
-map: %Mapping{values: [{0..14, 39..53}, {15..51, 0..36}, {52..53, 37..38}]}
-curr: RangeSet.new([57..70, 81..95])
-inter: RangeSet.new([])
-diff: RangeSet.new([57..70, 81..95])
-mapped: RangeSet.new([])
-RangeSet.new([57..70, 81..95])
-
-map: %Mapping{
-  values: [{0..6, 42..48}, {7..10, 57..60}, {11..52, 0..41}, {53..60, 49..56}]
-}
-curr: RangeSet.new([57..70, 81..95])
-inter: RangeSet.new([57..60])
-diff: RangeSet.new([61..70, 81..95])
-mapped: RangeSet.new([53..56])
-RangeSet.new([53..56, 61..70, 81..95])
-
-map: %Mapping{values: [{18..24, 88..94}, {25..94, 18..87}]}
-curr: RangeSet.new([53..56, 61..70, 81..95])
-inter: RangeSet.new([53..56, 61..70, 81..94])
-diff: RangeSet.new([95..95])
-mapped: RangeSet.new([46..49, 54..63, 74..87])
-RangeSet.new([46..49, 54..63, 74..87, 95..95])
-
-map: %Mapping{values: [{45..63, 81..99}, {64..76, 68..80}, {77..99, 45..67}]}
-curr: RangeSet.new([46..49, 54..63, 74..87, 95..95])
-inter: RangeSet.new([46..49, 54..63, 74..76, 77..87, 95..95])
-diff: RangeSet.new([])
-mapped: RangeSet.new([45..55, 63..63, 78..80, 82..85, 90..99])
-RangeSet.new([45..55, 63..63, 78..80, 82..85, 90..99])
-
-map: %Mapping{values: [{0..68, 1..69}, {69..69, 0..0}]}
-curr: RangeSet.new([45..55, 63..63, 78..80, 82..85, 90..99])
-inter: RangeSet.new([45..55, 63..63])
-diff: RangeSet.new([78..80, 82..85, 90..99])
-mapped: RangeSet.new([46..56, 64..64])
-RangeSet.new([46..56, 64..64, 78..80, 82..85, 90..99])
-
-map: %Mapping{values: [{56..92, 60..96}, {93..96, 56..59}]}
-curr: RangeSet.new([46..56, 64..64, 78..80, 82..85, 90..99])
-```
-
-```elixir
-light2temp[74]
-```
-
-<!-- livebook:{"output":true} -->
-
-```
-78
-```
-
-<!-- livebook:{"offset":13391,"stamp":{"token":"XCP.YBvV3LijXOIMnujrbQ1UcVgKkKIgzTxWiEVKN6_kRQO7Z54rqDRPZT7cgjsENw1cakYqdxjdW8l0ZieLojSPU1k_oMLqBh0-YpWLbT9dUfZRNKIxmeQgwwCEGOzZ2hdsVw","version":2}} -->
+<!-- livebook:{"offset":8450,"stamp":{"token":"XCP.9I0OWZix2U9jQ5DLHq6aPMZLzaSvoWmFrdBbv9pxQfaL_IHSsv0UiMHQgeLV96EpUjfWS_hLXKNfPjSWsmdceQyf2OEIe1gAC7o2oOp3S4I9UlfKFypRqLfs3Jo6p-UtGQ","version":2}} -->
