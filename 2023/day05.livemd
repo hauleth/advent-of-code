@@ -1,0 +1,443 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 05
+
+```elixir
+Mix.install([:kino_aoc, {:range_set, path: "../range_set"}])
+```
+
+## Parse
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"5","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "5", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "seeds: 1310704671 312415190 1034820096 106131293 682397438 30365957 2858337556 1183890307 665754577 13162298 2687187253 74991378 1782124901 3190497 208902075 226221606 4116455504 87808390 2403629707 66592398\n\nseed-to-soil map:\n2879792625 0 201678008\n2425309256 1035790247 296756276\n2722065532 1759457739 157727093\n400354950 1917184832 1164285801\n0 201678008 400354950\n1564640751 602032958 433757289\n1998398040 1332546523 426911216\n\nsoil-to-fertilizer map:\n3434127746 3670736129 29685965\n1809924203 1168707872 308179\n2108903682 1437989162 44479258\n237181023 2915565442 27901445\n1173998623 2434447796 13633544\n75539025 740516241 29278225\n41104738 706081954 34434287\n3279397405 3488165796 12149874\n3463813711 3827946213 157129363\n1810232382 769794466 15695437\n877824710 677909236 28172718\n2215709448 1746651561 307558709\n1825927819 1692597620 54053941\n104817250 420198730 132363773\n2916210208 392942051 27256679\n1022591555 2448081340 151407068\n3925105941 3985075576 182313682\n1897186025 2212065968 211717657\n2198981202 1304666789 16728246\n850656807 2054210270 27167903\n3766599721 3500315670 158506220\n3419071398 3279397405 15056348\n7830088 2126976435 33274650\n3620943074 3658821890 11914239\n1264213180 2599488408 138420934\n811586355 2160251085 12020898\n3632857313 3354423388 133742408\n1612763314 1169016051 108601184\n1721364498 2172271983 39793985\n1187632167 601328223 76581013\n823607253 1277617235 27049554\n728944387 2737909342 82641968\n0 2426617708 7830088\n3291547279 3700422094 127524119\n1402634114 1482468420 210129200\n905997428 1321395035 107714902\n4107419623 3294453753 59969635\n1879981760 785489903 17204265\n2153382940 2081378173 45598262\n277361019 802694168 366013704\n1761158483 552562503 48765720\n646208806 2832829861 82735581\n2523268157 0 392942051\n1013712330 1429109937 8879225\n643374723 2423783625 2834083\n265082468 2820551310 12278551\n\nfertilizer-to-water map:\n4253122607 1473424614 41844689\n3040447798 2659805568 46237011\n0 146022665 42081460\n55436822 188104125 65067713\n42081460 132667303 13355362\n2429043181 3587614447 54605699\n888256662 672288214 24436041\n4064969883 1978094070 95324589\n3086684809 977403736 339965972\n120504535 253171838 93494065\n2810558403 2603914183 55891385\n3898695123 2901215107 166274760\n2483648880 4002918707 103777141\n1300545784 2848997109 52217998\n2418717938 1463099371 10325243\n1022681665 808998429 30429585\n2866449788 1411682577 4750813\n1181605510 4172708724 118940274\n2078503930 2466708865 42530000\n1105548530 1545561518 76056980\n978705579 2573458117 30456066\n2324405069 1317369708 94312869\n1991848966 3429793336 22435712\n4190586687 2706042579 43180396\n1352763782 1416433390 46665981\n3760606255 1683093685 138088868\n1399429763 3452229048 135385399\n2121033930 839428014 137975722\n2940673664 2749222975 99774134\n1053111250 2073418659 52437280\n3426650781 1821182553 152991287\n1534815162 2195329002 252024339\n730962658 3067489867 157294004\n3579642068 710244275 98754154\n1786839501 3224783871 205009465\n2259009652 1974173840 3920230\n2587426021 370264097 223132382\n2871200601 2125855939 69473063\n213998600 44701447 87965856\n4233767083 2447353341 19355524\n2262929882 1621618498 61475187\n1009161645 696724255 13520020\n3678396222 593396479 78891735\n912692703 4106695848 66012876\n3757287957 4291648998 3318298\n301964456 0 44701447\n2014284678 2509238865 64219252\n370264097 3642220146 360698561\n4160294472 1515269303 30292215\n\nwater-to-light map:\n4066036887 2992193346 95912236\n531075515 493316918 162009008\n3260565192 854248031 437396028\n1341316194 4205924684 89042612\n1879858967 2058162578 692895326\n452475911 655325926 78599604\n2997176790 1690328655 208783332\n2731804884 3324847814 265371906\n355611136 0 96864775\n2572754293 1899111987 159050591\n1081338600 3590219720 138271571\n1430358806 2779435417 212757929\n3234337635 4179697127 26227557\n854248031 3728491291 227090569\n4161949123 3955581860 102409244\n3205960122 2751057904 28377513\n50952557 147817332 304658579\n1219610171 4057991104 121706023\n4264358367 1291644059 30608929\n3697961220 1322252988 368075667\n1643116735 3088105582 236742232\n693084523 452475911 40841007\n0 96864775 50952557\n\nlight-to-temperature ma" <> ...}
+```
+
+```elixir
+puzzle_input =
+  """
+  seeds: 79 14 55 13
+
+  seed-to-soil map:
+  50 98 2
+  52 50 48
+
+  soil-to-fertilizer map:
+  0 15 37
+  37 52 2
+  39 0 15
+
+  fertilizer-to-water map:
+  49 53 8
+  0 11 42
+  42 0 7
+  57 7 4
+
+  water-to-light map:
+  88 18 7
+  18 25 70
+
+  light-to-temperature map:
+  45 77 23
+  81 45 19
+  68 64 13
+
+  temperature-to-humidity map:
+  0 69 1
+  1 0 69
+
+  humidity-to-location map:
+  60 56 37
+  56 93 4
+  """
+  |> String.trim()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"seeds: 79 14 55 13\n\nseed-to-soil map:\n50 98 2\n52 50 48\n\nsoil-to-fertilizer map:\n0 15 37\n37 52 2\n39 0 15\n\nfertilizer-to-water map:\n49 53 8\n0 11 42\n42 0 7\n57 7 4\n\nwater-to-light map:\n88 18 7\n18 25 70\n\nlight-to-temperature map:\n45 77 23\n81 45 19\n68 64 13\n\ntemperature-to-humidity map:\n0 69 1\n1 0 69\n\nhumidity-to-location map:\n60 56 37\n56 93 4"
+```
+
+```elixir
+defmodule Mapping do
+  @behaviour Access
+
+  defstruct [:values]
+
+  def from_list(lst) do
+    # true = Enum.all?(lst, fn {a, b} -> Range.size(a) == Range.size(b) end)
+    %__MODULE__{values: Enum.sort(lst)}
+  end
+
+  def squash(%__MODULE__{values: from}, %__MODULE__{values: to}) do
+    from_list(do_squash(from, to))
+  end
+
+  defp do_squash([], rest), do: rest
+  defp do_squash(rest, []), do: rest
+
+  #        a---b
+  # c---d
+  defp do_squash([{_src, a.._b} | _] = xs, [{_c..d, _out} = v | ys]) when d < a do
+    [v | do_squash(xs, ys)]
+  end
+
+  # a---b
+  #        c---d
+  defp do_squash([{_src, _a..b} = v | xs], [{c.._d, _out} | _] = ys) when b < c do
+    [v | do_squash(xs, ys)]
+  end
+
+  # a---b
+  # c---d
+  defp do_squash([{src, range} | xs], [{range, out} | ys]) do
+    [{src, out} | do_squash(xs, ys)]
+  end
+
+  # a------b
+  #   c--d
+  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when a <= c and b >= d do
+    range_match(src, [
+      a..(c - 1),
+      out,
+      (d + 1)..b
+    ])
+    |> Enum.concat(do_squash(xs, ys))
+  end
+
+  #   a--b
+  # c------d
+  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when a >= c and b <= d do
+    range_match(
+      [
+        c..(a - 1),
+        src,
+        (b + 1)..d
+      ],
+      out
+    )
+    |> Enum.concat(do_squash(xs, ys))
+  end
+
+  # a---b
+  #   c---d
+  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when c in a..b and b in c..d do
+    {s1, s2} = Range.split(src, Range.size(a..c) - 1)
+    {o1, o2} = Range.split(out, Range.size(c..b))
+
+    [
+      {s1, a..(c - 1)},
+      {s2, o1},
+      {(b + 1)..d, o2}
+    ]
+    |> Enum.concat(do_squash(xs, ys))
+  end
+
+  #   a---b
+  # c---d
+  defp do_squash([{src, a..b} | xs], [{c..d, out} | ys]) when a > c and b > d do
+    IO.puts("foo")
+    {of, ol} = Range.split(out, Range.size(c..a) - 1)
+    {sf, sl} = Range.split(src, Range.size(a..d))
+
+    [
+      {c..(a - 1), of},
+      {sf, ol},
+      {sl, (d + 1)..b}
+    ]
+    |> Enum.concat(do_squash(xs, ys))
+  end
+
+  defp range_match(list, a.._) when is_list(list) do
+    Enum.reduce(list, {[], a}, fn
+      _.._//1 = range, {acc, s} ->
+        to = s + Range.size(range) - 1
+        {[{range, s..to} | acc], to + 1}
+
+      _, acc ->
+        acc
+    end)
+    |> elem(0)
+  end
+
+  defp range_match(_.._ = range, list) when is_list(list) do
+    for {a, b} <- range_match(list, range), do: {b, a}
+  end
+
+  @impl Access
+  def fetch(%__MODULE__{values: list}, key) when is_integer(key) do
+    val =
+      with {a.._, b.._} <- Enum.find(list, key, fn {range, _} -> key in range end) do
+        key - a + b
+      end
+
+    {:ok, val}
+  end
+end
+
+[seeds | maps] =
+  puzzle_input
+  |> String.split("\n\n", trim: true)
+
+mappings =
+  maps
+  |> Enum.map(fn map ->
+    [_ | lines] = String.split(map, "\n")
+
+    lines
+    |> Enum.map(&String.split/1)
+    |> Enum.map(fn line ->
+      [to, from, len] = Enum.map(line, &String.to_integer/1)
+      {from..(from + len - 1), to..(to + len - 1)}
+    end)
+    |> Mapping.from_list()
+  end)
+
+[seed2soil, soil2fert, fert2water, water2light, light2temp, temp2hum, hum2loc] = mappings
+
+seeds =
+  seeds
+  |> String.split()
+  |> tl()
+  |> Enum.map(&String.to_integer/1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: function get_and_update/3 required by behaviour Access is not implemented (in module Mapping)
+  2023/day05.livemd#cell:5c3rqk2ysnul3qg2ajsq46avpmyi5ixw:1: Mapping (module)
+
+warning: function pop/2 required by behaviour Access is not implemented (in module Mapping)
+  2023/day05.livemd#cell:5c3rqk2ysnul3qg2ajsq46avpmyi5ixw:1: Mapping (module)
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[79, 14, 55, 13]
+```
+
+```elixir
+a = Mapping.from_list([{1..10, 31..40}])
+b = Mapping.from_list([{25..35, 65..75}])
+
+k = 30
+
+dbg(b[dbg(a[k])])
+dbg(Mapping.squash(a, b))[k]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+30
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+70
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+foo
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%Mapping{values: [{1..5, 71..75}, {6..10, 36..40}, {25..30, 65..70}]}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+70
+```
+
+## Part 1
+
+```elixir
+seeds
+|> Enum.map(&Enum.reduce(mappings, &1, fn mapping, val -> mapping[val] end))
+|> Enum.min()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+35
+```
+
+```elixir
+squashed = Enum.reduce(mappings, &Mapping.squash/2)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+foo
+foo
+foo
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%Mapping{
+  values: [
+    {0..0, 27..27},
+    {0..5, 28..33},
+    {1..10, 40..49},
+    {6..59, 7..60},
+    {7..10, 59..62},
+    {11..14, 52..55},
+    {11..52, 0..41},
+    {15..41, 0..26},
+    {18..24, 90..96},
+    {25..55, 18..48},
+    {45..58, 74..87},
+    {49..51, 34..36},
+    {52..53, 37..38},
+    {53..60, 49..56},
+    {54..56, 56..58},
+    {56..64, 61..69},
+    {59..63, 95..99},
+    {60..80, 53..73},
+    {61..67, 63..69},
+    {64..76, 70..82},
+    {65..92, 69..96},
+    {69..69, 39..39},
+    {77..99, 45..67},
+    {81..87, 83..89},
+    {93..96, 49..52},
+    {95..97, 97..99},
+    {98..99, 50..51}
+  ]
+}
+```
+
+```elixir
+seeds
+|> Enum.map(&squashed[&1])
+|> Enum.min()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+14
+```
+
+```elixir
+Enum.map(seeds, &squashed[&1])
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[72, 15, 56, 14]
+```
+
+```elixir
+seeds =
+  Enum.chunk_every(seeds, 2)
+  |> Enum.map(fn [a, b] -> a..(a + b) end)
+  |> RangeSet.new()
+
+mappings
+|> Enum.reduce(seeds, fn map, curr ->
+  IO.puts("")
+  IO.inspect(map, label: :map)
+  IO.inspect(curr, label: :curr)
+  inputs = RangeSet.new(for {from, _} <- map.values, do: from)
+  mapped = IO.inspect(RangeSet.intersection(inputs, curr), label: :inter)
+  left = IO.inspect(RangeSet.difference(curr, mapped), label: :diff)
+
+  mapped =
+    mapped.ranges
+    |> Enum.map(fn a..b -> map[a]..map[b]//1 end)
+    |> RangeSet.new()
+    |> IO.inspect(label: :mapped)
+
+  IO.inspect(RangeSet.union(left, mapped))
+end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+
+map: %Mapping{values: [{50..97, 52..99}, {98..99, 50..51}]}
+curr: RangeSet.new([55..68, 79..93])
+inter: RangeSet.new([55..68, 79..93])
+diff: RangeSet.new([])
+mapped: RangeSet.new([57..70, 81..95])
+RangeSet.new([57..70, 81..95])
+
+map: %Mapping{values: [{0..14, 39..53}, {15..51, 0..36}, {52..53, 37..38}]}
+curr: RangeSet.new([57..70, 81..95])
+inter: RangeSet.new([])
+diff: RangeSet.new([57..70, 81..95])
+mapped: RangeSet.new([])
+RangeSet.new([57..70, 81..95])
+
+map: %Mapping{
+  values: [{0..6, 42..48}, {7..10, 57..60}, {11..52, 0..41}, {53..60, 49..56}]
+}
+curr: RangeSet.new([57..70, 81..95])
+inter: RangeSet.new([57..60])
+diff: RangeSet.new([61..70, 81..95])
+mapped: RangeSet.new([53..56])
+RangeSet.new([53..56, 61..70, 81..95])
+
+map: %Mapping{values: [{18..24, 88..94}, {25..94, 18..87}]}
+curr: RangeSet.new([53..56, 61..70, 81..95])
+inter: RangeSet.new([53..56, 61..70, 81..94])
+diff: RangeSet.new([95..95])
+mapped: RangeSet.new([46..49, 54..63, 74..87])
+RangeSet.new([46..49, 54..63, 74..87, 95..95])
+
+map: %Mapping{values: [{45..63, 81..99}, {64..76, 68..80}, {77..99, 45..67}]}
+curr: RangeSet.new([46..49, 54..63, 74..87, 95..95])
+inter: RangeSet.new([46..49, 54..63, 74..76, 77..87, 95..95])
+diff: RangeSet.new([])
+mapped: RangeSet.new([45..55, 63..63, 78..80, 82..85, 90..99])
+RangeSet.new([45..55, 63..63, 78..80, 82..85, 90..99])
+
+map: %Mapping{values: [{0..68, 1..69}, {69..69, 0..0}]}
+curr: RangeSet.new([45..55, 63..63, 78..80, 82..85, 90..99])
+inter: RangeSet.new([45..55, 63..63])
+diff: RangeSet.new([78..80, 82..85, 90..99])
+mapped: RangeSet.new([46..56, 64..64])
+RangeSet.new([46..56, 64..64, 78..80, 82..85, 90..99])
+
+map: %Mapping{values: [{56..92, 60..96}, {93..96, 56..59}]}
+curr: RangeSet.new([46..56, 64..64, 78..80, 82..85, 90..99])
+```
+
+```elixir
+light2temp[74]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+78
+```
+
+<!-- livebook:{"offset":13391,"stamp":{"token":"XCP.YBvV3LijXOIMnujrbQ1UcVgKkKIgzTxWiEVKN6_kRQO7Z54rqDRPZT7cgjsENw1cakYqdxjdW8l0ZieLojSPU1k_oMLqBh0-YpWLbT9dUfZRNKIxmeQgwwCEGOzZ2hdsVw","version":2}} -->
