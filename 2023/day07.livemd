@@ -1,0 +1,180 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Untitled notebook
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"7","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "7", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "7KAK7 63\n9889J 846\nJ37QA 670\nT2T2J 5\n827K6 552\nKTT5T 116\nJTJ63 457\n55656 482\nA924K 555\n323QQ 568\n2QQ5J 32\nJ4434 784\n9T5A4 738\nT666J 983\n6K6J2 351\n933TT 851\n95567 364\n5T598 858\n55TT4 895\n92T2T 893\n2638T 17\nTT3T9 509\n8T954 579\n834JQ 962\nA9TK7 710\n22552 201\nT7627 879\nK3795 875\nJ79A7 865\nJ9A99 986\n56674 627\n3QT25 470\n53553 542\n3T3K9 718\nAA4AJ 345\n95999 475\nK3335 221\n3QQQ3 207\nTAAAA 152\nA3AQ9 796\n7Q922 53\nJQJQQ 873\nJ888J 808\nTJ223 828\n52355 782\n72889 264\n4KA44 244\nQJK6K 964\nA3T76 71\n38A27 303\n5893T 841\n576J4 826\n884JQ 386\n27233 359\n45A55 906\nK7KT6 677\nT3KT3 254\n7K663 291\n78887 999\nAT8JA 609\n9A2T2 334\nJ3339 607\nJ99K9 427\nK2K66 909\nTT3J3 693\n65732 67\n5Q397 381\nQKJA4 276\n66678 582\n3553K 171\n2AJT7 631\n8JKKK 78\n44764 115\nK3K33 367\n46A66 407\n94673 646\n9QA53 597\nJQ33Q 213\n8A8J8 611\n7QQ77 426\nAJ99A 312\n77883 103\n6666J 914\n33365 495\n66565 890\n88899 258\n333A3 410\n8KT8K 463\n85888 241\n8TQA2 151\n666Q3 118\nQ684T 820\n82228 641\n5335J 644\n2Q7K6 806\n47747 538\nJTATA 186\n74979 127\n79TK9 142\n78787 764\n7QJTJ 650\nA2228 880\n24J4A 195\n6Q3T3 358\n5QJQT 286\n7Q7QQ 232\nJ9JA9 145\n39334 383\n94495 155\nK26K2 344\nT78QQ 76\nK292K 318\n7AJAA 562\n9875Q 876\nQ5555 82\nAT4TT 569\n77779 671\nQTTT2 994\n7T64Q 651\n74779 20\n88T48 639\n93999 373\n3KJQK 385\nT73TJ 612\n766K8 60\nTA538 161\n542T5 52\nK299T 249\nT3A2A 981\n92947 908\n866J2 21\nJ7K23 149\nJQ747 417\nK7J77 837\nAAA6A 925\n7TJ77 506\nK8QKK 248\nKAAAJ 931\nQQQ8Q 37\n79972 961\n777AA 56\n722J2 752\n64346 518\n5JTJ2 629\nK9999 898\nT2AQK 256\n66JJ6 222\nA7A3A 557\n877TT 247\nTKJ59 608\n53775 968\nT8TTT 136\n28862 691\n37QTT 252\nKJ442 772\n866J6 604\n324K5 596\nT7973 309\n2Q922 859\nJ4Q7Q 234\nKQ39T 355\nQ3Q35 635\nTJ428 498\nAKJ48 877\nQ3Q7J 183\n6K6KK 237\nA5Q7K 775\n8T22T 257\n8AA88 225\n777K4 523\nQJK78 917\nK5J82 788\nQ6JAA 339\nT3J63 483\n5555A 3\n7A333 31\nJ7QQ7 711\n54QKQ 726\nJ463A 363\nJJJJJ 905\n3T33T 702\nQ626Q 593\nKQ9KJ 855\n299A2 421\nQK57Q 868\nK29T3 570\n88338 836\n66696 637\n5A755 24\nT49T7 400\n6QJK6 366\nJ3J43 33\n65J66 701\n8J982 821\n2T68J 919\n4J44K 209\n97662 633\n7J344 135\nJK99K 269\n4547A 49\n6557Q 753\n85585 395\nJT555 465\n88884 800\n95A9J 980\n44J46 429\n8AJ8A 372\nK42Q8 184\n79863 329\nQQJQ3 203\n78A8K 166\n6Q7Q6 47\n87727 87\n55755 148\n99739 104\nK956J 357\n53533 10\n54AQ3 761\n66339 143\n38833 563\nAAAA2 304\n6KATK 768\nA6J83 101\n626J6 165\nJTJJQ 193\nK7444 949\n95432 420\nTTT96 311\n833AA 105\n38233 439\n2777Q 912\nJ6442 150\n56A3K 371\nJT24T 226\n4KK88 532\n2J972 823\nTA4Q7 945\n77TJT 578\n55T9A 683\nKJT3Q 394\nTT9TT 28\nT6A9A 932\n32466 306\n2A5J6 270\n8A863 915\n6J4AA 565\n3AJ82 260\n98789 96\n6666K 642\nKK587 982\nA8A3Q 795\nA333A 630\n79999 827\n587A6 587\n5888J 997\nTTT77 647\nQQQ88 412\n6346T 798\nJQQT9 507\nAA223 872\n75475 590\nK8374 680\n72252 464\nQ7775 594\nKAKQK 973\n5T4T4 353\nJQ3JQ 139\n99334 1\n646K4 90\n6AKA5 536\nT3KA9 296\n63QT9 11\nQ8AJ3 308\nAAA8A 922\nJ7722 954\nT8A32 891\nQAQQA 75\nT9TJ9 424\nA8573 786\n2T33J 485\n85T6T 834\n255QQ 405\nTJT8T 131\n89289 408\n9626T 515\n8J2A2 721\nJ4522 812\n7T757 79\n9A999 398\n554AJ 217\nKKKK8 362\nJQTJ3 746\nK8J76 960\nTK6QA 706\n5Q895 976\n33993 690\n9699A 320\nA8265 640\n66AAJ 958\n66664 48\n59Q2K 661\nJ8668 324\n9AJ25 889\n862Q8 546\n8K9T9 198\nK3K3K 215\nJTJ77 689\nAJTT5 377\n88JJ7 448\n8737J 688\n7KQKQ 51\nKKK5K 295\n79T9T 757\n59A47 502\n43AJ9 573\nK9792 605\n37Q33 824\nTTT6T 737\nA4A22 486\n652KK 478\nAK42Q 990\nQ44J5 853\n5Q999 902\n99JJJ 619\nJJQKK 714\nTA5JK 530\nAQQAA 756\nA6JAJ 43\n55KKK 832\n36A2J 374\n4333J 816\nA2J9A 461\n95Q49 292\nJK9A2 365\nJ5256 93\nKK6J6 953\n8QJ72 750\n95959 845\nKK4KK 57\nJ57Q2 686\n5QKA9 119\nJ5J99 342\nKKK2K 454\n33A3K 177\n688J2 409\nQJTTK 766\n3K978 741\n64T47 603\n34584 776\n89KT2 251\nT893T 653\nKK957 717\n9Q8Q5 959\nK5KQ5 174\n3Q223 456\n2J9Q4 934\nA37AQ 58\n42Q35 712\n33633 809\n57J3J 326\n58959 867\nQ838J 632\nQQKJK 936\n8Q7T7 238\nT2T2T 491\n2T987 391\n69KQT 6\nQ6J98 815\nA4JQ4 299\nKAKAJ 25\n8765J 792\n9492J 272\n5QQK5 64\nJ9966 348\n8K888 418\nK8833 813\n33853 129\n24344 321\nQ4444 970\n44QQT 55\n82T28 547\n97K7Q 262\n3A34A 255\nK5K9K 567\nQT4QT 65\n84484 211\nK54QT 471\n23K3K 951\nKTQ2J 157\nJQKKK 705\nJJ333 673\n44222 137\n26K72 991\nT59KT 34\nTQ7QT 684\nJ9J99 435\n26648 950\nT4TKA 758\n6K66K 294\n5JQ55 85\n392QT 387\n54A7J 773\n99Q9T 903\n56365 692\n44T24 490\n538Q4 261\n65277 703\n44A44 941\nJ2A34 535\n7J733 649\n2422T 467\n3J9AJ 554\n3KT3K 389\nA999A 288\n2Q5J" <> ...}
+```
+
+```elixir
+# puzzle_input =
+"""
+32T3K 765
+T55J5 684
+KK677 28
+KTJJT 220
+QQQJA 483
+"""
+|> String.trim()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"32T3K 765\nT55J5 684\nKK677 28\nKTJJT 220\nQQQJA 483"
+```
+
+```elixir
+defmodule Day07 do
+  def rate({hand, _}) do
+    {jokers, rest} = Map.pop(Enum.frequencies(hand), -1, 0)
+
+    pos =
+      rest
+      |> Map.values()
+      |> Enum.sort(:desc)
+      |> case do
+        [] -> [jokers]
+        [v | rest] -> [v + jokers | rest]
+      end
+
+    {pos, hand}
+  end
+
+  @cards ~C[TJQKA] |> Enum.with_index(10) |> Map.new()
+
+  def card_values(hand) do
+    for <<card <- hand>> do
+      Map.get(@cards, card, card - ?0)
+    end
+  end
+
+  def rate_bids(hands) do
+    hands
+    |> Enum.with_index(1)
+    |> Enum.reduce(0, fn {{_, bid}, idx}, acc ->
+      acc + bid * idx
+    end)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day07, <<70, 79, 82, 49, 0, 0, 12, ...>>, {:rate_bids, 1}}
+```
+
+```elixir
+hands =
+  puzzle_input
+  |> String.split("\n")
+  |> Enum.map(fn <<hand::binary-5>> <> " " <> bid ->
+    {Day07.card_values(hand), String.to_integer(bid)}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  {[7, 13, 14, 13, 7], 63},
+  {~c"\t\b\b\t\v", 846},
+  {[11, 3, 7, 12, 14], 670},
+  {[10, 2, 10, 2, 11], 5},
+  {[8, 2, 7, 13, 6], 552},
+  {[13, 10, 10, 5, 10], 116},
+  {[11, 10, 11, 6, 3], 457},
+  {[5, 5, 6, 5, 6], 482},
+  {[14, 9, 2, 4, 13], 555},
+  {[3, 2, 3, 12, 12], 568},
+  {[2, 12, 12, 5, 11], 32},
+  {[11, 4, 4, 3, 4], 784},
+  {[9, 10, 5, 14, 4], 738},
+  {[10, 6, 6, 6, 11], 983},
+  {[6, 13, 6, 11, 2], 351},
+  {[9, 3, 3, 10, 10], 851},
+  {[9, 5, 5, 6, 7], 364},
+  {[5, 10, 5, 9, 8], 858},
+  {[5, 5, 10, 10, 4], 895},
+  {[9, 2, 10, 2, 10], 893},
+  {[2, 6, 3, 8, 10], 17},
+  {[10, 10, 3, 10, 9], 509},
+  {[8, 10, 9, 5, 4], 579},
+  {[8, 3, 4, 11, 12], 962},
+  {[14, 9, 10, 13, 7], 710},
+  {[2, 2, 5, 5, 2], 201},
+  {[10, 7, 6, 2, 7], 879},
+  {[13, 3, 7, 9, 5], 875},
+  {[11, 7, 9, 14, 7], 865},
+  {[11, 9, 14, 9, 9], 986},
+  {[5, 6, 6, 7, 4], 627},
+  {[3, 12, 10, 2, 5], 470},
+  {[5, 3, 5, 5, 3], 542},
+  {[3, 10, 3, 13, 9], 718},
+  {[14, 14, 4, 14, 11], 345},
+  {[9, 5, 9, 9, 9], 475},
+  {[13, 3, 3, 3, 5], 221},
+  {[3, 12, 12, 12, 3], 207},
+  {[10, 14, 14, 14, 14], 152},
+  {[14, 3, 14, 12, 9], 796},
+  {[7, 12, 9, 2, 2], 53},
+  {~c"\v\f\v\f\f", 873},
+  {~c"\v\b\b\b\v", 808},
+  {[10, 11, 2, 2, 3], 828},
+  {[5, 2, 3, 5, ...], 782},
+  {[7, 2, 8, ...], 264},
+  {[4, 13, ...], 244},
+  {[12, ...], 964},
+  {[...], ...},
+  {...},
+  ...
+]
+```
+
+## Part 1
+
+```elixir
+hands
+|> Enum.sort_by(&Day07.rate/1)
+|> Day07.rate_bids()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+251121738
+```
+
+## Part 2
+
+```elixir
+hands
+|> Enum.map(fn {hand, bid} -> {Enum.map(hand, &if(&1 == 11, do: -1, else: &1)), bid} end)
+|> Enum.sort_by(&Day07.rate/1)
+|> Day07.rate_bids()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+251421071
+```
+
+<!-- livebook:{"offset":7885,"stamp":{"token":"XCP.wRgoLUWae4DX2XUFjTo7CA3j7RlO-lLQQd2jtlaKP6rWdhi_OVydNRFeTmRoLmnU14Jb8Qb8scC1mQjIUhrSe0CuCogmDX7jjcItdJFOzvfF779xRDbllL3GnQv9Rg9vfQ","version":2}} -->
