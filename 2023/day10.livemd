@@ -1,0 +1,264 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 10
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"10","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "10", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "|-L.FL-FJFL.|7FJ7F|F7-7F77.FL7---.7FF77--.|-F|FF--7FF7F-7F--77FFFJFJF7.F-LF7LFJJ.F|.|77F7F---7FLL.|FFJ.FF7-77..F77.-F-7FL-FF|77F-FFLL-FJ-|.J\n|7JF77-|L7J-F-JJL7|-|LJLF-|7.|.LLLJ7|-7.LFJFF--JF7L7|||FJ|F-J77L|F7.L-FJF----L7.FF.FJ-J-L-7|L|LJ7FJJJ.F|L-7L7.FF-|-7F-|J..||LJ-|-J-.|L|J|LF|\nLJ-LL|F7|LL7LLL-|-F7||..||..FJ.FJJF-7JJ|.7JLL--7|L7LJLJ|FJL-77|..FFJ7FJ7L7-|-JL.F--7LJJ|LJJ.F-|L7.FF-L7-F-7F77|J7||FLFJ|FFLL7.|JFJJ--J|.7-7|\n|.FJ.|F7-7L77|||L7JL-7LF777-JJ.|7F-L7JFJ7|F-|.LLJ|L---7||F--J7JFLF|JF-.--7||J.|F-.7LLLFF7||7F777L7FJ-||LJ7|||F|L-7.JJ.||7||J7.|-LL.7J.F7L7--\nF-7LF||.FLJL-7|FF|L7FL-L||F-7|FL7LJ|L7L|.LLJ|FJJLF---7|||L---7L7|L|7||FLFLJ|-FF-7|777FJ7|-FFJ|L77LL-F.JJJL7LLJ.|L7FJFF-77LF-7-|-|77L|7.L--7|\nF-JF-L7--J|JLL7-|LJ|F|J7L|J.J-|F7J7F|JF-7.|LF7F77L--7||LJF---JL-JJ|LJ7FJL7L|JLFJF|7FF7.-JJFL7|-F77J-777JF|L7J.|--L|J7|7LJ7JFJJ..|-J--7.L7.FJ\nL7J|7||J--L-F7.||LFL-JF7.F7.|.FL7.FF7L|7F|FF-7F-7F7FJLJF7L----7JFFJJ.J|7L|7L7JLL|JFFJ7.|.|F-J|FJL7|F7-|F7JF|FF.|.||7L-J7LF-||.L7J7L7FJ7.L-.|\nL7.L-FJJJF|FJ-.|JF--J7FJ7LLJ-..LJF||L-7F-7-L7|L7|||L--7|L-----J-FF-F7FL77|---F7JLL-|JF-77FL-7LJF-JFJ|-|-7-7L-7-7-JLJ-|L7-JJLF7-J-7|L77JFJJ.|\nLL-|FJL7.L|J7|-L7F.|FL-.FJJ.F-F-F-7L-7LJFJ|F|L-JLJL7F7|L----7|.F7F7F7JJ-L--|JJ7|-7-LF|FJF7J|L-7||FJFJ.LLJ.77||.L.LF7LF-F77F-J.F7-J7L-F7FJF-.\nFJ.|J7L77-7LL7J-7---FJ-FL---|||FJFJLLL-7|F7FL-----7||||F--7FJ-FJ||LJ||..LF7|JL--F||.FJL7||LF-7|L7|FJF7-.F-LJ.-7.F7.77F7||7-|L7LJJJFJ.FJJF-L.\n|.F|F7-.|.JJ.L..L|JL7..FJL|FF-7L7L-7F--JLJ|7LF7F--JLJLJ|F7LJJFL7||F-J--J7|7..F|-FL|FL7FJ|L7L7LJFJ|L7||7F|J|L7.F7F77.FJ||L--7--7|7.L-7L-77J|7\nLF-LL.L7J.FF-.F-||--.|-|-F--|FJ7L-7|L--7F7|F-J||F7F---7|||F7LFFJLJL7JL|.FF-77FF7JJF77|||L7L-JF-JLL7||L7F7|F-|.||||LFL7||F7FJ-LJ-77J-J7.LJF7J\nFF.|..7JJ7FLJ7|L-7F|F|.|7LLL|L7F--JL7F7||LJL7FJLJLJLF7|||LJL7FJF---J-|F77|JL7L|||FJL-JL-7L--7L7F7FJ|L7||L7L-F-J|||F7F||||LJ7LLJ.7JFFLF-L7LJ-\nL.FJ-|77--F||F77JJLF-7-J7F7LL7||F--7||LJL7|FJL-7F--7|||LJF--JL7|F-7JF--F7|.L7.|L7L----7FJF7FJFJ||L7|FJ||FJ77L-7LJ||L-JLJL7-|..-.|F7--77LJ-|J\nF|.L7||--FLJ7.L7F-J|FJJFF7FF7||LJF7||L7F7L7L7F-JL-7||||F-JLF-7|LJFJ7JFLF--77L-L7|7FF-7|L7||L7L7||FJ|L7LJ|F7F-7|F-JL--7F--J7F|J-F|7|LLJL7JF|.\nJ|LF|FJFFL.|F7LLJ|.|L7F7||FJLJL--JLJL7LJL7L7|L--7FJLJLJ|LF-JFJ|F-JF7.|.L7FJF7JFJL7FJFJ|FJ||7L7||LJFJ7L7FJ||L7|||F-7F7||F7LLJJ7.FJ.F77JF|F7|F\n||JFJ|F|J|7|JJL|-7-L7LJ|||L-7F7F--7F7L7F7L7LJF--JL--7F7L7|F-JFJL-7||-F-7||FJL7L7FJL7L-JL7||F-JLJF-JLF-JL-J|FJLJLJFJ|LJLJ|7J.F|7LJL|--7FJF|||\nL7--.LLJJ--|.FFJF-7-L-7||L-7LJ||F7LJL7LJL7L-7L-7F7F-J|L7LJL77L7F-J|L7L7|||L-7|FJL7FJF-7FJ||L-7F7|F7JL7F7F-JL--7F-J|L--7FJF77J|F|JLL7FLFLLJ|F\n.JLLF77.L-.|.LJ-7||FF-J||F-JF7LJ|L--7L-7FJF7|F-J||L--JLL-7FJF7||F7L7|FJ||L7FJLJF-JL-J||L7|L-7LJ|||L7FJ|||JF7F-J|F--7F-JL-JL7F---7JJ|F-JJ7LL-\n7-F7|FLJ7|7L-|.FJFL-L-7||L7FJL7LL-7FJF7|L-JLJL-7|L7F-7F7FJ|FJLJLJL7||L7||FJL-7FJF7F7F7|FJ|F-JF7|||FJ|FJLJFJ|L-7||F-JL--7F-7LJF--JJ7||||.7F|.\nL7LL|J|FFJ7FL7.FFJFFF-JLJFJL7FJF7FJ|FJ||F7F---7||FJL7||||FJ|F-7F7FJ||FJLJL7FFJL-J||LJLJL7|L-7||||||L||F7FJFJF-JLJ|F7F7FJL7L7FJF7.F7J-FF.FL-7\nLJ.LL7-J-JL|F|F---7FJF7F7L-7|L7|LJFJL7|LJLJF7FJLJL-7|LJ|||L||7LJLJJ|||F---JFJF---JL---7FJ|F-J|LJ||L7||||L7||L---7LJ|||L7FJ-|L-JL-J|.F-JFF.L7\nFJF|.L--L|-FLFL--7|L7||||F-J|FJL-7L7FJ|7F--JLJF----JL-7LJL7|L---7F7|LJL-7F7|FJF-7F-7F7|L7|L-7L7FJ|FJ|||L7|L7-F-7L-7LJL-JL-7L--7F--J.|.7JL|L|\nF-|77FJLFFJ|J.|F7|L7LJLJ||F-JL7F7L7|L7L7L----7L----7F7L-7FJ|F---J||L---7||LJL7L7|L7|||L7||F-JFJL-J|FJ||FJ|FJFJFJF7|F---7F7L7.LLJJJ.--7J.F777\n|..77-L-7-.LF7FJLJFJ7FF-J|L--7||L7||FJFJF7F7L|F---7|||F7|L7|L--7FJL7F7FJ||F7FJFJ|FJLJL7|||L7FJF7F-JL7LJL7|L-JFJFJLJ|F7F|||FJ-LJ|LLL.J|F-F.|.\n-7-LL|7FJ7L-|-|F-7L--7L-7|F7L|||FJ||L7|F|||L7||JF7LJ|LJ|L7||F--JL7FJ||L7|||LJL|FJL---7||||FJ|FJLJF--JF--J|F--JFJF--J|L7|||L7JFFF7L|7.L|F77J7\nF|7J.-J-LL7L-JLJ7L7F-JF-JLJL-JLJ|FJL7|L7||L7LJL7||F7L-7L7|||L-7F7|L7|L7|||L---JL7F-7FJ||LJL-J|FF7L-7FJ|F-JL7F7L7L7F7|FJLJL-J-F-7.F|F7JL-JFFF\nFLF.LLL7|.|-7.F7F7||F7L-------7FJL7FJL7|||LL7F-J|||L--JFJ|||F-J|||FJL7||LJF-----JL7||FJ|F---7L-J|F7||F7L--7|||.|FJ|LJ|F7.F7|7L7L7-J|FJL|LLJJ\nLJ.|7|LF|7J.LFJLJLJLJL7F--7F--JL--JL7FJ|||F-JL-7||L---7|FJLJL-7|LJL77|||F-JF-7-F7FJLJ|7LJF--JF--J|||LJ|FF7|||L-JL-JF7LJ|FJL77FJFJ|.JJ7F-J|||\nFF-|-J|" <> ...}
+```
+
+```elixir
+# puzzle_input =
+"""
+...........
+.S-------7.
+.|F-----7|.
+.||.....||.
+.||.....||.
+.|L-7.F-J|.
+.|..|.|..|.
+.L--J.L--J.
+...........
+"""
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"...........\n.S-------7.\n.|F-----7|.\n.||.....||.\n.||.....||.\n.|L-7.F-J|.\n.|..|.|..|.\n.L--J.L--J.\n...........\n"
+```
+
+```elixir
+defmodule Day10 do
+  @pipes %{
+    ?| => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+    ?- => %{e: {{1, 0}, :e}, w: {{-1, 0}, :w}},
+    ?L => %{s: {{1, 0}, :e}, w: {{0, -1}, :n}},
+    ?J => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+    ?7 => %{n: {{-1, 0}, :w}, e: {{0, 1}, :s}},
+    ?F => %{n: {{1, 0}, :e}, w: {{0, 1}, :s}}
+  }
+
+  for {k, v} <- @pipes do
+    v = Macro.escape(v)
+    def symbol_to_map(unquote(k)), do: unquote(v)
+    def map_to_symbol(unquote(v)), do: unquote(k)
+  end
+
+  def symbol_to_map(?S), do: :start
+  def map_to_symbol(nil), do: nil
+
+  @around [
+    {{0, -1}, :n, :s},
+    {{0, 1}, :s, :n},
+    {{-1, 0}, :w, :e},
+    {{1, 0}, :e, :w}
+  ]
+
+  def start(map) do
+    {sx, sy} = start = Enum.find_value(map, fn {k, v} -> if v == :start, do: k end)
+
+    routes =
+      for {{dx, dy}, face_next, route} <- @around,
+          pipe = map[{sx + dx, sy + dy}] || %{},
+          Map.has_key?(pipe, face_next),
+          do: route
+
+    dbg(routes)
+    smap = start_to_map(routes)
+    begin = smap |> Map.values() |> hd()
+    start_map = Map.merge(smap, %{start: begin})
+
+    {start, Map.put(map, start, start_map)}
+  end
+
+  defp start_to_map(next) do
+    Enum.find_value(@pipes, fn {_, map} ->
+      if Enum.all?(next, &Map.has_key?(map, &1)), do: map
+    end)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day10, <<70, 79, 82, 49, 0, 0, 20, ...>>, {:start_to_map, 1}}
+```
+
+```elixir
+pipes =
+  for {line, y} <- Enum.with_index(String.split(puzzle_input)),
+      {segment, x} <- Enum.with_index(String.to_charlist(line)),
+      segment in ~c'|-LJ7FS',
+      into: %{} do
+    {{x, y}, Day10.symbol_to_map(segment)}
+  end
+
+{start, pipes} = Day10.start(pipes)
+
+dbg(pipes[start])
+
+rat =
+  Stream.unfold({start, :start}, fn {{x, y} = pos, face} ->
+    {{dx, dy}, f} = pipes[pos][face]
+    next_pos = {x + dx, y + dy}
+
+    {next_pos, {next_pos, f}}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[:n, :e]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{start: {{0, 1}, :s}, e: {{0, 1}, :s}, n: {{-1, 0}, :w}}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+#Function<63.53678557/2 in Stream.unfold/2>
+```
+
+## Part 1
+
+```elixir
+length =
+  rat
+  |> Stream.with_index(1)
+  |> Enum.find_value(fn {p, idx} -> if p == start, do: idx end)
+
+div(length, 2)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+7066
+```
+
+## Part 2
+
+```elixir
+map =
+  rat
+  |> Enum.take(length + 1)
+  |> Map.new(&{&1, pipes[&1]})
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  {18, 103} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {61, 121} => %{w: {{0, 1}, :s}, n: {{1, 0}, :e}},
+  {112, 138} => %{s: {{1, 0}, :e}, w: {{0, -1}, :n}},
+  {37, 47} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {77, 129} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {120, 47} => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+  {116, 69} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {124, 56} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {117, 125} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {32, 15} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {103, 106} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {30, 113} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {123, 104} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {89, 14} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {35, 30} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {37, 53} => %{w: {{0, 1}, :s}, n: {{1, 0}, :e}},
+  {77, 130} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {78, 98} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {101, 62} => %{w: {{0, 1}, :s}, n: {{1, 0}, :e}},
+  {95, 56} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {102, 74} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {11, 39} => %{w: {{0, 1}, :s}, n: {{1, 0}, :e}},
+  {65, 43} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {22, 38} => %{s: {{1, 0}, :e}, w: {{0, -1}, :n}},
+  {14, 86} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {49, 117} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {20, 41} => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+  {29, 25} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {86, 10} => %{w: {{0, 1}, :s}, n: {{1, 0}, :e}},
+  {83, 36} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {29, 26} => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+  {47, 27} => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+  {31, 42} => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+  {120, 42} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {121, 77} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {103, 39} => %{s: {{1, 0}, :e}, w: {{0, -1}, :n}},
+  {102, 57} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {32, 111} => %{e: {{0, 1}, :s}, n: {{-1, 0}, :w}},
+  {84, 102} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {67, 98} => %{s: {{-1, 0}, :w}, e: {{0, -1}, :n}},
+  {119, 60} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {116, 96} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {13, 85} => %{s: {{0, 1}, :s}, n: {{0, -1}, :n}},
+  {82, 60} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {132, 99} => %{w: {{-1, 0}, :w}, e: {{1, 0}, :e}},
+  {111, 108} => %{s: {{1, 0}, :e}, w: {{0, ...}, :n}},
+  {111, 103} => %{s: {{-1, ...}, :w}, e: {{...}, ...}},
+  {15, 92} => %{e: {{...}, ...}, n: {...}},
+  {58, ...} => %{s: {...}, ...},
+  {...} => %{...},
+  ...
+}
+```
+
+```elixir
+{min_x, max_x, min_y, max_y} =
+  Enum.reduce(Map.keys(map), {:inf, -1, :inf, -1}, fn {x, y}, {min_x, max_x, min_y, max_y} ->
+    {min(min_x, x), max(max_x, x), min(min_y, y), max(max_y, y)}
+  end)
+
+Enum.reduce(min_y..max_y, 0, fn y, acc ->
+  {_, new_acc, _} =
+    Enum.reduce(min_x..max_x, {_in? = false, acc, nil}, fn x, {in?, count, cut} ->
+      pos = {x, y}
+      pipe = Day10.map_to_symbol(map[pos])
+
+      case {in?, cut, pipe} do
+        # Empty - count
+        {true, _, nil} -> {true, count + 1, nil}
+        {false, _, nil} -> {false, count, nil}
+        # Keeping same in? over dead ends or horizontal pipes
+        {in?, ?F, ?J} -> {in?, count, nil}
+        {in?, ?L, ?7} -> {in?, count, nil}
+        {in?, cut, ?-} -> {in?, count, cut}
+        # crossing pipes
+        {in?, _, cut} when cut in ~c[FL] -> {not in?, count, cut}
+        {in?, _, _} -> {not in?, count, nil}
+      end
+    end)
+
+  new_acc
+end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+401
+```
+
+<!-- livebook:{"offset":10970,"stamp":{"token":"XCP.eg8I0JKuYGKRQ6ZLEkgXh_CgBWFloHr69nddniRhrGb8VYehWkNOR5xKnO3pCjta4lPqCOhary3a6WOL4GEwXCX8z-X23nu4atIlpcMYS7lwpipAaHv0JWjqM8DTukYlMg","version":2}} -->

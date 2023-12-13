@@ -1,0 +1,73 @@
+# Day 08
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"8","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "8", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+# puzzle_input =
+"""
+LR
+
+11A = (11B, XXX)
+11B = (XXX, 11Z)
+11Z = (11B, XXX)
+22A = (22B, XXX)
+22B = (22C, 22C)
+22C = (22Z, 22Z)
+22Z = (22B, 22B)
+XXX = (XXX, XXX)
+"""
+```
+
+```elixir
+defmodule Day08 do
+  def find_path(instructions, pos, map) do
+    Enum.reduce_while(instructions, pos, fn
+      {_, idx}, <<_, _, ?Z>> -> {:halt, idx}
+      {step, _}, pos -> {:cont, elem(Map.fetch!(map, pos), step)}
+    end)
+  end
+end
+
+[instructions | rest] =
+  String.split(puzzle_input, "\n", trim: true)
+
+instructions =
+  Stream.cycle(for <<c <- instructions>>, do: if(c == ?L, do: 0, else: 1))
+  |> Stream.with_index()
+
+map =
+  Map.new(rest, fn
+    <<src::binary-3>> <> " = (" <> <<left::binary-3>> <> ", " <> <<right::binary-3>> <> ")" ->
+      {src, {left, right}}
+  end)
+```
+
+## Part 1
+
+```elixir
+Day08.find_path(instructions, "AAA", map)
+```
+
+## Part 2
+
+```elixir
+starts = map |> Map.keys() |> Enum.filter(&String.ends_with?(&1, "A"))
+
+Task.async_stream(starts, &Day08.find_path(instructions, &1, map), ordered: false)
+|> Enum.reduce(1, fn {:ok, a}, b ->
+  div(a * b, Integer.gcd(a, b))
+end)
+```
+
+<!-- livebook:{"offset":1485,"stamp":{"token":"XCP.dP8RakyYvjO2Dt2LfELbhGu7h_AlwhvgijUPOM_xnTL158Wj_I2mpQbyuTUJEnrHmVyOVnplBQcB1UHSBWM-ogSxBCmlsFU8DVr00oukCY_wP9T2YAIinkNIn_0CtZ7tkg","version":2}} -->
