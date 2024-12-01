@@ -31,7 +31,7 @@ end)
 ```elixir
 left
 |> Enum.sort()
-  |> Enum.zip_with(Enum.sort(right), &abs(&1 - &2))
+|> Enum.zip_with(Enum.sort(right), &abs(&1 - &2))
 |> Enum.sum()
 ```
 
@@ -46,4 +46,4 @@ freq_left
 |> Enum.sum()
 ```
 
-<!-- livebook:{"offset":946,"stamp":{"token":"XCP.yoOGtjwRQqzJzwUJIU8whgzKrfM5itcWL9AJcWUmjQHyohqeB9F_WH6pTqnTtTm4QERP5feEfLn6Vkjen95d23tI3VO-e9goRMqIc5jshNWfH59tFX7lzO2M7QPQ28nKicI","version":2}} -->
+<!-- livebook:{"offset":944,"stamp":{"token":"XCP.cgdw7FXwOgseZzd1bPx-K7u1sqKwy4Z3R6v2SL8ckKB2N9XbXUOJnZPIVWSXHdfF_mjc33PW3xJbhrK4nUviLvUBLacAi6DmOdDm1gNBg9OXYHILfpL6UV-qRWtw8UTbeog","version":2}} -->
