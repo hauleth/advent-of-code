@@ -1,0 +1,135 @@
+# Day 21
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"21","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "21", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+# puzzle_input =
+"""
+...........
+.....###.#.
+.###.##..#.
+..#.#...#..
+....#.#....
+.##..S####.
+.##..#...#.
+.......##..
+.##.#.####.
+.##..##.##.
+...........
+"""
+```
+
+```elixir
+lines =
+  puzzle_input
+  |> String.split("\n", trim: true)
+
+map =
+  for {line, y} <- Enum.with_index(lines),
+      {char, x} <- Enum.with_index(to_charlist(line)),
+      char != ?.,
+      do: {char, {x, y}}
+
+%{?# => obstacles, ?S => [start]} = Enum.group_by(map, &elem(&1, 0), &elem(&1, 1))
+
+height = length(lines)
+width = byte_size(hd(lines))
+
+obstacles = MapSet.new(obstacles)
+{sx, sy} = start
+```
+
+```elixir
+defmodule Day21 do
+  def build_distance_map(width, height, start, obstacles) do
+    distances =
+      for x <- 0..width,
+          y <- 0..height,
+          {x, y} not in obstacles,
+          into: %{},
+          do: {{x, y}, nil}
+
+    do_build(Map.put(distances, start, 0), neighbours(start, width, height), width, height)
+  end
+
+  defp do_build(distances, [], _w, _h), do: distances
+
+  defp do_build(distances, [{x, y} | rest], w, h)
+       when is_nil(:erlang.map_get({x, y}, distances)) do
+    {min, next} =
+      Enum.reduce(neighbours({x, y}, w, h), {nil, []}, fn
+        {nx, ny}, {min, acc} ->
+          case Map.fetch(distances, {nx, ny}) do
+            {:ok, nil} -> {min, [{nx, ny} | acc]}
+            {:ok, val} -> {min(min, val), acc}
+            :error -> {min, acc}
+          end
+      end)
+
+    distances
+    |> Map.put({x, y}, min + 1)
+    |> do_build(rest ++ next, w, h)
+  end
+
+  defp do_build(distances, [_ | rest], w, h), do: do_build(distances, rest, w, h)
+
+  defp neighbours({x, y}, w, h),
+    do:
+      Enum.filter(
+        [
+          {x + 1, y},
+          {x - 1, y},
+          {x, y + 1},
+          {x, y - 1}
+        ],
+        &in_map?(&1, w, h)
+      )
+
+  def in_map?({x, y}, w, h), do: x in 0..w and y in 0..h
+end
+```
+
+```elixir
+dist = Day21.build_distance_map(width, height, start, obstacles)
+```
+
+## Part 1
+
+```elixir
+radius = 64
+
+potential_positions =
+  for dx <- -radius..radius,
+      dy <- -radius..radius,
+      rem(dx + dy, 2) == 0,
+      p = {sx + dx, sy + dy},
+      dist[p] <= radius,
+      do: {sx + dx, sy + dy}
+```
+
+```elixir
+length(potential_positions)
+```
+
+## Part 2
+
+```elixir
+{width, height}
+```
+
+```elixir
+radius = 26_501_365
+```
+
+<!-- livebook:{"offset":2664,"stamp":{"token":"XCP.IMvv8hCgLT5Uhw7XM98joJcCpiLODkv-dad_ZINIVpWiR15rOQ16JvnrIbZyWUgwLtcUNcu0O_o0fM9c_SHVKVz5kQtylMQU9zFIW02WoyY4Mif4i-dzdI_vkWqFZENooA","version":2}} -->

@@ -24,11 +24,15 @@ b = %{x: String.to_integer(b_x), y: String.to_integer(b_y)}
 [a: a, b: b]
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 target area: x=288..330, y=-96..-50
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 [a: %{x: 288, y: -96}, b: %{x: 330, y: -50}]
 ```
 
@@ -119,7 +123,9 @@ v_y = -min(a.y, b.y) - 1
 {v_y, v_y * (v_y + 1) / 2}
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {95, 4560.0}
 ```
 
@@ -180,6 +186,8 @@ pairs =
 MapSet.size(pairs)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 3344
 ```

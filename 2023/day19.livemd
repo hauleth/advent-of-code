@@ -1,0 +1,167 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 19
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"19","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "19", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "xn{x>3251:R,x>2998:R,kxq}\nfzx{a<1013:A,a>1206:A,s<3847:A,R}\nxjm{a<406:R,A}\nmzl{m<755:R,a>679:R,A}\nfnv{x>2143:sxm,m<2895:A,gh}\nhx{x<2183:A,s>3619:A,A}\nkvr{s>3669:A,a>584:R,m>2806:R,R}\nngd{s<3561:R,a<2595:R,a>3464:kch,hx}\nqvh{s<1945:R,fng}\nsr{s<3808:A,R}\nrbs{m>562:A,a<333:A,A}\npsg{a>561:shp,s>2745:vk,jtr}\ndl{s<2761:hvq,fbg}\nzfh{m<2326:szm,m<2485:A,R}\npt{a<2937:R,s<3935:A,x>3021:R,A}\nrk{x<476:ljz,a<1937:jvg,R}\nps{m<3555:R,s>3909:zrm,R}\nrv{s>795:R,s>480:A,R}\nlnh{a>2617:gz,fm}\nsqb{x>3735:gfv,a<1477:msq,zv}\nmd{x<1096:A,x<1619:A,s<217:R,R}\nztr{x>767:R,R}\nsq{m>1364:A,s>244:A,a<3577:A,R}\nrpc{m<420:A,R}\nhs{x<554:R,R}\nvdl{s<3309:A,a>1384:R,R}\njl{x<1879:mt,A}\nzbc{m>1502:dl,rf}\nljr{a<3187:R,A}\nbvv{x>2910:bpz,s>3676:qzt,x>2015:R,A}\nzfd{m<3356:vgj,a>3007:zzt,gfm}\nzq{a>2708:A,R}\nfh{a>2705:R,jqg}\nmhv{m<813:R,R}\nkq{a>2126:R,A}\nvk{x>2866:A,jxl}\npbs{a<3509:R,sq}\npkx{x>2891:A,A}\ndv{x>326:A,R}\nlgv{m<3070:fh,s<1467:mgh,a<2929:pj,nft}\nhhb{m>3097:qmt,a>2942:bfr,dkx}\npxc{x<3132:R,m<1265:R,R}\ncd{m>3540:A,R}\ncq{s>211:A,s<106:A,A}\nvqv{a>1867:R,x>3706:A,R}\nnb{x>2068:fk,x>1696:svc,R}\nth{x<3593:R,s<2701:cf,vjk}\nsfs{m<252:gfq,a<618:R,m<353:hkq,cvz}\nfzz{a>637:jvq,x<1757:A,x<2008:gxn,nr}\ncxd{x<1726:A,x>1873:A,a>2383:A,R}\ngtz{m>3441:R,A}\nnh{s>2751:A,s<2708:R,s>2735:A,R}\nlq{a>1765:R,R}\nrzv{a<1448:cjn,gg}\ncf{s<2626:R,x<3812:R,A}\nmbf{a>2789:A,a>2651:R,m<1004:R,A}\ncb{m<1452:R,m<3092:R,s<3880:A,R}\npd{x>2406:A,a<2484:R,m>3832:R,A}\nqzt{x>2426:A,a<2554:R,A}\nvf{a>1506:mgn,m<2895:cj,a>506:ps,dtx}\ndzz{m>3559:A,R}\nmr{s<2133:A,s<2292:R,a<2700:A,A}\nrn{s>901:A,m>3204:bb,spv}\ntnf{x>2142:A,x>1748:R,s>3539:A,R}\ncs{s<2710:A,a<3268:R,R}\nqc{x>1358:ftl,a>2473:kk,x>799:xsf,xht}\nqdm{s>341:A,A}\nglr{x<686:dfr,x>1172:vl,R}\ncn{m<3652:cxd,A}\ncm{m<151:R,s>3876:R,s<3842:A,A}\ngfm{x>1439:cn,m<3716:tks,m<3855:jn,jcr}\nbf{m<963:A,A}\nvlh{m<3510:A,x>2910:R,A}\nlpv{s<3981:A,a<1739:R,A}\nvjd{m>3232:A,m>3185:A,R}\ncbx{m>1016:A,R}\nxnc{a>3100:A,R}\nqkg{a>1138:R,x>1239:A,m<725:A,R}\nstl{m>947:bm,s<3931:A,s<3956:A,pkx}\nrf{s>2880:kcz,x>644:xk,zh}\nxpd{x>3710:A,s<3512:R,R}\ndt{x<3732:R,a<2881:A,a<3307:R,A}\njqg{s<1267:A,x>2703:R,R}\nstr{x<2942:vzf,x<3428:gl,a<2665:sqb,vt}\nnl{m>3788:A,s>1087:A,s>683:R,A}\nfc{s<3884:R,x>2689:R,R}\ngxt{m>426:ll,m>178:R,x<1350:tmf,st}\nzvg{a>3345:R,A}\nrkr{a>1171:R,A}\nvjv{s>2771:tv,dtz}\nfvp{a<1356:sfs,s>928:ss,rsf}\nnbf{s<611:R,a<1809:R,A}\njn{a>2068:A,nl}\nfzm{a>2076:bpk,x>876:kdd,m<400:jf,tsv}\nqvv{a<773:A,m>764:A,A}\nhhq{x<921:pks,x>988:cl,qr}\nin{s<2529:ntc,xz}\ndh{s<3515:R,R}\ndc{s>2919:A,R}\nmgh{m<3466:rv,a<2753:R,R}\nnm{m<3214:A,m<3302:qlm,x>3194:A,A}\nspq{m>3854:zvg,x>1467:tfn,s>1060:A,R}\nxh{s>2565:A,s>2547:mm,m>597:xkx,qq}\ncv{s>2058:R,A}\nlfp{m<3165:gdt,xnf}\njv{x>403:R,A}\nbqh{m>2771:A,A}\npb{a<1100:A,A}\njcr{s<1408:A,m>3905:cng,x>1043:A,hns}\nccd{s>790:R,kd}\ndtx{s<3858:sr,x>3627:R,R}\njfn{m<1123:A,s>3574:R,m>1296:R,A}\nrrc{x>2142:R,x>1904:R,R}\njdp{x<3059:R,a>2402:R,A}\npks{s>1682:zpz,R}\nppj{x>304:R,a>1076:A,s<2714:A,R}\njf{x>487:ptd,zvr}\nll{m<826:R,a<714:R,m>1017:A,A}\nlvd{m<1464:R,a<2106:tr,a<2987:fzc,js}\nkk{a>3251:mbb,pp}\nsg{m>2670:R,A}\nssj{m<515:R,x>660:R,A}\nzxr{a<1482:tlg,x>1965:gsl,x>841:zfd,qdl}\nqvl{m<3128:A,m<3608:A,a>1356:A,R}\nbdc{s>3857:R,R}\nvxf{s>3540:xtp,bvr}\nzfk{m>2828:R,R}\nrr{a<901:A,qvl}\nvgj{x>1312:bpj,x>1146:lkq,x>1035:sz,rgc}\nkb{m>2576:lsc,A}\nthg{a>248:hm,s<3241:R,R}\ndj{s<3857:A,R}\nzc{s<1965:ht,x>1083:fzz,s>2211:dmb,gd}\ncng{s<2122:A,m<3953:R,m<3974:A,R}\npg{s>878:R,R}\ngp{a>1793:R,x<2223:R,s>3362:R,A}\nkxq{x<2775:R,x>2923:A,A}\nhsg{s<3226:A,s<3330:A,R}\nqlj{a<1311:mv,A}\npr{x>494:mxk,a<2936:kmm,bht}\ngpv{x<1269:R,x>1381:R,m>2765:R,R}\nvt{m<2555:qst,xtv}\nhfl{x<2629:A,a>3143:A,m<290:R,A}\nzb{s<1697:A,A}\nxrq{s<2864:A,a>2201:A,a>1934:R,A}\nfm{m>3529:A,R}\nxb{s<2818:A,a<3522:A,m>2849:A,dlx}\nbx{a>2926:R,a<2074:R,A}\nqmt{s>2887:ls,x>2904:th,dzz}\nvp{x>2532:A,a>2417:R,R}\nmxk{x<1016:ztr,a<2922:tf,nt}\nvg{a>707:fbh,ndl}\nmf{a<2235:A,a>3265:fc,vm}\nghh{m<945:A,x<2100:R,R}\nmt{x>1602:R,a<2587:A,A}\ndlz{s<2689:A,s<2755:rxh,x>3417:nhr,fv}\nmbb{s>1105:zb,s>554:pg,a<3688:pbs,bn}\nkch{m>2412:R,R}\nrc{a<1071:A,m>1532:A,R}\nhvq{s<2609:zs,A}\ntfn{x>1675:R,R}\nshp{a>885:R,A}\njtr{s>2671:jft,R}\nkdd{a>1297:jzz,x>1193:gxt,fph}\nq" <> ...}
+```
+
+```elixir
+defmodule Day19 do
+  def always, do: fn _ -> true end
+
+  def match(<<field::binary-1, cmp>> <> value) do
+    value = String.to_integer(value)
+
+    case cmp do
+      ?> -> fn map -> map[field] > value end
+      ?< -> fn map -> map[field] < value end
+    end
+  end
+
+  def walk("A", value, _), do: value |> Map.values() |> Enum.sum()
+  def walk("R", _, _), do: 0
+
+  def walk(curr, value, ruleset) do
+    rules = ruleset[curr]
+
+    Enum.find_value(rules, fn {f, next} ->
+      if f.(value), do: next
+    end)
+    |> walk(value, ruleset)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day19, <<70, 79, 82, 49, 0, 0, 13, ...>>, {:walk, 3}}
+```
+
+```elixir
+[rules, inputs] = String.split(puzzle_input, "\n\n")
+
+ruleset =
+  rules
+  |> String.split("\n", trim: true)
+  |> Map.new(fn line ->
+    [name, rest] = String.split(line, "{")
+
+    rules =
+      rest
+      |> String.trim_trailing("}")
+      |> String.split(",")
+      |> Enum.map(fn rule ->
+        case String.split(rule, ":") do
+          [next] -> {Day19.always(), next}
+          [rule, next] -> {Day19.match(rule), next}
+        end
+      end)
+
+    {name, rules}
+  end)
+
+inputs =
+  inputs
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn "{" <> data ->
+    data = String.trim_trailing(data, "}")
+
+    data
+    |> String.split(",")
+    |> Map.new(fn <<field::binary-1>> <> "=" <> value ->
+      {field, String.to_integer(value)}
+    end)
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{"a" => 2402, "m" => 2238, "s" => 929, "x" => 1},
+  %{"a" => 205, "m" => 654, "s" => 508, "x" => 1167},
+  %{"a" => 35, "m" => 2051, "s" => 1791, "x" => 1057},
+  %{"a" => 2726, "m" => 502, "s" => 178, "x" => 633},
+  %{"a" => 845, "m" => 2315, "s" => 2005, "x" => 3343},
+  %{"a" => 111, "m" => 2081, "s" => 499, "x" => 987},
+  %{"a" => 799, "m" => 1999, "s" => 1982, "x" => 464},
+  %{"a" => 518, "m" => 3195, "s" => 1247, "x" => 801},
+  %{"a" => 285, "m" => 2075, "s" => 1, "x" => 1506},
+  %{"a" => 384, "m" => 1366, "s" => 697, "x" => 1075},
+  %{"a" => 371, "m" => 1008, "s" => 1901, "x" => 33},
+  %{"a" => 115, "m" => 43, "s" => 14, "x" => 426},
+  %{"a" => 979, "m" => 2121, "s" => 2493, "x" => 595},
+  %{"a" => 3003, "m" => 3576, "s" => 3096, "x" => 557},
+  %{"a" => 921, "m" => 1269, "s" => 1983, "x" => 837},
+  %{"a" => 3300, "m" => 230, "s" => 909, "x" => 1367},
+  %{"a" => 130, "m" => 1878, "s" => 508, "x" => 1713},
+  %{"a" => 675, "m" => 1098, "s" => 886, "x" => 531},
+  %{"a" => 2121, "m" => 2018, "s" => 1761, "x" => 508},
+  %{"a" => 19, "m" => 399, "s" => 226, "x" => 1579},
+  %{"a" => 243, "m" => 35, "s" => 1169, "x" => 163},
+  %{"a" => 309, "m" => 221, "s" => 1305, "x" => 913},
+  %{"a" => 1685, "m" => 164, "s" => 239, "x" => 1780},
+  %{"a" => 2727, "m" => 208, "s" => 132, "x" => 86},
+  %{"a" => 2300, "m" => 2703, "s" => 386, "x" => 842},
+  %{"a" => 57, "m" => 454, "s" => 2120, "x" => 556},
+  %{"a" => 875, "m" => 1273, "s" => 1067, "x" => 1711},
+  %{"a" => 434, "m" => 939, "s" => 3341, "x" => 862},
+  %{"a" => 1666, "m" => 417, "s" => 203, "x" => 842},
+  %{"a" => 213, "m" => 1955, "s" => 2849, "x" => 93},
+  %{"a" => 62, "m" => 103, "s" => 104, "x" => 636},
+  %{"a" => 1917, "m" => 2014, "s" => 3128, "x" => 3715},
+  %{"a" => 225, "m" => 477, "s" => 579, "x" => 225},
+  %{"a" => 1176, "m" => 2243, "s" => 420, "x" => 556},
+  %{"a" => 62, "m" => 1556, "s" => 275, "x" => 10},
+  %{"a" => 368, "m" => 2498, "s" => 305, "x" => 1649},
+  %{"a" => 1488, "m" => 1148, "s" => 2419, "x" => 437},
+  %{"a" => 2488, "m" => 540, "s" => 174, "x" => 2918},
+  %{"a" => 1089, "m" => 3207, "s" => 2740, "x" => 3431},
+  %{"a" => 441, "m" => 560, "s" => 439, "x" => 661},
+  %{"a" => 310, "m" => 59, "s" => 109, "x" => 292},
+  %{"a" => 691, "m" => 452, "s" => 2012, "x" => 497},
+  %{"a" => 1182, "m" => 1424, "s" => 1228, "x" => 227},
+  %{"a" => 159, "m" => 418, "s" => 64, "x" => 225},
+  %{"a" => 38, "m" => 216, "s" => 1582, "x" => 1490},
+  %{"a" => 840, "m" => 2919, "s" => 973, "x" => 483},
+  %{"a" => 183, "m" => 1362, "s" => 589, ...},
+  %{"a" => 2028, "m" => 455, ...},
+  %{"a" => 2024, ...},
+  %{...},
+  ...
+]
+```
+
+## Part 1
+
+```elixir
+inputs
+|> Enum.map(&Day19.walk("in", &1, ruleset))
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+575412
+```
+
+<!-- livebook:{"offset":8997,"stamp":{"token":"XCP.3mLPPPAFmjyMyS1G8kuPg81u2xWiHEqMWIEJie5Cub-RqAtUePx4xByO_bbzZmbk0fucCfAAzGCebPJTo1sxtCCZWiS2f_1WHfwLTeKQ-A3TtNs0-62JkPMIEOcsxBwvcw","version":2}} -->

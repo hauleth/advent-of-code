@@ -1,0 +1,430 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 14
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"14","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "14", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "####....#..O#O..#.....OO.O#..O.......O.#OO.#...O.O..O..O..OO.##.O#...........#....##O#..O#.O.O......\n....#..#.........O.O#..OO#OO....O.....#O.#.O##..#...OO#OOO.O...#...O..#.O.#....##.....#O............\n...#O..#........#....O...O.......O#.##.O.......O..O#O#.#OO....O..O.......#O.........#O.#.O...#...#..\n#O...O...O.O..O..OO.#...O.O#....##O.##..#.OOO#...OO.#...OOO.#.O.#....#....O..##.....OO....#..O...#O.\n.#.......##.#...#...O............O...#......#..#.OO...O#....O.#..........O..O.OOO#.#O#....OO..#.#O.#\n..#..........#..O.O#.....O.OOO.#.##...##...OO..#..#.O#..OO.O#..#O..#O.O#.O.O#..#.#OOO..#OO.O.##..#..\n#..#....O.#O.O.#...O......O...###O.#...OOO#..#.O..#O.O..O.#OO...O...#..#OOO.....O...O...OO..##....O.\n...##....#..#.O#..#O...#.#......##.OO.O.......O....#O#..OOOO#....O.#OO.#O....#...O#O#..O.#.....O....\n...#O....#.#O........O.O#O....O...#.O....#....#...#O.....O.O.O.#.#.......#.........#O#........O.....\n...O...#.O#....#O#O.....O..O#...#O........O.#.##.....O.#...O..#...##O.#.#O#..O..##......#O.#...O#..#\n#..OO#.#.........O#......#O.##.O#...O..#.#.#.OO........#......#....#..#.......O.#O.##.###.####....O.\nO..O...#O..O..##.O..............#O......OOO#...#.#.#.........OO....OO....O#.#.O#.O.........#.......O\n..O#.#....O..#....#OO..##...#..#...O..##O...##.O..O.OO.#.###...O..#.OO..O#...#......#.....O.#..O..#.\nO..####.O..O.OO##.O...O..O#.#O..O...O..........#O.#..#..O..O#..O##O.O.#O.#..O.OO.O..#...O.#O..O.O.#.\n.......O..........#...OO.O#.#.#OOOO...OO#O..O.#.#......#O.#.#...#.O#......O.O.OO...#.##..#.O.#..O..#\n.#.....#O........#.O...#........O............#O......##.O..O..#.#......O#O..O...O..O.#.O...O.#..OOOO\n.......O#...O...OO#.....#..O.#O..##..#O.#....OO.##.#O#......O#..O....OO..#...#O...O...##O..O###..OOO\n...O...#..O..O..#O.O......#.O...#..O#..#..O.OO...O....O.#O#..###O....O..##OOO.#O.....#...#.....#...O\nO...OO.#...#...O.O..#O.OO..O.#.#.#O#.O.#.O..O#O.....##O..O#.O..O........O...#.......O#.#...#.#..OO..\n..OO..#.#.O#.OOO.....##.O..OOO##O#.O..O.##OOO...O..##.O......#O.##..#O..O....#.##.O###...##..O......\n.......O..OO....##......O..O#O.O.O#....#O.....#....O..O.OO...#.O.#..#....#.O..#O....O......##O.....#\n......O..#...O..O#O.#.O.......#.O#.....O.O#..#.#...O..##......O.O..O#.#.#..#.O.#O.O#.O.#......#.O...\n....O.....O..O.......#.O.OO.....O##....##.#OO..#O..#.#...##..O#O.O...O..OO..##....O#O..O....#...O.#O\n.......O.##O.#O#.........O#.OO....###.OO..O.#..#.....OO.O.O...O......O..O..O....O...#.#....#....#O..\nO..#O......#.O..#O.O.#......O#..#.O##..#.#.O.....#.O...O..OO..####.#...##......#.....#O#......OO.O.#\n...OOO.#O....O#O...O.##OO..#....OO...O.#.....OO.#OOO.#.........#....O....#.#..O.#O#.#...O.O...O.#...\n..O.#.OOO..O.#...#OO.#.O.##OO..O..####.#....#.OO##O..#.O..O#..O#....#..O#..#.O.O..O...O...O.....O.O.\n.#.#O.O..#.O.O##.....O#..#..#..OO##...OOO.#O...#.O#...#O....#OO.OO..#.OO#.OO#O#............O......#.\nO#..#....O...#.#.O....#.OOO.#.OO.....OO###.O..#..#.O..#...#.#....O#.O#....#.#.O.#.....#....O.....O#.\nO..O.#.....#.....OOO..O..OOO.#..#.##.O..O.......#..O.##O#...#.#.......#.#....#.O.O..OO..#.O..#..O#O.\n...O...O#....#O.......#........#.O.O..O.#O#...O...#..O.#..OO#O...#........O...#.....OO.#...#.O...#.#\nO.#.O#...O#....#OO.O.##......O...##..#..O#.#.#O.....OOO..#O....#...O..O#O....#.#....OO.#..#.....OO.#\n...O#..O.#.#..O........O.....#.........#.....O.......O......#..#.#O....#O.O#O.#..##O#....#O...O.O...\n#..O.O...O#..O.O.#O..#...O#....#..#...O..#O...O.....O..OO#OOO#OOO...#.O...#.OO#O.....#O.#.........O.\nO.O...#....O#OO...O.OO..#..OO...#..O..O.O....#...#..O..OOO#.....#..OO.#O....O.#.O.OOO.#OO....##OO..O\n.#O#.#.##...###O..O#...#.O.#.O...O#.O.....O....O..OOO....#...O...OO.....#.#O#O..#O......#.O.....#.#O\nO.#O.OO......##......O..OOO##.OOO.#..O...O.O#..#O.#O.O......#................##..#....#O......#.....\n........#.....##...OO.O......#..#.......#O.....O....O....#O.##..OO...O...O..........#..O.....OO...#.\n#..O.#.......O......O#.O..........#O#.O#.#..#..O..O#.O.O..O.O........O......O..O.O..O.O..#O....O#.#.\n...#...OO#..#..##.O.....O...........O.#O#O...##...O..#..#..O....#..O#O.##..O##......OOO....##..###.#\n.#..#....OOO......O#O...##O..O.OO...O..#.....#.O..##...." <> ...}
+```
+
+```elixir
+puzzle_input =
+  """
+  O....#....
+  O.OO#....#
+  .....##...
+  OO.#O....O
+  .O.....O#.
+  O.#..O.#.#
+  ..O..#O..O
+  .......O..
+  #....###..
+  #OO..#....
+  """
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"O....#....\nO.OO#....#\n.....##...\nOO.#O....O\n.O.....O#.\nO.#..O.#.#\n..O..#O..O\n.......O..\n#....###..\n#OO..#....\n"
+```
+
+```elixir
+map =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.with_index(0)
+  |> Enum.flat_map(fn {line, y} ->
+    line
+    |> String.to_charlist()
+    |> Enum.with_index()
+    |> Enum.filter(fn {p, _} -> p != ?. end)
+    |> Enum.map(fn
+      {?#, x} -> {{x, y}, :cube}
+      {?O, x} -> {{x, y}, :round}
+    end)
+  end)
+  |> Map.new()
+
+{width, height} = Enum.reduce(map, {0, 0}, fn {{x, y}, _}, {w, h} -> {max(x, w), max(y, h)} end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{9, 9}
+```
+
+## Part 1
+
+```elixir
+defmodule Day14 do
+  def weight(map, width, height) do
+    for(col <- 0..width, do: Day14.column_weight(map, col, height))
+    |> Enum.sum()
+  end
+
+  def column_weight(map, col, height) do
+    do_column_weight(map, col, height, 0, 0, height)
+  end
+
+  defp do_column_weight(_map, _col, -1, stack, sum, height) do
+    sum + sum(height + 1, stack)
+  end
+
+  defp do_column_weight(map, col, row, stack, sum, height) do
+    case Map.fetch(map, {col, row}) do
+      :error ->
+        do_column_weight(map, col, row - 1, stack, sum, height)
+
+      {:ok, :cube} ->
+        do_column_weight(map, col, row - 1, 0, sum + sum(height - row, stack), height)
+
+      {:ok, :round} ->
+        do_column_weight(map, col, row - 1, stack + 1, sum, height)
+    end
+  end
+
+  def sum(_, 0), do: 0
+  def sum(s, n), do: div((2 * s - n + 1) * n, 2)
+
+  def print(map, width, height) do
+    for y <- 0..height do
+      row =
+        for x <- 0..width do
+          case Map.get(map, {x, y}) do
+            nil -> " "
+            :cube -> "#"
+            :round -> "O"
+          end
+        end
+
+      ["#{y}\t", row, "\n"]
+    end
+    |> IO.puts()
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day14, <<70, 79, 82, 49, 0, 0, 15, ...>>, {:print, 3}}
+```
+
+```elixir
+Day14.print(map, width, height)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+0	O    #    
+1	O OO#    #
+2	     ##   
+3	OO #O    O
+4	 O     O# 
+5	O #  O # #
+6	  O  #O  O
+7	       O  
+8	#    ###  
+9	#OO  #    
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+```elixir
+Day14.weight(map, width, height)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+136
+```
+
+## Part 2
+
+```elixir
+defmodule Day14.Part2 do
+  def round(map, width, height) do
+    map
+    |> move(width, height)
+    |> rotate(height)
+    |> move(height, width)
+    |> rotate(width)
+    |> move(width, height)
+    |> rotate(height)
+    |> move(height, width)
+    |> rotate(width)
+  end
+
+  def move(map, width, height) do
+    for(x <- 0..width, col = move_column(map, x, height), c <- col, into: %{}, do: c)
+  end
+
+  def move_column(map, col, height) do
+    do_move(map, col, height, 0, [])
+  end
+
+  defp do_move(_map, col, -1, stack, acc) do
+    expand_stack(0, col, stack) ++ acc
+  end
+
+  defp do_move(map, col, row, stack, acc) do
+    case Map.fetch(map, {col, row}) do
+      :error ->
+        do_move(map, col, row - 1, stack, acc)
+
+      {:ok, :cube} ->
+        do_move(
+          map,
+          col,
+          row - 1,
+          0,
+          expand_stack(row + 1, col, stack) ++ [{{col, row}, :cube} | acc]
+        )
+
+      {:ok, :round} ->
+        do_move(map, col, row - 1, stack + 1, acc)
+    end
+  end
+
+  defp expand_stack(start, col, len) do
+    for y <- 0..(len - 1)//1, do: {{col, start + y}, :round}
+  end
+
+  def rotate(map, height) do
+    Map.new(map, fn {{x, y}, v} ->
+      {{height - y, x}, v}
+    end)
+  end
+
+  def rounds_with_memoisation(map, width, height) do
+    Stream.iterate(map, &round(&1, width, height))
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day14.Part2, <<70, 79, 82, 49, 0, 0, 17, ...>>, {:rounds_with_memoisation, 3}}
+```
+
+```elixir
+{nmap, _, _} =
+  Day14.Part2.rounds_with_memoisation(map, width, height)
+  |> Stream.with_index()
+  |> Enum.reduce_while(%{}, fn {map, idx}, set ->
+    case Map.fetch(set, map) do
+      :error -> {:cont, Map.put(set, map, idx)}
+      {:ok, prev} -> {:halt, {map, idx, prev}}
+    end
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{%{
+   {9, 8} => :round,
+   {4, 6} => :round,
+   {9, 9} => :round,
+   {7, 7} => :round,
+   {9, 7} => :round,
+   {1, 5} => :round,
+   {7, 5} => :cube,
+   {8, 1} => :round,
+   {0, 8} => :cube,
+   {9, 5} => :cube,
+   {4, 1} => :cube,
+   {9, 6} => :round,
+   {5, 9} => :cube,
+   {8, 7} => :round,
+   {6, 4} => :round,
+   {5, 4} => :round,
+   {9, 1} => :cube,
+   {5, 6} => :cube,
+   {5, 2} => :cube,
+   {4, 9} => :round,
+   {2, 5} => :cube,
+   {3, 9} => :round,
+   {0, 9} => :cube,
+   {4, 8} => :round,
+   {6, 2} => :cube,
+   {7, 8} => :cube,
+   {6, 5} => :round,
+   {6, 8} => :cube,
+   {2, 3} => :round,
+   {5, 0} => :cube,
+   {5, 8} => :cube,
+   {7, 4} => :round,
+   {3, 3} => :cube,
+   {8, 4} => :cube,
+   {2, 9} => :round
+ }, 10, 3}
+```
+
+```elixir
+Day14.Part2.rounds_with_memoisation(map, width, height)
+|> Enum.take(11)
+|> Stream.each(&Day14.print(&1, width, height))
+|> Enum.map(&Day14.weight(&1, width, height))
+|> IO.inspect(charlists: :as_lists)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+0	O    #    
+1	O OO#    #
+2	     ##   
+3	OO #O    O
+4	 O     O# 
+5	O #  O # #
+6	  O  #O  O
+7	       O  
+8	#    ###  
+9	#OO  #    
+
+0	     #    
+1	    #   O#
+2	   OO##   
+3	 OO#      
+4	     OOO# 
+5	 O#   O# #
+6	    O#    
+7	      OOOO
+8	#   O###  
+9	#  OO#    
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	     OOO# 
+5	 O#   O# #
+6	    O#   O
+7	       OOO
+8	#  OO###  
+9	# OOO#   O
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	     OOO# 
+5	 O#   O# #
+6	    O#   O
+7	       OOO
+8	#   O### O
+9	# OOO#   O
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	     OOO# 
+5	 O#   O# #
+6	    O#   O
+7	       OOO
+8	#   O### O
+9	#  OO#  OO
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	   #      
+4	     OOO# 
+5	 O#   O# #
+6	    O#   O
+7	      OOOO
+8	#   O### O
+9	#  OO#  OO
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	   #      
+4	     OOO# 
+5	 O#   O# #
+6	    O#   O
+7	      OOOO
+8	#    ### O
+9	# OOO#  OO
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	      OO# 
+5	 O#   O# #
+6	    O#   O
+7	      OOOO
+8	#    ### O
+9	# OOO#  OO
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	      OO# 
+5	 O#   O# #
+6	    O#    
+7	      OOOO
+8	#   O### O
+9	# OOO#  OO
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	     OOO# 
+5	 O#   O# #
+6	    O#    
+7	      OOOO
+8	#   O### O
+9	# OOO#   O
+
+0	     #    
+1	    #   O#
+2	     ##   
+3	  O#      
+4	     OOO# 
+5	 O#   O# #
+6	    O#   O
+7	       OOO
+8	#   O### O
+9	# OOO#   O
+
+[136, 129, 114, 110, 110, 105, 103, 106, 111, 114, 110]
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[136, 129, 114, 110, 110, 105, 103, 106, 111, 114, 110]
+```
+
+<!-- livebook:{"offset":13089,"stamp":{"token":"XCP.6NDtt8fJ01JLOq3nTevL25H4mHLTDc6Od4j4bkK8EzYDIEbnkcC_afNOcboznLxeJd_Vr-eQOTfSeVj0rfhlPWRbNSo_OLjTWZxTnB_TdqgAr5J0iWjRjf2BDccO40DsHw","version":2}} -->

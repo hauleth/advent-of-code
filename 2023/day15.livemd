@@ -1,0 +1,130 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 15
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":{"assign_to":"puzzle_input","day":"15","session_secret":"ADVENT_OF_CODE_SESSION","year":"2023"},"chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2023", "15", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "kv-,lmv-,zlg=4,hn=2,qp=8,dxd-,pk=3,pxfnc-,jgjch-,dp=3,lffh-,sprsl=1,hns=6,fl=1,hn-,ltgg-,hl-,gx-,sv-,lz-,qqxd-,jxgxjv-,hvlh=2,tnf=8,sprsl=1,tbxjmh=7,cv=3,zl-,tbcz=3,gcknh=6,jqzcc=2,gdx-,kqfg=5,lrc=1,gqq-,ztl-,cct-,ktb=8,vs-,cnpx=4,hsq=3,ht-,nb-,mqv=1,vvhsz-,bhqq=6,tdc=6,zf=6,qxh=6,th-,ltl-,rpk=9,krn=3,mqh=9,zt-,hm=9,tbxjmh=7,rmc-,qvsq=9,gdr-,czq-,jk-,lnrsql=7,fqqz-,kfrtbv-,bmm=7,psxz=3,qkr=7,ckf=5,dl-,psfh-,qqrmbj=5,tnvl-,ffnx-,ttd-,tg-,hhhk-,qx-,ldx=1,gr=6,tvj-,jqzcc=4,gvk=3,nft=2,rc=4,hk=5,tbxjmh=8,mlxs-,lmv=3,ht=7,jgb-,tbxjmh-,gmfc=2,bxg-,tmqp-,gld-,kcvf-,ggdr-,psxz=1,lt-,cm-,pxfnc-,sdmhxq-,brr=6,bjv-,th-,td=1,jsvc-,rkjbzv=1,cbbq-,nqpsc-,cgvvt-,vtm-,vk=3,tjr=9,pbm=7,gjl-,fkrl-,js=2,zjn=2,sprsl=9,rk=7,hpd=8,bgmhj-,czq-,xxcfk=9,qdxb-,ns=1,mx-,dhs-,xf-,ttd=9,tvj=8,kng-,hm-,rpk=5,hrk-,lpbk-,lbzxd=8,vmcj-,mmb-,ks-,ks=6,mx=6,xq=8,mkn-,cnpx-,rx=3,vfpj-,zl-,tgt=4,krn=7,hmr=4,gcknh-,rg=9,nb=3,jc-,qdxb=2,lffh-,ksclkb=6,pxrflz-,kkxp-,tbcz-,zt-,ltn-,rmc=1,cpscb-,zsrpq-,snnd-,kg=6,fbhvr-,kng=9,mck=3,xtz=7,bbsn=9,ht=9,zgq-,bh-,spv=5,rjg=7,tsc=1,dbvmr=3,hk-,nkg-,vzlvs-,bcxgj=1,sqhb=6,tv-,tlt-,vqm=4,vmcj=6,rx=3,hmr-,jzpt-,pmq-,hrk-,jx=2,bq=4,dxn=3,tgsr-,xlkg-,nrj-,lz-,bnlk=2,jxp=1,hfztr=8,gt=2,lgn=7,dpmt-,xj-,pj-,nzx-,jn=8,hpd-,dfgm-,qkr-,qqrmbj=1,tpn=5,rc=8,hnhm=1,vzlvs=6,bt=8,mhzf=2,hrk-,vzlvs-,sfg-,jzpt-,jqzcc=3,vvt-,ffnx=6,btt-,pbm-,hzkpq-,gdr-,mx=6,rn=9,qkr=6,ks-,zf-,nkg=2,ptrtg-,dxn-,xf-,cv-,vf=5,qk=4,zlg=8,sfg=3,sn-,hsq=5,tg=8,dn=2,jn=1,spv=9,hhhk=9,nkc=7,rm=3,hrhmdx-,zdtxcq=3,chb-,jxb-,psfh=9,pn-,jgb=2,clh=9,crg-,vgxg-,kq=3,qfz=6,rq=3,qvz=2,dl-,vtm-,rn-,kng=5,jv-,cgz=7,fff=7,gmfc=6,jgb=4,zf-,bt-,lqkmtd-,xlv=3,pjn=6,bstf-,rn-,kb-,tcp-,bx-,gkj-,vpp-,fznq-,xlg=8,qdq=2,hk=1,gdr=6,qd-,nsc=3,vfpj=7,qjjnq-,sstlb-,zs=6,qhm-,pmq-,gqblq-,pnnd=9,ztl=1,bmmdqk-,fkpd-,mm-,gs-,bnlk-,sstlb-,ct=6,hstx-,khq=9,gjd=3,fbhvr-,qqxd-,hrhmdx-,vnj=3,lrc-,hnhm=7,lsr=4,gqblq-,sprsl=7,gfm-,dg-,fmf=5,tsc=9,sz=1,tpn=6,gld-,rmc=4,spv-,xhs=2,hn-,sfv=8,rhg-,dd-,fzl-,hlq=3,czq=4,nvm-,fhgz=1,jzrz=4,jntz-,jj=2,rpk=8,bjv=3,lgn=7,hzj-,xhd=8,nnx-,gdr-,hzls=9,kdt-,vvt-,bgmhj=1,ldx=7,tcp-,kntk=9,brv-,xd=6,cn-,pdb-,jk-,qh-,vmcj-,jj=6,dn=9,mdzv-,pvk=4,gmfc-,rmj-,sh-,cl=6,pvk=1,mk=7,hx=5,gqq=5,jc-,qf-,tmqp-,srtm-,fqqz=1,rjkvz=4,nff=4,vs=6,zsrpq-,bpkc-,qqxd-,lsbk-,gcknh=9,gmfc-,nxrcnk-,gjl=5,th-,tsc-,pdqkq=6,zk-,zt=6,bp-,hn-,pd=5,jqjdg=6,pjm=7,dh-,mlnc-,psfh-,rm-,nndl=2,tnf=5,gt-,dfm-,rlr=2,pmbfzf-,lt-,vgxg-,xlv-,qr=6,xqst-,pjm-,prj=8,ztgp-,zt-,lrc=2,pln-,bd-,cmnj-,xp=5,cm-,bcqvf=9,gp=8,bd=4,hvlh=4,bpkc=9,ld-,vj-,lnrsql-,vsp-,prj=8,fbhvr-,bd=8,qf=2,zjn-,tbxjmh-,xhs-,kcvf=4,tgsr=4,zk-,sxz-,hmr=4,pj=9,hl-,sgl-,jz-,mbm-,gjl=8,sstlb-,vdd=7,nb=5,snvxq-,fz=3,bh=6,db-,vdd=2,bmmdqk-,qsbf=2,tv=1,prj=5,kqp-,vzlvs-,lplqhd-,tqtqg=5,ddq=4,mmz-,vfdtt=4,vvhsz=8,zq=3,pn=7,lgn-,tzpv-,zqq-,fzc-,rl-,srtm-,tpn-,cl=7,fz=7,tnvl-,dhx-,td-,hzkpq-,kqfg-,xbz=5,rpk-,nbhcs=5,jj-,xp=2,kp=8,rfxck-,vj=8,bvfl-,hft=8,jj=4,qtd-,bcqvf-,dh=3,xt-,mbc-,msd=7,zqq=7,pdqkq-,qr=4,rhg=2,vzlvs=9,dh=2,hrhmdx-,vvt-,zs=8,dxd-,gkxmlj-,tgsr=1,tf=5,qdxb-,kq=7,mlxs-,jjxlh=8,lplqhd-,rjkvz=3,fph=6,lmv-,mdx-,kcvf=5,vtd-,khq-,gqblq-,hzj=1,mkn-,bxg=7,qtd-,bnlk=9,ltn-,vnz=8,mk-,xnrnz=7,skmhp=3,ddq-,rc=5,vnj=6,sz=5,cl=6,qvz=1,vdd=4,hft=6,rmq=9,jntz=5,qs-,zqq-,mqh-,qh-,hh-,dbnrnp-,nrj-,mqv-,rmj-,nqpsc-,tq=5,cnk-,qctz=4,xfdh=9,ptrtg=7,nvm-,xlkg-,psgp=6,ns-,rrxq-,bcxgj-,xhs-,jgmn=6,mcs=9,gs-,kntk-,fp-,xd-,pn=8,tzpv=3,rrxq=4,vdd=1,xhd-,rmj-,mx-,spq=8,qqkv=8,mjpb=5,vgxg=8,sfv-,gld-,qqkv=7,rh-,tj=3,snnd=8,bd-,vgxg=6,kng-,gvk=3,jjxlh=5,jgm=5,qvsq-,nkc-,bqntx-,cfn=6,crg=1,kng-,hvlh-,xtxc=1,qqxd-,fzl=3,hjs=4,nvm-,hzkpq-,rk-,jv-,rjkvz-,cjq-,lkmj-,vtj-,xhp=1,qf=2,cnpx=9,psxz-,mcs-,jx=6,hx-,bt-,nsc=2,qctz-,rx-,kdt-,dbvmr-,ctn=8,lrc-,xmvfk-,xh-,vqm=8,mlnc=4,jgb-,cbbq-,vk-,csg-,jntz-,pcdffj-,xt-,xj-,fp-,bt-,kntk=1,ztl-,qkr-,clh-,bq=8,ztgp-,mk-,xfdh-,ncsm-,zhj-,tlt-,ncsm=1,mbc-,tqtqg-,pb-,bqgs=5,fhgz-,ksb-,lsr-,qvz-,tk=5,hns=5,pbxm=8,ct-,lrc-,flrj-,zd-,pg-,pdqkq=1,gxxk-,ffnx=4,zlg-,ts=5,bgmhj-,jjx=7,vl-,hx=1,jgmn-,lkmj-,rrgf-,qphsv=9,xj=1,cx-,prj=6,jndqj-,dxd=6,mcs-,rhg=2,jk=3,qsn-,jmfhs-,hk-,ts=7,pk=9,vmcj-,nzx-,bt-,mqh-,ctc-,nkg=4,rpk-,pdb=" <> ...}
+```
+
+```elixir
+# puzzle_input = "rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7"
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+nil
+```
+
+```elixir
+defmodule Day15 do
+  def hash(binary) do
+    for <<c <- binary>>, reduce: 0, do: (acc -> Bitwise.band((c + acc) * 17, 0xFF))
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Day15, <<70, 79, 82, 49, 0, 0, 7, ...>>, {:hash, 1}}
+```
+
+```elixir
+segments =
+  puzzle_input
+  |> String.split(",")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["kv-", "lmv-", "zlg=4", "hn=2", "qp=8", "dxd-", "pk=3", "pxfnc-", "jgjch-", "dp=3", "lffh-",
+ "sprsl=1", "hns=6", "fl=1", "hn-", "ltgg-", "hl-", "gx-", "sv-", "lz-", "qqxd-", "jxgxjv-",
+ "hvlh=2", "tnf=8", "sprsl=1", "tbxjmh=7", "cv=3", "zl-", "tbcz=3", "gcknh=6", "jqzcc=2", "gdx-",
+ "kqfg=5", "lrc=1", "gqq-", "ztl-", "cct-", "ktb=8", "vs-", "cnpx=4", "hsq=3", "ht-", "nb-",
+ "mqv=1", "vvhsz-", "bhqq=6", "tdc=6", "zf=6", "qxh=6", "th-", ...]
+```
+
+## Part 1
+
+```elixir
+segments
+|> Enum.map(&Day15.hash/1)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+506869
+```
+
+## Part 2
+
+```elixir
+segments
+|> Enum.map(fn step ->
+  [_, label, action] = Regex.run(~r/([a-z]+)(-|=\d+)/, step)
+
+  box = Day15.hash(label)
+
+  case action do
+    "-" -> {box, label, :rm}
+    "=" <> rest -> {box, label, {:add, String.to_integer(rest)}}
+  end
+end)
+|> Enum.reduce(%{}, fn {box, label, action}, map ->
+  curr = map[box] || []
+
+  next =
+    case action do
+      {:add, f} ->
+        if Enum.any?(curr, &(elem(&1, 0) == label)) do
+          List.keyreplace(curr, label, 0, {label, f})
+        else
+          [{label, f} | curr]
+        end
+
+      :rm ->
+        List.keydelete(curr, label, 0)
+    end
+
+  Map.put(map, box, next)
+end)
+|> Enum.map(fn {box, lenses} ->
+  box = box + 1
+
+  lenses
+  |> Enum.reverse()
+  |> Enum.with_index(1)
+  |> Enum.map(fn {{_, f}, id} -> box * id * f end)
+  |> Enum.sum()
+end)
+|> Enum.sum()
+|> dbg()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+271384
+```
+
+<!-- livebook:{"offset":6563,"stamp":{"token":"XCP.ikIQAzWaCpMFzPgSppGb8erUqNQTiTQKVT4Z8-snaHPxRPHLJ4FSFvjZQhOg5ALkY4RVu78B3ZYCWSkqZ0vt8iql9ZvmaUtNNTG10v5VUIi3Jt0IgRmOCL0PL47Vn3f_gQ","version":2}} -->

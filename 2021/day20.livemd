@@ -128,7 +128,9 @@ alg = Day20.Algo.new(algo)
 img = Day20.Image.new(board)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 #Image<{100x100}
                                                                                                       
  █ █   █  ██  ████████   ██    █ █ ███ █ ██ ██   █  ███ █ ██ █ █  █  ██  ███    █  ██ ██    █   ██ █  
@@ -244,7 +246,9 @@ img
 |> Day20.Image.lighted()
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 5179
 ```
 
@@ -256,6 +260,8 @@ img
 |> Day20.Image.lighted()
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 16112
 ```

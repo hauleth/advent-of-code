@@ -19,7 +19,9 @@ input =
   |> Map.new()
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 %{a: [:d, :b], b: [:d, :a], c: [:c, :b], d: [:c, :a]}
 ```
 
@@ -124,7 +126,9 @@ defmodule Day23 do
 end
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 warning: variable "depth" is unused (if the variable is not meant to be used, prefix it with an underscore)
   day23.livemd#cell:58: Day23.room_to_hall/3
 
@@ -136,7 +140,9 @@ warning: variable "stacks" is unused (if the variable is not meant to be used, p
 
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {:module, Day23, <<70, 79, 82, 49, 0, 0, 23, ...>>, {:cost, 4}}
 ```
 
@@ -144,6 +150,8 @@ warning: variable "stacks" is unused (if the variable is not meant to be used, p
 Day23.process(input)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 :inf
 ```

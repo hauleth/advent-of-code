@@ -21,7 +21,9 @@ input =
   end)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 [
   on: %{x: -40..7, y: -3..49, z: -48..6},
   on: %{x: -38..10, y: -11..37, z: -30..19},
@@ -133,7 +135,9 @@ defmodule Day22 do
 end
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {:module, Day22, <<70, 79, 82, 49, 0, 0, 18, ...>>, {:split, 2}}
 ```
 
@@ -150,7 +154,9 @@ end)
 |> Day22.volume()
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 556501
 ```
 
@@ -162,6 +168,8 @@ input
 |> Day22.volume()
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 1217140271559773
 ```

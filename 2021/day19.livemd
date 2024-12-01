@@ -257,7 +257,7 @@ points_set = MapSet.new(hd(input))
           end)
         end)
 
-      IO.inspect(time / 1_000_000)
+      # IO.inspect(time / 1_000_000)
 
       current = Day19.pairs(set)
 
@@ -272,7 +272,7 @@ points_set = MapSet.new(hd(input))
           {:halt, {set, scanners}}
 
         {joinable, later} ->
-          IO.inspect({length(joinable), length(later)}, label: i)
+          # IO.inspect({length(joinable), length(later)}, label: i)
           {:cont, {set, joinable, later, scanners}}
       end
     end
@@ -284,21 +284,12 @@ MapSet.size(points_set)
 <!-- livebook:{"output":true} -->
 
 ```
-0.005503
-1: {5, 25}
-0.029354
-2: {5, 20}
-0.067284
-3: {7, 13}
-0.195126
-4: {6, 7}
-0.292686
-5: {5, 2}
-0.374403
-6: {1, 1}
-0.074645
-7: {1, 0}
-0.090199
+warning: variable "i" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  2021/day19.livemd#cell:w7cczzbdb2mrwtou27usauoozuqydf3v:9
+
+warning: variable "time" is unused (if the variable is not meant to be used, prefix it with an underscore)
+  2021/day19.livemd#cell:w7cczzbdb2mrwtou27usauoozuqydf3v:10
+
 ```
 
 <!-- livebook:{"output":true} -->

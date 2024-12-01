@@ -17,7 +17,9 @@ p2 = String.to_integer(p2)
 {p1, p2}
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {3, 5}
 ```
 
@@ -36,7 +38,9 @@ round =
 rounds * 3 * loser
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 720750
 ```
 
@@ -84,7 +88,9 @@ defmodule Day21.Task2 do
 end
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 {:module, Day21.Task2, <<70, 79, 82, 49, 0, 0, 12, ...>>, {:round, 3}}
 ```
 
@@ -92,6 +98,8 @@ end
 Day21.Task2.play(p1, p2)
 ```
 
-```output
+<!-- livebook:{"output":true} -->
+
+```
 275067741811212
 ```
