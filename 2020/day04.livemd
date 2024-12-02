@@ -1,0 +1,484 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 04
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiI0Iiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjAifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2020", "4", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "hcl:#6b5442 ecl:brn iyr:2019\npid:637485594 hgt:171cm\neyr:2021 byr:1986\n\neyr:2025 iyr:1938 byr:2014 hcl:#341e13\nhgt:66cm\npid:70195175\n\nhcl:#efcc98\niyr:2011 ecl:hzl\neyr:2020 hgt:174cm pid:589700330\n\nhcl:#bba027 eyr:2027 cid:54\necl:brn pid:153cm\niyr:2028 hgt:173cm\nbyr:2004\n\nhcl:b45cec\niyr:2011 ecl:oth hgt:185cm eyr:2029 pid:178cm\n\nhgt:185cm iyr:2016 eyr:2029 hcl:#888785 pid:026540921\n\neyr:2025\nhcl:6962f7 byr:2015 ecl:oth iyr:1974\nhgt:191cm\npid:2616015\n\npid:268398556 iyr:2019 ecl:grn\neyr:2027 byr:1951 hcl:#18171d hgt:67cm\n\neyr:2029 hgt:153cm ecl:brn pid:183179186 byr:2013 hcl:#623a2f\niyr:1957\n\ncid:121 iyr:1922 hcl:752fbc pid:79577560 byr:2025\nhgt:61cm eyr:1971\n\niyr:2016\neyr:2024 hcl:#18171d hgt:184cm\necl:hzl byr:1992 pid:751161201\n\neyr:2021 ecl:blu byr:1938 iyr:2016 hcl:#b6652a pid:313406514 hgt:191cm\n\nhcl:#623a2f eyr:2021\necl:brn\npid:145249653 hgt:167cm iyr:2019 byr:1991\n\niyr:2022 pid:175cm\nbyr:2021 eyr:2027 ecl:#f615b1\nhgt:172in hcl:#ceb3a1\n\nhgt:173in\necl:#0cba5e pid:1885981567 iyr:1968\nbyr:1952\neyr:1942\n\necl:oth eyr:2023 hgt:65cm pid:521737908 byr:1971 hcl:z iyr:2017\n\nbyr:1936\nhcl:#cfa07d\necl:brn iyr:2011 pid:589047874\neyr:2025\n\nhcl:#fffffd\npid:912552538\ncid:159 hgt:160cm iyr:2012\neyr:2023 ecl:hzl\nbyr:1946\n\niyr:2015\necl:amb hgt:72in\ncid:59 pid:782818257 hcl:#18171d eyr:2026\nbyr:1952\n\nhgt:173cm iyr:2018 cid:96 ecl:amb byr:1986 pid:783160698 eyr:2026\nhcl:#602927\n\nhcl:#a97842 cid:199 pid:912273414 eyr:2030\nhgt:171cm ecl:hzl iyr:2011 byr:1960\n\necl:amb hgt:156cm\niyr:2013\nhcl:#ceb3a1\ncid:116 pid:567057004 byr:1942\neyr:2029\n\necl:#cddc40\npid:045090966 cid:254\nhgt:75in hcl:#733820 eyr:2026 byr:1956\niyr:2015\n\npid:156cm\neyr:2040\nhgt:176cm ecl:#02e67d hcl:b7c0e6\niyr:1959 cid:129 byr:2022\n\nhgt:160cm byr:1933\necl:blu eyr:2029 iyr:2012 hcl:#888785 pid:028571975\n\niyr:2017\nhcl:#390f37 hgt:171cm ecl:brn byr:1931 pid:015365720 eyr:2030\n\niyr:2014 pid:697057757\neyr:2026 hgt:188cm\necl:gry byr:1926\n\npid:484310015 hcl:#fffffd hgt:150cm iyr:2018\ncid:53 ecl:gry eyr:2021 byr:1957\n\nhgt:156cm\neyr:2026 byr:1963\npid:063272603 ecl:brn iyr:2011\nhcl:#888785\n\nbyr:1955 pid:310518398 hgt:191cm iyr:2018\necl:oth eyr:2023 cid:132 hcl:#888785\n\nbyr:1938 hcl:#623a2f eyr:2023\niyr:2010\nhgt:165cm\npid:170304863\ncid:290 ecl:amb\n\neyr:2026\npid:021468065 hgt:164cm\nbyr:1996 iyr:2016 hcl:#18171d\necl:brn\n\nbyr:2027 ecl:oth pid:8258823391 hgt:153in hcl:#733820 eyr:1948\n\nbyr:2026 ecl:#cd275a iyr:2012 eyr:2036 pid:5917499975\n\nbyr:2004\ncid:151\nhcl:99ecb1\neyr:2033 pid:871137711 iyr:1997\nhgt:184cm ecl:oth\n\nbyr:2011\nhcl:z ecl:#eee1d2 hgt:59cm eyr:1925 iyr:2030 pid:#02ee78\n\npid:742658992\nhcl:#888785\nbyr:1995\neyr:2024 hgt:162cm iyr:2013 cid:169 ecl:gry\n\nhgt:152cm byr:1946\neyr:2027 iyr:2018\npid:352799678\nhcl:#238da0\necl:amb\ncid:71\n\nhcl:#623a2f pid:723616064 eyr:2021\nhgt:172cm\nbyr:1926 iyr:2013\necl:grn\n\niyr:2019 hgt:94 byr:2028 eyr:1986\npid:#ee7f00\n\necl:amb\neyr:2027 pid:188153423 byr:1957 hcl:#d67ae1\niyr:2011 hgt:183cm\n\nbyr:1950 ecl:#e2495d iyr:2010 hgt:166cm eyr:2034 pid:151457075\n\neyr:1981\nbyr:2016 iyr:2029 pid:153cm ecl:#55c2a4 hcl:z\nhgt:76cm\n\nhgt:184cm ecl:amb eyr:2021\nhcl:#623a2f\npid:414607669 iyr:1960 byr:2002\n\neyr:2027 iyr:2020 hgt:179cm byr:1991\npid:969568248\necl:blu\n\nhgt:175cm pid:536803427 hcl:#a97842 iyr:2012\necl:grn byr:1950 eyr:2027\n\neyr:2028 hgt:60in hcl:#733820 iyr:2018 ecl:oth pid:871909483\nbyr:1930\n\nhgt:155cm iyr:2020 byr:1960 eyr:2021\npid:515710074 ecl:amb hcl:#341e13\n\nbyr:1922 hcl:z iyr:1977 ecl:brn\neyr:2023 hgt:119 pid:865700639\n\necl:gry hcl:959fcd pid:#633ac1\nbyr:2011 hgt:68in\neyr:2020\n\niyr:1972 hcl:z cid:149 byr:2020\nhgt:166in pid:4548657 eyr:1960\necl:#cc987c\n\neyr:2023 hcl:#b6652a iyr:2015\nhgt:187in pid:547953710 byr:1979 ecl:grn\n\niyr:2018\npid:508691429 ecl:oth eyr:2025 hgt:187cm cid:270\nhcl:#888785 byr:1977\n\nhgt:168cm eyr:2032 byr:2020\necl:gry iyr:1982\nhcl:z pid:648015564\n\nhcl:#fffffd pid:911858643 iyr:2016 ecl:gry eyr:2030 byr:1992 hgt:156cm\n\npid:241562994 eyr:2026 ecl:grn hgt:164cm\nhcl:#c0946f byr:1945 iyr:2015 cid:296\n\nbyr:1976 pid:269322775 ecl:hzl\nhgt:162cm hcl:#b6652a\neyr:2022 cid:335 iyr:2012\n\neyr:2028\nhgt:106\npid:268626219 hcl:#a97842\niyr:2011\necl:grn byr:" <> ...}
+```
+
+```elixir
+passports =
+  puzzle_input
+  |> String.split("\n\n", trim: true)
+  |> Enum.map(fn passport ->
+    passport
+    |> String.split(~r/\s/, trim: true)
+    |> Map.new(fn <<key::3-binary, ":", data::binary>> ->
+      {key, data}
+    end)
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{
+    "byr" => "1986",
+    "ecl" => "brn",
+    "eyr" => "2021",
+    "hcl" => "#6b5442",
+    "hgt" => "171cm",
+    "iyr" => "2019",
+    "pid" => "637485594"
+  },
+  %{
+    "byr" => "2014",
+    "eyr" => "2025",
+    "hcl" => "#341e13",
+    "hgt" => "66cm",
+    "iyr" => "1938",
+    "pid" => "70195175"
+  },
+  %{
+    "ecl" => "hzl",
+    "eyr" => "2020",
+    "hcl" => "#efcc98",
+    "hgt" => "174cm",
+    "iyr" => "2011",
+    "pid" => "589700330"
+  },
+  %{
+    "byr" => "2004",
+    "cid" => "54",
+    "ecl" => "brn",
+    "eyr" => "2027",
+    "hcl" => "#bba027",
+    "hgt" => "173cm",
+    "iyr" => "2028",
+    "pid" => "153cm"
+  },
+  %{
+    "ecl" => "oth",
+    "eyr" => "2029",
+    "hcl" => "b45cec",
+    "hgt" => "185cm",
+    "iyr" => "2011",
+    "pid" => "178cm"
+  },
+  %{"eyr" => "2029", "hcl" => "#888785", "hgt" => "185cm", "iyr" => "2016", "pid" => "026540921"},
+  %{
+    "byr" => "2015",
+    "ecl" => "oth",
+    "eyr" => "2025",
+    "hcl" => "6962f7",
+    "hgt" => "191cm",
+    "iyr" => "1974",
+    "pid" => "2616015"
+  },
+  %{
+    "byr" => "1951",
+    "ecl" => "grn",
+    "eyr" => "2027",
+    "hcl" => "#18171d",
+    "hgt" => "67cm",
+    "iyr" => "2019",
+    "pid" => "268398556"
+  },
+  %{
+    "byr" => "2013",
+    "ecl" => "brn",
+    "eyr" => "2029",
+    "hcl" => "#623a2f",
+    "hgt" => "153cm",
+    "iyr" => "1957",
+    "pid" => "183179186"
+  },
+  %{
+    "byr" => "2025",
+    "cid" => "121",
+    "eyr" => "1971",
+    "hcl" => "752fbc",
+    "hgt" => "61cm",
+    "iyr" => "1922",
+    "pid" => "79577560"
+  },
+  %{
+    "byr" => "1992",
+    "ecl" => "hzl",
+    "eyr" => "2024",
+    "hcl" => "#18171d",
+    "hgt" => "184cm",
+    "iyr" => "2016",
+    "pid" => "751161201"
+  },
+  %{
+    "byr" => "1938",
+    "ecl" => "blu",
+    "eyr" => "2021",
+    "hcl" => "#b6652a",
+    "hgt" => "191cm",
+    "iyr" => "2016",
+    "pid" => "313406514"
+  },
+  %{
+    "byr" => "1991",
+    "ecl" => "brn",
+    "eyr" => "2021",
+    "hcl" => "#623a2f",
+    "hgt" => "167cm",
+    "iyr" => "2019",
+    "pid" => "145249653"
+  },
+  %{
+    "byr" => "2021",
+    "ecl" => "#f615b1",
+    "eyr" => "2027",
+    "hcl" => "#ceb3a1",
+    "hgt" => "172in",
+    "iyr" => "2022",
+    "pid" => "175cm"
+  },
+  %{
+    "byr" => "1952",
+    "ecl" => "#0cba5e",
+    "eyr" => "1942",
+    "hgt" => "173in",
+    "iyr" => "1968",
+    "pid" => "1885981567"
+  },
+  %{
+    "byr" => "1971",
+    "ecl" => "oth",
+    "eyr" => "2023",
+    "hcl" => "z",
+    "hgt" => "65cm",
+    "iyr" => "2017",
+    "pid" => "521737908"
+  },
+  %{
+    "byr" => "1936",
+    "ecl" => "brn",
+    "eyr" => "2025",
+    "hcl" => "#cfa07d",
+    "iyr" => "2011",
+    "pid" => "589047874"
+  },
+  %{
+    "byr" => "1946",
+    "cid" => "159",
+    "ecl" => "hzl",
+    "eyr" => "2023",
+    "hcl" => "#fffffd",
+    "hgt" => "160cm",
+    "iyr" => "2012",
+    "pid" => "912552538"
+  },
+  %{
+    "byr" => "1952",
+    "cid" => "59",
+    "ecl" => "amb",
+    "eyr" => "2026",
+    "hcl" => "#18171d",
+    "hgt" => "72in",
+    "iyr" => "2015",
+    "pid" => "782818257"
+  },
+  %{
+    "byr" => "1986",
+    "cid" => "96",
+    "ecl" => "amb",
+    "eyr" => "2026",
+    "hcl" => "#602927",
+    "hgt" => "173cm",
+    "iyr" => "2018",
+    "pid" => "783160698"
+  },
+  %{
+    "byr" => "1960",
+    "cid" => "199",
+    "ecl" => "hzl",
+    "eyr" => "2030",
+    "hcl" => "#a97842",
+    "hgt" => "171cm",
+    "iyr" => "2011",
+    "pid" => "912273414"
+  },
+  %{
+    "byr" => "1942",
+    "cid" => "116",
+    "ecl" => "amb",
+    "eyr" => "2029",
+    "hcl" => "#ceb3a1",
+    "hgt" => "156cm",
+    "iyr" => "2013",
+    "pid" => "567057004"
+  },
+  %{
+    "byr" => "1956",
+    "cid" => "254",
+    "ecl" => "#cddc40",
+    "eyr" => "2026",
+    "hcl" => "#733820",
+    "hgt" => "75in",
+    "iyr" => "2015",
+    "pid" => "045090966"
+  },
+  %{
+    "byr" => "2022",
+    "cid" => "129",
+    "ecl" => "#02e67d",
+    "eyr" => "2040",
+    "hcl" => "b7c0e6",
+    "hgt" => "176cm",
+    "iyr" => "1959",
+    "pid" => "156cm"
+  },
+  %{
+    "byr" => "1933",
+    "ecl" => "blu",
+    "eyr" => "2029",
+    "hcl" => "#888785",
+    "hgt" => "160cm",
+    "iyr" => "2012",
+    "pid" => "028571975"
+  },
+  %{
+    "byr" => "1931",
+    "ecl" => "brn",
+    "eyr" => "2030",
+    "hcl" => "#390f37",
+    "hgt" => "171cm",
+    "iyr" => "2017",
+    "pid" => "015365720"
+  },
+  %{
+    "byr" => "1926",
+    "ecl" => "gry",
+    "eyr" => "2026",
+    "hgt" => "188cm",
+    "iyr" => "2014",
+    "pid" => "697057757"
+  },
+  %{
+    "byr" => "1957",
+    "cid" => "53",
+    "ecl" => "gry",
+    "eyr" => "2021",
+    "hcl" => "#fffffd",
+    "hgt" => "150cm",
+    "iyr" => "2018",
+    "pid" => "484310015"
+  },
+  %{
+    "byr" => "1963",
+    "ecl" => "brn",
+    "eyr" => "2026",
+    "hcl" => "#888785",
+    "hgt" => "156cm",
+    "iyr" => "2011",
+    "pid" => "063272603"
+  },
+  %{
+    "byr" => "1955",
+    "cid" => "132",
+    "ecl" => "oth",
+    "eyr" => "2023",
+    "hcl" => "#888785",
+    "hgt" => "191cm",
+    "iyr" => "2018",
+    "pid" => "310518398"
+  },
+  %{
+    "byr" => "1938",
+    "cid" => "290",
+    "ecl" => "amb",
+    "eyr" => "2023",
+    "hcl" => "#623a2f",
+    "hgt" => "165cm",
+    "iyr" => "2010",
+    "pid" => "170304863"
+  },
+  %{
+    "byr" => "1996",
+    "ecl" => "brn",
+    "eyr" => "2026",
+    "hcl" => "#18171d",
+    "hgt" => "164cm",
+    "iyr" => "2016",
+    "pid" => "021468065"
+  },
+  %{
+    "byr" => "2027",
+    "ecl" => "oth",
+    "eyr" => "1948",
+    "hcl" => "#733820",
+    "hgt" => "153in",
+    "pid" => "8258823391"
+  },
+  %{"byr" => "2026", "ecl" => "#cd275a", "eyr" => "2036", "iyr" => "2012", "pid" => "5917499975"},
+  %{
+    "byr" => "2004",
+    "cid" => "151",
+    "ecl" => "oth",
+    "eyr" => "2033",
+    "hcl" => "99ecb1",
+    "hgt" => "184cm",
+    "iyr" => "1997",
+    "pid" => "871137711"
+  },
+  %{
+    "byr" => "2011",
+    "ecl" => "#eee1d2",
+    "eyr" => "1925",
+    "hcl" => "z",
+    "hgt" => "59cm",
+    "iyr" => "2030",
+    "pid" => "#02ee78"
+  },
+  %{
+    "byr" => "1995",
+    "cid" => "169",
+    "ecl" => "gry",
+    "eyr" => "2024",
+    "hcl" => "#888785",
+    "hgt" => "162cm",
+    "iyr" => "2013",
+    "pid" => "742658992"
+  },
+  %{
+    "byr" => "1946",
+    "cid" => "71",
+    "ecl" => "amb",
+    "eyr" => "2027",
+    "hcl" => "#238da0",
+    "hgt" => "152cm",
+    "iyr" => "2018",
+    "pid" => "352799678"
+  },
+  %{
+    "byr" => "1926",
+    "ecl" => "grn",
+    "eyr" => "2021",
+    "hcl" => "#623a2f",
+    "hgt" => "172cm",
+    "iyr" => "2013",
+    "pid" => "723616064"
+  },
+  %{"byr" => "2028", "eyr" => "1986", "hgt" => "94", "iyr" => "2019", "pid" => "#ee7f00"},
+  %{
+    "byr" => "1957",
+    "ecl" => "amb",
+    "eyr" => "2027",
+    "hcl" => "#d67ae1",
+    "hgt" => "183cm",
+    "iyr" => "2011",
+    "pid" => "188153423"
+  },
+  %{
+    "byr" => "1950",
+    "ecl" => "#e2495d",
+    "eyr" => "2034",
+    "hgt" => "166cm",
+    "iyr" => "2010",
+    "pid" => "151457075"
+  },
+  %{
+    "byr" => "2016",
+    "ecl" => "#55c2a4",
+    "eyr" => "1981",
+    "hcl" => "z",
+    "hgt" => "76cm",
+    "iyr" => "2029",
+    "pid" => "153cm"
+  },
+  %{
+    "byr" => "2002",
+    "ecl" => "amb",
+    "eyr" => "2021",
+    "hcl" => "#623a2f",
+    "hgt" => "184cm",
+    "iyr" => "1960",
+    ...
+  },
+  %{"byr" => "1991", "ecl" => "blu", "eyr" => "2027", "hgt" => "179cm", "iyr" => "2020", ...},
+  %{"byr" => "1950", "ecl" => "grn", "eyr" => "2027", "hcl" => "#a97842", ...},
+  %{"byr" => "1930", "ecl" => "oth", "eyr" => "2028", ...},
+  %{"byr" => "1960", "ecl" => "amb", ...},
+  %{"byr" => "1922", ...},
+  %{...},
+  ...
+]
+```
+
+## Part 1
+
+```elixir
+Enum.count(passports, fn passport ->
+  required = ~w[byr iyr eyr hgt hcl ecl pid]
+  keys = Map.keys(passport)
+
+  Enum.all?(required, & &1 in keys)
+end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+196
+```
+
+## Part 2
+
+```elixir
+defmodule Part2 do
+  def valid?(passport) do
+    [
+      year(passport["byr"]) in 1920..2002,
+      year(passport["iyr"]) in 2010..2020,
+      year(passport["eyr"]) in 2020..2030,
+      case hgt(passport["hgt"]) do
+        {cm, "cm"} -> cm in 150..193
+        {i, "in"} -> i in 59..79
+        _ -> false
+      end,
+      Map.get(passport, "hcl", "") =~ ~r/^#[0-9a-f]{6}$/,
+      passport["ecl"] in ~w[amb blu brn gry grn hzl oth],
+      Map.get(passport, "pid", "") =~ ~r/^\d{9}$/
+    ]
+    |> Enum.all?()
+  end
+
+  defp year(nil), do: false
+  defp year(y), do: elem(Integer.parse(y), 0)
+
+  defp hgt(nil), do: false
+  defp hgt(h), do: Integer.parse(h)
+end
+
+Enum.count(passports, &Part2.valid?/1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+114
+```
+
+<!-- livebook:{"offset":13532,"stamp":{"token":"XCP.TTqFDnEDh1KcybgE2cRzHx79CkCBOfAe1WwEG3cX7vDTkxtUF55KF32ZCFPKqMdo3PkrQc384TMNDJTmch-aqQHkit7xUcJ8qMXwA33agDM5wcdBmkMyp1XHIbZz4GZrr3w","version":2}} -->
