@@ -46,4 +46,4 @@ freq_left
 |> Enum.sum()
 ```
 
-<!-- livebook:{"offset":944,"stamp":{"token":"XCP.cgdw7FXwOgseZzd1bPx-K7u1sqKwy4Z3R6v2SL8ckKB2N9XbXUOJnZPIVWSXHdfF_mjc33PW3xJbhrK4nUviLvUBLacAi6DmOdDm1gNBg9OXYHILfpL6UV-qRWtw8UTbeog","version":2}} -->
+<!-- livebook:{"offset":944,"stamp":{"token":"XCP.kAiLPYFFjB5gittWtRe2qvQNl0eypXdV8-SA_CjsvAhzJAKbzccMdisxMjrJQ8vBacfLZV0B8GUs0xEmkXWg8-XngROm0ts7gOF-jJzV479UO2mEuG9Kxiw_9tiicWt0mN8","version":2}} -->

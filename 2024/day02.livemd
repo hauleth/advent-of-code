@@ -1,0 +1,56 @@
+# Day 02
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIyIiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjQifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "2", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+inputs =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn row ->
+    row
+    |> String.split(" ", trim: true)
+    |> Enum.map(&String.to_integer/1)
+  end)
+```
+
+```elixir
+defmodule Day02 do
+  def correct?([a, b | _] = input) do
+    cmp = if a > b, do: &>/2, else: &</2
+    valid? = fn [c, d] -> abs(c - d) in 1..3 and cmp.(c, d) end
+
+    input
+    |> Enum.chunk_every(2, 1, :discard)
+    |> Enum.all?(valid?)
+  end
+end
+```
+
+## Part 1
+
+```elixir
+Enum.count(inputs, &Day02.correct?/1)
+```
+
+## Part 2
+
+```elixir
+Enum.count(inputs, fn row ->
+  Enum.any?(0..length(row), fn idx ->
+    row |> List.delete_at(idx) |> Day02.correct?()
+  end)
+end)
+```
+
+<!-- livebook:{"offset":1095,"stamp":{"token":"XCP.EDLheuV1bFdj8dcA62THFYEnpGMMQhndPyDclGgiuluufI8nGaZSSck2Zkh1QsI2YzHSIIw7X4Z8X4n_sgLE0sPJr4ahqOV5-G9t1bfxRG4kZgo2wsY4xf7SvIl1diXFy1k","version":2}} -->
