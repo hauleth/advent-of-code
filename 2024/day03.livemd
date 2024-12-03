@@ -25,7 +25,7 @@ Mix.install([:kino_aoc])
 ## Part 1
 
 ```elixir
-Regex.scan(~r/mul\((\d{1,3}),(\d{1,3})\)/, puzzle_input, captures: true)
+Regex.scan(~r/mul\((\d{1,3}),(\d{1,3})\)/, puzzle_input)
 |> Enum.reduce(0, fn [_, a, b], acc ->
   acc + String.to_integer(a) * String.to_integer(b)
 end)
@@ -40,7 +40,7 @@ end)
 ## Part 2
 
 ```elixir
-Regex.scan(~r/do(n't)?\(\)|mul\((\d{1,3}),(\d{1,3})\)/, puzzle_input, captures: true)
+Regex.scan(~r/do(n't)?\(\)|mul\((\d{1,3}),(\d{1,3})\)/, puzzle_input)
 |> Enum.reduce({true, 0}, fn
   ["do()" | _], {_, sum} -> {true, sum}
   ["don't()" | _], {_, sum} -> {false, sum}
@@ -56,4 +56,4 @@ end)
 74361272
 ```
 
-<!-- livebook:{"offset":5292,"stamp":{"token":"XCP._V6AgYov8lRaKaTtUoAiPIPCnUdKB5SogueBKHU2GmROpI0HT0lRiLR89hUCCg5GjwYt4ckB8SkikNx-FhG7onUxTxmBHk17e9Jlq1qcXiqSXltuT8pRmN2bJ0rVAjq1KzE","version":2}} -->
+<!-- livebook:{"offset":5260,"stamp":{"token":"XCP.aQCtuOA8woZ8_dCh-CI-OBSmlZ8-Kijxv-o6-KCS1J1zV2Ss2XT0dAkjFQeBxaoOH4bK9wrXdti0oBVzJ_CMqYHK_tz9j2KoN0reYeRd-HZeaNGz06-DbmfbvmwyNem79PU","version":2}} -->
