@@ -1,0 +1,59 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 03
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIzIiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjQifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "3", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "(%%from() when()mul(73,623)when()mul(793,458)'~where()how()?how(569,237)/[mul(709,198)mul(395,622)$!what()select()^@/what()+mul(970,343)mul(75,7)^))mul(61,40)select()~why())'>where()%+mul(892,307),!(mul(412,807):*&what()+^why()<^why()mul(706,931)'{who())why()^?mul(953,62)(mul(461,410)when()don't()>^@<%who()'mul(365,15)(<^<# (where()mul(802,710)why()*[(  where()where()mul(684,352)&)&what()^<[>mul(246,913)+select()?how(489,271)when() }why(627,30);don't()+&<@where()when()mul(636,990)]/mul(767,759):mul(328,474)([^,-select()?(mul(825,353)select()where()*where()what()*-@mul(765,991)where(786,744)'--where()mul(990,947) mul(547,706)from()?mul(229,193)where(617,453)+@&where()]@%}/mul(128,550)<%mul(3,636)don't()^(+#>+mul(66,503) select()#when()%from()mul(59,150)how(),when()^:mul(614,438)where()*<[where();(mul(434,344) /how()$ (%?~when()mul(659,534)mul(809,367) where(42,397),);? ++select()mul(858,771)<*mul(106,962)^>@;# @?,*mul(208,462)'',)mul(762,748)+[?}>][^mul(126,384))@]): /(('mul(966,704)who()what()~%*]from()mul(825,633)~$)+ &mul(634,698)(how()<@why(102,647)mul(661,112)]&<(%&mul(25,649)who()select();mul(267,405)why(356,766)why()(where(),select()^)mul(552,557){!from()^&>>+mul(493,578)select(742,239):how(){^mul(836,239)who()/)-mul(259,726)how()-;where()[#@from()~mul(495,301);>[;mul(478,953)$#[*why(),{mul(774,653)how()^mul(469,614)!what();-->>;mul(369,74)$who()who()mul(311,382)< ![>?$mul(909,70)!+$how(257,485)<mul(278,404)] where()':mul(824,974)when(),;&@-?~>mul(377,363)where()&why()-/:(mul(285,466)where()(what()why()[where()&who()mul(701,477)(where(),-why(){mul(624,21)where()[,why()-!?+mul(937,219) mul(604,90)how()(')]why()/mul(627,697)*;what()/$select()do()~<from()%-^mul(605,52)>@%!&select()>['mul(597,962)why()where()mul(903,469); &,do()when(937,722)((~why();^mul(588,272);}?[mul(295,621)from(645,893)>]>#mul(900,24)>,;mul(574,932):}(-do()from()-+<'$how()mul(694where())select()){how()how() (mul(350,308)/{)}why()what(987,719)}!#don't();<how()[from()/-'mul(438,672)}!@who() }?)mul(952,413#>:}-: 'when()select()mul(547,749)$#mul(869,866)@{mul(334,736';'select(330,146)[~ :>mul(511,40)(mul(11,3 mul(547,132)[!>select();who()mul(424,102)*!~mul(725,298)~:{^?%*mul(514,355%'],,: -)mul(116,719)select()?/@;when()<who();!mul(352,211)+#$;{$>]mul(820,414)&when(),!?[:?don't()when()?>}+#how()mul(159$$},:]why()-mul(689,30)@^mul(310,593)where(800,717)^(/*/! from()<mul(7,727)select()&mul(259,310)where()^select()#@how(49,595)what(){>]mul(429,841)(-+#[mul(579,668)>what()&+,mul(850,283)don't()#?mul(758,673)^;)select(856,890)%:how(550,676)<,)mul(667,314)>:[;+mul(760,374)select();}*select()#how()$*mul(347,822)who()how(){mul(497,700):where(){what()mul(851,789)^:}when()why()where()(:mul(991,536)-mul(711,63)',(  who()]mul(798,573)>mul(190,153)$]from()!mul(592,256)-$-]mul(734?mul(482,742)#;mul(939,69)how()([how()<what()$$who()why()mul(149,831))/'when()mul(152,123)+* ','$where()mul(774,252) ;@?,;don't()how()>(mul(933,652)}mul(882,656),?how()#%}do()!select()>}>mul(981,750)mul(927,646)!what()$mul(380why()$]/[*?+)mul(67,435)>select()@-mul(819,795)?/? how())mul(215,234){,#/>how(513,708)'~>do()#}^^mul#how()how()how()+when():mul(992,63)mul(526,962)where()}who()who()+&'<,mul(730,728)}/,select()what()*who())[mul(687,974)-<:mul(259,420)\nwho()(&?>'+:?mul(483,827)*!what()[!/*mul(368,168)!&;^)?mul(629,217)]^{what()!,who()mul(83,255)^)mul(500,689)!-mul(592,556)%select()}from()-+mul(946*who()?,from()%/'~from(619,712){mul(747,249)/@+%when())mul(762,891)what(),when()?,#<:[mul(873,69)+ :what()+how()&[}who()mul(591,81){when()mul(151,432)@<what()-@]do()/mul(233,269)%&![+where()what()-why()mul(402,497):@from()where()':(how()mul(520,79)!]^$<select()when(478,105)mul(340,948),(mul(410,461)select()from()]-(@who()who())]mul(511,538)!who(6,403)do()<(where()what()mul(443,727)when()where()?&where()~mul(302,402)&mul(599,23))[how()[+!{mul(823,16)#%#]+~who(942,742))how()mul(502,890)^;<where()from()!~;+;mul*$<;mul(25,421)/:where() {^who()mul(652,45)#?from()^~; ,<mul(783,401)?who()what()mul(828,237)!]^when(126,561)mul(724,536){<*?don't()])why()/mul(974,752)%]$})mul(688,4)!'#:'@$mul(115,891)['w" <> ...}
+```
+
+## Part 1
+
+```elixir
+Regex.scan(~r/mul\((\d{1,3}),(\d{1,3})\)/, puzzle_input, captures: true)
+|> Enum.reduce(0, fn [_, a, b], acc ->
+  acc + String.to_integer(a) * String.to_integer(b)
+end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+175615763
+```
+
+## Part 2
+
+```elixir
+Regex.scan(~r/do(n't)?\(\)|mul\((\d{1,3}),(\d{1,3})\)/, puzzle_input, captures: true)
+|> Enum.reduce({true, 0}, fn
+  ["do()" | _], {_, sum} -> {true, sum}
+  ["don't()" | _], {_, sum} -> {false, sum}
+  [_, _, a, b], {true, sum} -> {true, sum + String.to_integer(a) * String.to_integer(b)}
+  _, {false, sum} -> {false, sum}
+end)
+|> elem(1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+74361272
+```
+
+<!-- livebook:{"offset":5292,"stamp":{"token":"XCP._V6AgYov8lRaKaTtUoAiPIPCnUdKB5SogueBKHU2GmROpI0HT0lRiLR89hUCCg5GjwYt4ckB8SkikNx-FhG7onUxTxmBHk17e9Jlq1qcXiqSXltuT8pRmN2bJ0rVAjq1KzE","version":2}} -->
