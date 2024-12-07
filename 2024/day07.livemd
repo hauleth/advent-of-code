@@ -55,7 +55,7 @@ equations =
 
 ```
 warning: code block contains unused literal "190: 10 19\n3267: 81 40 27\n83: 17 5\n156: 15 6\n7290: 6 8 6 15\n161011: 16 10 13\n192: 17 8 14\n21037: 9 7 18 13\n292: 11 6 16 20\n" (remove the literal or assign it to _ to avoid warnings)
-└─ Workspace/hauleth/advent-of-code/2024/day07.livemd#cell:5stfqvjgwz4d5v5a:1
+└─ Workspace/hauleth/advent-of-code/2024/day07.livemd#cell:7pxlqq2wa3oqdwfr:1
 
 ```
 
@@ -123,7 +123,7 @@ warning: code block contains unused literal "190: 10 19\n3267: 81 40 27\n83: 17 
 defmodule Eq.P1 do
   def possible?(0, []), do: true
   def possible?(a, [a]), do: true
-  def possible?(0, [_|_]), do: false
+  def possible?(0, [_ | _]), do: false
   def possible?(_, []), do: false
   def possible?(a, _) when a < 0, do: false
 
@@ -146,7 +146,7 @@ equations
 |> Enum.filter(fn {target, vals} ->
   Eq.P1.possible?(target, Enum.reverse(vals))
 end)
-|> Enum.reduce(0, & elem(&1, 0) + &2)
+|> Enum.reduce(0, &(elem(&1, 0) + &2))
 ```
 
 <!-- livebook:{"output":true} -->
@@ -161,26 +161,28 @@ end)
 defmodule Eq.P2 do
   def possible?(a, [hd | rest]), do: possible?(a, hd, rest)
 
-  def possible?(a, a, []), do: true
-  def possible?(_, _, []), do: false
-  def possible?(a, b, _) when b > a, do: false
+  defp possible?(a, a, []), do: true
+  defp possible?(_, _, []), do: false
+  defp possible?(a, b, _) when b > a, do: false
 
-  def possible?(target, curr, [a | rest]) do
+  defp possible?(target, curr, [a | rest]) do
     possible?(target, concat(curr, a), rest) or
-      possible?(target, curr + a, rest) or
-      possible?(target, curr * a, rest)
+      possible?(target, curr * a, rest) or
+      possible?(target, curr + a, rest)
   end
 
-  def concat(a, b) do
-    String.to_integer("#{a}#{b}")
-  end
+  defp concat(a, b), do: a * l10(b) + b
+
+  defp l10(n) when n >= 100, do: 1000
+  defp l10(n) when n >= 10, do: 100
+  defp l10(_), do: 10
 end
 ```
 
 <!-- livebook:{"output":true} -->
 
 ```
-{:module, Eq.P2, <<70, 79, 82, 49, 0, 0, 10, ...>>, {:concat, 2}}
+{:module, Eq.P2, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:l10, 1}}
 ```
 
 ```elixir
@@ -200,4 +202,4 @@ equations
 264184041398847
 ```
 
-<!-- livebook:{"offset":9239,"stamp":{"token":"XCP.jahJhDMdAl3PqiPODSOJfIpJq_WE2I1sNvBUcNkY-FP-lUYFrioZW8V3FxbSGrS_-uFSLbRAfdSuAPnnK09vkzrcdjq7uz6-aRoxHbpcVgFwLC_l-sbpUMFFHwKci93vcoE","version":2}} -->
+<!-- livebook:{"offset":9317,"stamp":{"token":"XCP.DCDL30p1jz3L9vRDdQ5EJLc3r7y1DTsVhQ3GXFK_huvoEXqgYu2TTOfTq8AFYpt5W6fEIo4MvfrnHttbqS-z4SjRkT7WM09v09mZ_FeyqstWzLMCK_oNqhrrdwPPv5BG_8c","version":2}} -->

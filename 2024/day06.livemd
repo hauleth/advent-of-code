@@ -1,6 +1,6 @@
 <!-- livebook:{"persist_outputs":true} -->
 
-# Untitled notebook
+# Day 06
 
 ```elixir
 Mix.install([:kino_aoc, :arrays])
@@ -184,4 +184,4 @@ orig_path
 4432
 ```
 
-<!-- livebook:{"offset":7387,"stamp":{"token":"XCP.Wj_YFc-zYzAPEIaLCGnT6vtMYoDgv-DJ3xiuAVdHZPkMwNpP5jrmLW4LBe4lzRgNN75xF-FYACOKdzd82Z71i5y8yC5Wmd072w6qDXxmygH8fZvTOAZM02UZvvg20b5Yhv0","version":2}} -->
+<!-- livebook:{"offset":7376,"stamp":{"token":"XCP.Bv-aM7sns5Kb69SQdY4giDFl6fWiJ5L3lnISxUUjGi_DgTgM_r5rl-y8sy2RLl-KbEtOmW99QQsGItLYJhKJmkOZ5pPZ_7Aw3BhkL_ap8RnW8UkOt_OsNdpqoZT7FEDtmFQ","version":2}} -->
