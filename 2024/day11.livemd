@@ -1,0 +1,110 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 11
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxMSIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "11", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok, "554735 45401 8434 0 188 7487525 77 7"}
+```
+
+```elixir
+# puzzle_input = "125 17"
+
+stones =
+  puzzle_input
+  |> String.split()
+  |> Enum.map(&String.to_integer/1)
+  |> Enum.frequencies()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{0 => 1, 7 => 1, 77 => 1, 188 => 1, 8434 => 1, 45401 => 1, 554735 => 1, 7487525 => 1}
+```
+
+```elixir
+defmodule Stones do
+  def blink(list), do: Enum.reduce(list, %{}, &alter/2)
+
+  defp alter({0, count}, map), do: update(map, 1, count)
+
+  defp alter({n, count}, map) do
+    len = len(n)
+
+    if rem(len, 2) == 0 do
+      half = 10 ** div(len, 2)
+
+      map
+      |> update(div(n, half), count)
+      |> update(rem(n, half), count)
+    else
+      update(map, n * 2024, count)
+    end
+  end
+
+  defp len(n) when n < 10, do: 1
+  defp len(n) when n < 100, do: 2
+  defp len(n) when n < 1000, do: 3
+  defp len(n) when n < 10000, do: 4
+  defp len(n), do: ceil(:math.log10(n))
+
+  defp update(map, key, val), do: Map.update(map, key, val, &(&1 + val))
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Stones, <<70, 79, 82, 49, 0, 0, 11, ...>>, {:update, 3}}
+```
+
+## Part 1
+
+```elixir
+1..25
+|> Enum.reduce(stones, fn _, acc ->
+  Stones.blink(acc)
+end)
+|> Map.values()
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+209412
+```
+
+## Part 2
+
+```elixir
+1..75
+|> Enum.reduce(stones, fn _, acc ->
+  Stones.blink(acc)
+end)
+|> Map.values()
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+248967696501656
+```
+
+<!-- livebook:{"offset":1963,"stamp":{"token":"XCP.YCGtDQl3XNWJm5oY1OPI2QDRB7EIjZxBmwK3eswS1ryD28kg8fS_fKGIFJGFbtL1NL7wYrv2ADW60yeAZnCv5KbDelUm_bxkPN4_K56iTJ1toOGfIRYlo2lj5beAjrmbhRw","version":2}} -->
