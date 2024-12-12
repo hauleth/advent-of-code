@@ -1,0 +1,811 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 12
+
+```elixir
+Mix.install([:kino_aoc, :range_set])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxMiIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "12", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "KKKKKKZZZZZZZZDDQQQQXXXXXXXXXXXXTTTTTTTTTTTTDHHHHHHHHHHHHHHHHHGGGGGGPPPGUUGGXXGGGGGGJJJJJJJJJIIIIIIIIIIIIIIIIIIIIDIIIIIIIIIIIKIIIIIIIIIIIIIM\nKKKKKKZZZZZZZDDDQQQQXXCXXXXXXXXXTTTTTTTTTTTTTHHHHHHHHHHHHHHHHHGGGGGGGGPGUUGGGGGGGGGJJJJJJJJIIIIIIIIIIIIIIIIIIVVVIDDIIIIIIIKKKKIIIIIIIIIIIIMM\nKKKKKZZZZZZZZZZQQQQQQXCCCXXXXXXTTTTTTTTTTTTTTTHHHHHHHHHHHHHHHGGGGGGGGGGGGGGGGGGGGJJJJJJJJJJIIIIIIIIIIIIIIIIIIVIIIIDIHIIIIIIIKKIIIIIIIIIIIIMM\nKKKKKZZZZZZZZEEHQQQYQQZCCCCXXXTTTTTTTTTTTTTTHHHIIIIHHHHHHHHHHGGGGGGGGGGGGGGGGGGGGGJJJJJJJJIIIIIIIIKKKKKKIIIIIVIIIIDHHIIIIIIIIKIIIIIIIIIIIIIM\nKKKKKKOOEZEEEEHHQQQYYCCCCCCTTTTTTTTTTTTTTTTTVVVIIIIHHHHHHBBBBGGGGGGGGGGGGGGGGGGGGJJJJJJJJJIIIIIIIBCKKKKKIIIIIIIIHHHHHIIIIIIIIIIIIIIIIIIIMMMM\nKKKKKOOEEEEEEEHHHQQYYCCCCCCCCCTTTTTTTTTTTOOTTIIIIIHHHHHHHHHBBBGGGGGGGGGGGGGGGGGGGJJJJJJJJJIIIIIBBBCKKKKKKKIIIIIHHHHHIIIIIIIIIIIIIIIIIIIIIIMM\nKKKKKKOGGEEEGHHHHQDDYYCCCCCCCOOTTTTTTTTTTTIDIIIIIIIHHHHHHBBBBBGGGGGGGGGGGGGGGGGGGGJJJJJJJJIIIIBBBBKKKKKKKKIKIIIBHHHHHIIIIIIIIIIIIIIIIIIIIIIM\nKKKKTKOOGEGGGHGHDDDDDYYYCCCCCOOTTTTTTTTTTIIIIIIIIIIHHHHHBBBBBBGGGGGJGGGQGGLGGGGGGJJJJJJRRJJJBBBBKKKKKKKKKKKKKKFHHHHHHHIHHIIIIIRIIIIIIIIIIMMM\nKRRRVOOGGGGGGGGGDDDDPDDYDSSCCCOOOTTOTTTTTIIIIIIIIIIHHHBHBBBBBBGGGGGJGJJGGGGGGGGGGJJJJJRRRRRWBBBBBBVKKKKKKKKKKTHHHHHHHHHHIIIIIIIIIIIIIIGIIMMM\nYVRVVOOGGGGGGGDDDDDDDDDDDSSCCOOOOOOOTOOOIIIIIIIIIIIHHBBBBBBBBBGGGGGJJJJJGGGCGGFFGFFJRRRRRRRWWBBBBBBKKKKKKKKKKKHHHHHHHHHFFIIIIIIIIIIIIIGIVVMM\nYVRVVVVGGGGGGGDDDDDDDDDDDDDCCOOOOOOOOOOOIIIIIIIIIIIHHHBBBBBBBBBBGGJJJJJJJJJGGGFFFFRRRRRRRRRRRBBBBBKKKKKKKKKKKKKHHHHHHHHFIIIIIIIIIIIIIIIIVVVM\nYVVVVVVVVGGGGGGDDDDDDDDDDDDOOOOOOOOOOOOOOIIIIIIEEIIHHHOBBBBBBBBBBGJJJJJJJJJFFFFFFFFFRRRRRRRRRRBBBBKBKKKKKKKKKKKHHHHHHFFFFIIFIIIIZIIAIIIIVVMM\nVVVVVVVVVGGGGGGDDDDDDDDDDDOOOOOOOOOOOOOOOOOOOIOOEJJHHHOBBBBBBBBBBEEJEEEEEFFFFFFFFFFFRRRRRRRNBBBBBBBBKKKKKKKKKKRHHHHHHFFFFFFFIIIIIIIIBBIIVMMM\nVVVVVVVVVGGGGGDDDDDDDDDDDDEOOOOOOOOOOOOOOOOOOOOOEEJHHOOOBBBBGGGGBEEEHEEXFFFFFFFFFFFFRRRRRRBNBBBBBBBBKKKKKKKKKKHHHHHHHFFFFFFFIIIIIIIIBBVVVMMM\nVVVVVVVVGGGGGDPDDDDDDDDDDDEEOOOOOOOOOOOOOOOOOOOOEEJEOOOOBGGGGGGGHEEEEEEFFFLFFFFFFFFRRRRRRRBBBBBBBBBBBKKKKKKKKFHHHHHFFFFFFFFIIIIIIIIIIVVVVVMM\nVVVVVVVVGGGGGDDDDDDDDDDDDDDEOOOOOOOOGOOOOOEOIIOOEEEEOOOOOGGGGGGGEEEEEEEFFFFFFFFFFFFFRDRRXXBBBBBBBBBBBKKKKKKKKKBBHHHHFFFFFFFIIIIIIIIIVVVVVVLM\nVVVVVVVVWGGGGDDDDDDDDDDDDEEEOOOOOOGGGOOOOOOIIIIIEEOOOOBOOGGGGGGGUEEEEEGUFFFFFFFFFFFFDDDDMMSBBBBBBBBBBBBBKKKKKKBBBHHFFFFFFFFIIIIINNWIVVVVVVLL\nVVVVVVZZZFGGGRDDDDDDDDDDDEOOOOOOOFFFGOGOOIIIBIBBBEOBBBBBBGGGGGGGEEEEEGGUUFFFFFFFFFFFDDDDDMMMBBBBBBBBBBBKKKKKKBBBBHHFFFFFFFFFIINNNNNPPVVVVLLL\nVVVZZZZZZZIGRRADADDDDDDDDEOEEOYYGFFGGOGGGIIIBBBBBEBBBBBBBGGGGGGGFEEEGGGGUUFFFFFFFFFHDVVVVVVMBBBBBBBBBBBKKKKBBBBBBBBBFFFFFFFRRRRNNNNPPVVLLLLL\nVVZZZZZZZZZRRRADAADEEEDDDEEEEOYYGGGGGGGGGGIBBBBBBBBBBBBBBGGGGGGGEEEEBGGGUUFFFFFFFFFHHVVVVVVMBBBBBBBBBPBKKBBBBBBBBBBFFFFFFFFFRBRNNNNNNNVLLLLL\nVZZZZZBZZZNAAAAAAAAEEEEEEEEEGGYYGGGGGGGGGIIBBBBBBBBBBBBBBGGGGGFFFEEBBGGGGCFFFFFFFFFHHVVVVVVMBBBBBBBMMMMMBBBBBBBGBBBFFFFFFFGGBBBNNNNNLLLLLLLL\nBBBBBBBZZNNNAAAAAAEEEEEEGEEEEGYYGGGGGGGIIIIBBBBBBBBBBBBBBGGGGGFFCCCBGGGCCCFCCWWWWWWWHVVVVVVMMBBBMMMMMMMMBBBBBBBGBGGTTFFFFFFFFBBNNNNNLLLLLLLL\nJBBBBBBBZZNAAAAAAAAAAGGGGGGEGGGGGGGGGGGGGIHDBBBBBBBBBBBBBBFFFFFCCCCCGGGCCKCCCWHHHHHHHVVVVVVMMVVVVVVMMMMMBBBBBBGGBGGTFFFFTFFFFBBBBBBBBBLLLLLL\nJJJBBBBBBAAAAAAAAAAAGGGGGGGEGGGGGGGGGGGGIIHDBBBBBBBBBBBBBBBBFFFCZCCCCCCCCCCCCHHHHHHHHVVVVVVMMVVVVVVMMMMMBBBBBBGGGGGTTFFTTFFFBBBBBBBBBBLLLLLL\nJJJBBBBAAAAAAAAAAAAAGGGGGGGGGGGGGGGGGGGGIHHDHHHHBBBBBBSSSSFFFFFCCCCCCCCCCCCCCHHHHHHHHVVVVVVHHVVVVVVMMMMMBBBBBBGGGGGTTTTTTFHFBBBBBBBBBBBLBBLV\nJJJJJJAAAAAAAAAAAAAAGGGGGGGGGGGGGGGGGGGHHHHHHHHHHIJJJJJSSSSFFFCCFFCCCCCCCCCCCHHHHHHHHVVVVVVVVVVVVVVMMMMMMBBBBGGGGGGGGGTTTLLBBBBBBBBBBBBBBBBV\nJJJJJJAAAAAAAAAAAAAAGAAGGGGGGGGGGGGGGGGHHHHHHHHHHJJJHJSSSSSFFFFFFCCCCCCCCCCCCHRHHHHHHVVVVVVVVVVVVVVGMMMMMBBBBGGGGGGGGGTTLLLLLLBBBBBBBBBBBBBB\nJJJJJJAAAAAAAAAAAAAAAAGGGGGGGGHGGGGGGGGHHHHHHHHHHJJJJJJJSJSFFFFFCCCCCCCCCCCCCCHHHHHHHVVVVVVVVVVVVVVGGMMCMBBBGGGGGGGGPGGGLLZLLLBBBBBBBBBBBBBB\nJJJJJJAAAAAAAAAAAAAAGAGGGGGGGGGGGGZZGHGHHHHHHHHHJJJJJJJJJJSFFFFFCCCCCCCCCCCCCCHHHHHHHHHOHHOOMVVVVVVGGJGGIBBBTGGGGGGTGGGLLLLLLLLBBBBBBBBBBBBB\nJJJJJAA" <> ...}
+```
+
+```elixir
+map =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {row, y} ->
+    row
+    |> String.split("", trim: true)
+    |> Enum.with_index()
+    |> Enum.map(fn {plant, x} -> {{x, y}, plant} end)
+  end)
+  |> Map.new()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  {18, 103} => "H",
+  {76, 13} => "F",
+  {61, 121} => "X",
+  {112, 138} => "T",
+  {37, 47} => "U",
+  {65, 63} => "G",
+  {77, 129} => "E",
+  {120, 47} => "L",
+  {38, 2} => "T",
+  {1, 26} => "J",
+  {116, 69} => "W",
+  {124, 56} => "O",
+  {83, 76} => "N",
+  {117, 125} => "Q",
+  {100, 134} => "W",
+  {78, 139} => "D",
+  {32, 15} => "O",
+  {103, 106} => "N",
+  {30, 113} => "J",
+  {123, 104} => "W",
+  {68, 134} => "Q",
+  {124, 60} => "O",
+  {89, 14} => "R",
+  {35, 30} => "E",
+  {37, 53} => "H",
+  {77, 130} => "E",
+  {2, 132} => "Q",
+  {4, 5} => "K",
+  {8, 50} => "X",
+  {78, 98} => "Y",
+  {101, 62} => "X",
+  {98, 136} => "W",
+  {95, 56} => "D",
+  {74, 12} => "F",
+  {17, 138} => "F",
+  {102, 74} => "S",
+  {11, 39} => "P",
+  {131, 5} => "I",
+  {65, 43} => "S",
+  {22, 38} => "R",
+  {14, 86} => "N",
+  {139, 46} => "U",
+  {12, 135} => "Q",
+  {65, 131} => "A",
+  {49, 117} => "O",
+  {20, 41} => "D",
+  {29, 25} => "G",
+  {86, 10} => "R",
+  {83, ...} => "I",
+  {...} => "G",
+  ...
+}
+```
+
+```elixir
+defmodule Garden do
+  def plots(map) do
+    map
+    |> Enum.group_by(&elem(&1, 1), &elem(&1, 0))
+    |> Enum.flat_map(fn {kind, pts} ->
+      for parcel <- parcels(MapSet.new(pts), []) do
+        {kind, parcel}
+      end
+    end)
+  end
+
+  def parcels(set, acc) do
+    case Enum.take(set, 1) do
+      [] ->
+        acc
+
+      [p] ->
+        {parcel, rest} = flood(p, MapSet.new(), set)
+
+        parcels(rest, [parcel | acc])
+    end
+  end
+
+  def flood({x, y} = curr, visited, potential) do
+    visited = MapSet.put(visited, curr)
+    potential = MapSet.delete(potential, curr)
+
+    for next <- [
+          {x - 1, y},
+          {x + 1, y},
+          {x, y - 1},
+          {x, y + 1}
+        ],
+        next in potential,
+        reduce: {visited, potential} do
+      {v, p} -> flood(next, v, p)
+    end
+  end
+
+  def as_int(false), do: 0
+  def as_int(true), do: 1
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Garden, <<70, 79, 82, 49, 0, 0, 15, ...>>, {:as_int, 1}}
+```
+
+```elixir
+plots = Garden.plots(map)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  {"A", MapSet.new([{131, 11}])},
+  {"A",
+   MapSet.new([
+     {54, 38},
+     {54, 39},
+     {55, 38},
+     {56, 36},
+     {56, 37},
+     {56, 38},
+     {57, 37},
+     {57, 38},
+     {57, 39},
+     {57, 40},
+     {58, 36},
+     {58, 37},
+     {58, 38},
+     {58, 39},
+     {58, 40},
+     {59, 36},
+     {59, 37},
+     {59, 38},
+     {60, 36},
+     {60, 37},
+     {60, 38},
+     {61, 36},
+     {61, 37},
+     {61, 38},
+     {62, 38},
+     {63, 38}
+   ])},
+  {"A", MapSet.new([{18, 56}])},
+  {"A",
+   MapSet.new([
+     {93, 86},
+     {94, 86},
+     {95, 86},
+     {95, 87},
+     {95, 88},
+     {96, 86},
+     {96, 87},
+     {97, 80},
+     {97, 81},
+     {97, 82},
+     {97, 83},
+     {97, 84},
+     {97, 85},
+     {97, 86},
+     {97, 87},
+     {98, 80},
+     {98, 81},
+     {98, 82},
+     {98, 83},
+     {98, 84},
+     {98, 85},
+     {99, 81},
+     {99, 82},
+     {99, 84}
+   ])},
+  {"A",
+   MapSet.new([
+     {35, 102},
+     {42, 111},
+     {38, 112},
+     {38, 108},
+     {39, 111},
+     {35, 106},
+     {41, 105},
+     {36, 105},
+     {36, 108},
+     {42, 110},
+     {35, 104},
+     {36, 109},
+     {43, 111},
+     {42, 107},
+     {41, 107},
+     {37, 108},
+     {41, 111},
+     {42, 108},
+     {39, 107},
+     {35, 103},
+     {36, 111},
+     {37, 113},
+     {37, 105},
+     {40, 110},
+     {38, 107},
+     {43, 107},
+     {38, 105},
+     {41, 110},
+     {34, 108},
+     {37, 109},
+     {35, 108},
+     {36, 106},
+     {42, 109},
+     {38, 114},
+     {37, 112},
+     {39, 110},
+     {39, 109},
+     {36, 103},
+     {38, 110},
+     {37, 111},
+     {39, 108},
+     {38, ...},
+     {...},
+     ...
+   ])},
+  {"A", MapSet.new([{70, 115}, {70, 116}, {70, 117}, {71, 116}, {71, 117}, {72, 116}, {72, 117}])},
+  {"A",
+   MapSet.new([
+     {85, 84},
+     {88, 82},
+     {87, 83},
+     {83, 84},
+     {87, 79},
+     {86, 82},
+     {86, 84},
+     {83, 85},
+     {87, 78},
+     {87, 84},
+     {85, 79},
+     {87, 81},
+     {85, 80},
+     {88, 83},
+     {84, 84},
+     {86, 81},
+     {86, 80},
+     {82, 85},
+     {85, 82},
+     {82, 84},
+     {82, 86},
+     {88, 81},
+     {87, 82},
+     {86, 83},
+     {85, 81},
+     {83, 83},
+     {84, 80},
+     {88, 84},
+     {83, 86},
+     {87, 80},
+     {87, 77},
+     {81, 85},
+     {85, 83},
+     {84, 85},
+     {84, 82},
+     {84, 81},
+     {84, 83}
+   ])},
+  {"A",
+   MapSet.new([
+     {19, 22},
+     {10, 25},
+     {16, 24},
+     {10, 32},
+     {17, 30},
+     {6, 29},
+     {18, 29},
+     {17, 22},
+     {13, 25},
+     {14, 24},
+     {10, 23},
+     {8, 29},
+     {13, 22},
+     {14, 28},
+     {6, 26},
+     {18, 26},
+     {16, 23},
+     {21, 26},
+     {19, 30},
+     {13, 27},
+     {16, 18},
+     {18, 23},
+     {9, 25},
+     {16, 29},
+     {7, 26},
+     {12, 27},
+     {16, 30},
+     {17, 24},
+     {18, 24},
+     {18, 22},
+     {6, 28},
+     {13, 20},
+     {9, 26},
+     {7, 27},
+     {11, 22},
+     {8, 25},
+     {17, 23},
+     {13, 23},
+     {20, ...},
+     {...},
+     ...
+   ])},
+  {"A",
+   MapSet.new([
+     {111, 103},
+     {107, 102},
+     {110, 102},
+     {110, 106},
+     {112, 103},
+     {114, 103},
+     {112, 100},
+     {108, 97},
+     {103, 96},
+     {109, 104},
+     {103, 99},
+     {108, 95},
+     {110, 104},
+     {113, 101},
+     {105, 105},
+     {108, 108},
+     {106, 105},
+     {111, 100},
+     {104, 98},
+     {109, 101},
+     {111, 104},
+     {107, 100},
+     {106, 102},
+     {112, 106},
+     {105, 95},
+     {104, 104},
+     {112, 97},
+     {108, 94},
+     {104, 97},
+     {111, 99},
+     {108, 102},
+     {108, 109},
+     {101, 97},
+     {104, 103},
+     {102, 96},
+     {112, 101},
+     {113, 97},
+     {100, ...},
+     {...},
+     ...
+   ])},
+  {"A",
+   MapSet.new([
+     {132, 99},
+     {136, 110},
+     {137, 104},
+     {139, 106},
+     {134, 98},
+     {139, 101},
+     {136, 102},
+     {139, 104},
+     {136, 96},
+     {134, 107},
+     {132, 100},
+     {138, 96},
+     {138, 102},
+     {135, 109},
+     {137, 107},
+     {133, 97},
+     {135, 107},
+     {137, 101},
+     {139, 97},
+     {137, 100},
+     {139, 109},
+     {135, 100},
+     {137, 97},
+     {132, 97},
+     {138, 105},
+     {137, 106},
+     {138, 99},
+     {136, 100},
+     {135, 98},
+     {139, 98},
+     {138, 103},
+     {138, 107},
+     {136, 108},
+     {139, 99},
+     {133, 96},
+     {139, 105},
+     {132, ...},
+     {...},
+     ...
+   ])},
+  {"A",
+   MapSet.new([
+     {84, 102},
+     {82, 100},
+     {86, 101},
+     {82, 91},
+     {86, 93},
+     {90, 93},
+     {88, 93},
+     {86, 96},
+     {82, 95},
+     {84, 93},
+     {85, 97},
+     {87, 95},
+     {81, 95},
+     {83, 100},
+     {87, 93},
+     {81, 100},
+     {84, 96},
+     {88, 95},
+     {81, 98},
+     {84, 100},
+     {85, 102},
+     {84, 91},
+     {82, 97},
+     {85, 99},
+     {83, 95},
+     {89, 96},
+     {88, 94},
+     {84, 104},
+     {86, 102},
+     {80, 92},
+     {89, 94},
+     {86, 103},
+     {83, 92},
+     {83, 96},
+     {82, 102},
+     {84, ...},
+     {...},
+     ...
+   ])},
+  {"A",
+   MapSet.new([
+     {65, 131},
+     {65, 129},
+     {74, 135},
+     {72, 134},
+     {71, 133},
+     {66, 130},
+     {73, 135},
+     {69, 130},
+     {74, 134},
+     {66, 132},
+     {68, 132},
+     {67, 128},
+     {69, 133},
+     {71, 132},
+     {70, 134},
+     {72, 132},
+     {72, 133},
+     {69, 132},
+     {71, 130},
+     {74, 136},
+     {73, 136},
+     {70, 128},
+     {68, 130},
+     {69, 129},
+     {73, 133},
+     {69, 131},
+     {70, 129},
+     {70, 130},
+     {67, 133},
+     {68, 131},
+     {68, 129},
+     {72, 135},
+     {68, 128},
+     {73, 134},
+     {66, ...},
+     {...},
+     ...
+   ])},
+  {"B", MapSet.new([{132, 12}, {132, 13}, {133, 12}, {133, 13}])},
+  {"B", MapSet.new([{111, 6}])},
+  {"B", MapSet.new([{104, 115}])},
+  {"B", MapSet.new([{83, 87}, {84, 87}, {84, 88}])},
+  {"B", MapSet.new([{83, 82}])},
+  {"B", MapSet.new([{71, 79}])},
+  {"B",
+   MapSet.new([
+     {69, 112},
+     {70, 109},
+     {70, 111},
+     {70, 112},
+     {71, 108},
+     {71, 109},
+     {71, 110},
+     {71, 111},
+     {72, 108}
+   ])},
+  {"B", MapSet.new([{67, 20}, {67, 21}, {68, 19}, {68, 20}])},
+  {"B", MapSet.new([{63, 100}])},
+  {"B", MapSet.new([{44, 121}, {44, 122}])},
+  {"B", MapSet.new([{41, 45}])},
+  {"B", MapSet.new([{30, 54}])},
+  {"B", MapSet.new([{18, 90}])},
+  {"B", MapSet.new([{10, 127}])},
+  {"B", MapSet.new([{9, 126}])},
+  {"B",
+   MapSet.new([
+     {37, 75},
+     {39, 77},
+     {42, 73},
+     {35, 75},
+     {39, 81},
+     {40, 75},
+     {41, 75},
+     {40, 77},
+     {40, 81},
+     {40, 76},
+     {32, 78},
+     {33, 78},
+     {32, 77},
+     {37, 80},
+     {35, 79},
+     {34, 75},
+     {30, 78},
+     {39, 76},
+     {34, ...},
+     {...},
+     ...
+   ])},
+  {"B", MapSet.new([{42, 69}])},
+  {"B",
+   MapSet.new([
+     {0, 21},
+     {1, 21},
+     {1, 22},
+     {2, 21},
+     {2, 22},
+     {3, 21},
+     {3, 22},
+     {3, 23},
+     {3, 24},
+     {4, 21},
+     {4, 22},
+     {4, 23},
+     {4, 24},
+     {5, 21},
+     {5, 22},
+     {5, 23},
+     {5, ...},
+     {...},
+     ...
+   ])},
+  {"B", MapSet.new([{100, 130}])},
+  {"B",
+   MapSet.new([
+     {108, 25},
+     {108, 21},
+     {104, 24},
+     {104, 21},
+     {109, 18},
+     {107, 25},
+     {107, 18},
+     {109, 17},
+     {107, 27},
+     {106, 22},
+     {113, 20},
+     {112, 17},
+     {106, 26},
+     {108, 24},
+     {105, ...},
+     {...},
+     ...
+   ])},
+  {"B",
+   MapSet.new([
+     {15, 93},
+     {18, 93},
+     {17, 93},
+     {19, 97},
+     {13, 98},
+     {16, 93},
+     {17, 97},
+     {13, 95},
+     {14, 93},
+     {12, 95},
+     {15, 98},
+     {15, 96},
+     {14, 95},
+     {14, ...},
+     {...},
+     ...
+   ])},
+  {"B",
+   MapSet.new([
+     {45, 19},
+     {53, 23},
+     {54, 16},
+     {55, 17},
+     {53, 19},
+     {55, 20},
+     {56, 18},
+     {55, 21},
+     {49, 20},
+     {56, 22},
+     {47, 22},
+     {54, 23},
+     {47, ...},
+     {...},
+     ...
+   ])},
+  {"B",
+   MapSet.new([
+     {98, 9},
+     {97, 20},
+     {95, 16},
+     {100, 18},
+     {94, 21},
+     {97, 10},
+     {102, 16},
+     {93, 17},
+     {98, 19},
+     {95, 17},
+     {96, 13},
+     {92, ...},
+     {...},
+     ...
+   ])},
+  {"B",
+   MapSet.new([
+     {58, 10},
+     {61, 7},
+     {53, 9},
+     {58, 8},
+     {55, 11},
+     {60, 10},
+     {60, 11},
+     {60, 12},
+     {61, 11},
+     {59, 13},
+     {56, ...},
+     {...},
+     ...
+   ])},
+  {"B",
+   MapSet.new([
+     {131, 24},
+     {129, 25},
+     {130, 28},
+     {132, 31},
+     {127, 22},
+     {132, 33},
+     {130, 25},
+     {123, 25},
+     {130, 27},
+     {126, ...},
+     {...},
+     ...
+   ])},
+  {"B", MapSet.new([{30, 42}, {31, 42}, {32, 42}])},
+  {"C", MapSet.new([{114, 87}, {114, 88}])},
+  {"C", MapSet.new([{103, 27}])},
+  {"C", MapSet.new([{98, 4}, {98, 5}])},
+  {"C", MapSet.new([{92, 104}])},
+  {"C", MapSet.new([{83, 33}])},
+  {"C", MapSet.new([{82, 87}])},
+  {"C", MapSet.new([{76, 32}])},
+  {"C", MapSet.new([{75, ...}])},
+  {"C", MapSet.new([{...}])},
+  {"C", MapSet.new([...])},
+  {"C", ...},
+  {...},
+  ...
+]
+```
+
+## Part 1
+
+```elixir
+defmodule Garden.Circ do
+  def circumfence(set) do
+    {{sx, _}, {ex, _}} = Enum.min_max_by(set, &elem(&1, 0))
+    {{_, sy}, {_, ey}} = Enum.min_max_by(set, &elem(&1, 1))
+
+    rows = (sx - 1)..(ex + 1)//1
+    cols = (sy - 1)..(ey + 1)//1
+
+    vert =
+      rows
+      |> Enum.map(fn x -> count_flips(cols, &({x, &1} in set)) end)
+      |> Enum.sum()
+
+    hori =
+      cols
+      |> Enum.map(fn y -> count_flips(rows, &({&1, y} in set)) end)
+      |> Enum.sum()
+
+    vert + hori
+  end
+  
+  defp count_flips(enum, init \\ false, func) do
+    Enum.reduce(enum, {0, init}, fn elem, {count, last} ->
+      curr = func.(elem)
+      {count + Garden.as_int(last != curr), curr}
+    end)
+    |> elem(0)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Garden.Circ, <<70, 79, 82, 49, 0, 0, 15, ...>>, {:count_flips, 3}}
+```
+
+```elixir
+plots
+|> Enum.map(fn {_, points} ->
+  Garden.Circ.circumfence(points) * MapSet.size(points)
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+1464678
+```
+
+## Part 2
+
+```elixir
+defmodule Garden.Sides do
+  def sides(set) do
+    xy = do_count(set, 0, 1)
+    yx = do_count(set, 1, 0)
+
+    xy + yx
+  end
+
+  defp do_count(set, a, b) do
+    set
+    |> Enum.group_by(&elem(&1, a), &elem(&1, b))
+    |> Enum.sort()
+    |> Enum.map(fn {_, row} -> row |> Enum.map(&(&1..&1)) |> RangeSet.new() end)
+    |> Enum.chunk_every(2, 1, [RangeSet.new()])
+    |> Enum.flat_map(fn [top, bot] ->
+      top.ranges
+      |> Enum.map(fn a..b//_ ->
+        Garden.as_int(not Enum.any?(bot.ranges, &(a == &1.first))) +
+          Garden.as_int(not Enum.any?(bot.ranges, &(b == &1.last)))
+      end)
+    end)
+    |> Enum.sum()
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Garden.Sides, <<70, 79, 82, 49, 0, 0, 16, ...>>, {:do_count, 3}}
+```
+
+```elixir
+plots
+|> Enum.map(fn {_, plot} ->
+  Garden.Sides.sides(plot) * MapSet.size(plot)
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+877492
+```
+
+<!-- livebook:{"offset":17848,"stamp":{"token":"XCP.d5P0-cESwFZ7qUYI4K40J_3AxksZ7WIqnIE6sn4smJvJahembJKNW-3db5gLxIgp_FEyn1pBBioGJSDsU7MO2fi1HjFgxeFNU0dLXi9Z4tf68Ey8dtld73d7SrSGlcv2DDM","version":2}} -->
