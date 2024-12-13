@@ -1,0 +1,272 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 13
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxMyIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "13", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "Button A: X+22, Y+88\nButton B: X+90, Y+28\nPrize: X=6496, Y=3076\n\nButton A: X+54, Y+14\nButton B: X+14, Y+44\nPrize: X=8084, Y=1284\n\nButton A: X+96, Y+15\nButton B: X+55, Y+63\nPrize: X=5535, Y=3966\n\nButton A: X+17, Y+42\nButton B: X+40, Y+25\nPrize: X=12176, Y=3136\n\nButton A: X+87, Y+31\nButton B: X+15, Y+36\nPrize: X=6672, Y=2500\n\nButton A: X+59, Y+27\nButton B: X+21, Y+56\nPrize: X=1475, Y=15098\n\nButton A: X+39, Y+51\nButton B: X+98, Y+14\nPrize: X=7890, Y=3126\n\nButton A: X+23, Y+37\nButton B: X+35, Y+14\nPrize: X=16537, Y=6184\n\nButton A: X+21, Y+89\nButton B: X+74, Y+23\nPrize: X=2407, Y=8748\n\nButton A: X+47, Y+17\nButton B: X+35, Y+59\nPrize: X=17994, Y=16242\n\nButton A: X+14, Y+45\nButton B: X+52, Y+16\nPrize: X=18768, Y=3912\n\nButton A: X+29, Y+45\nButton B: X+85, Y+11\nPrize: X=3149, Y=4161\n\nButton A: X+81, Y+95\nButton B: X+67, Y+12\nPrize: X=5489, Y=2110\n\nButton A: X+48, Y+58\nButton B: X+86, Y+22\nPrize: X=4802, Y=2280\n\nButton A: X+27, Y+59\nButton B: X+47, Y+15\nPrize: X=2602, Y=2090\n\nButton A: X+39, Y+87\nButton B: X+94, Y+38\nPrize: X=8830, Y=6134\n\nButton A: X+23, Y+61\nButton B: X+82, Y+16\nPrize: X=8405, Y=3957\n\nButton A: X+54, Y+14\nButton B: X+24, Y+63\nPrize: X=894, Y=1708\n\nButton A: X+26, Y+14\nButton B: X+18, Y+35\nPrize: X=5510, Y=12541\n\nButton A: X+65, Y+55\nButton B: X+21, Y+69\nPrize: X=430, Y=620\n\nButton A: X+11, Y+62\nButton B: X+50, Y+11\nPrize: X=11414, Y=3683\n\nButton A: X+21, Y+54\nButton B: X+93, Y+22\nPrize: X=7683, Y=5642\n\nButton A: X+20, Y+95\nButton B: X+52, Y+29\nPrize: X=5580, Y=10155\n\nButton A: X+37, Y+13\nButton B: X+11, Y+66\nPrize: X=18250, Y=14983\n\nButton A: X+54, Y+28\nButton B: X+37, Y+58\nPrize: X=17939, Y=14902\n\nButton A: X+87, Y+65\nButton B: X+11, Y+79\nPrize: X=3765, Y=4087\n\nButton A: X+74, Y+30\nButton B: X+16, Y+59\nPrize: X=9858, Y=8342\n\nButton A: X+74, Y+31\nButton B: X+17, Y+59\nPrize: X=14764, Y=6598\n\nButton A: X+12, Y+95\nButton B: X+27, Y+33\nPrize: X=945, Y=3324\n\nButton A: X+21, Y+36\nButton B: X+34, Y+14\nPrize: X=7247, Y=5012\n\nButton A: X+48, Y+62\nButton B: X+90, Y+29\nPrize: X=9150, Y=5973\n\nButton A: X+93, Y+43\nButton B: X+49, Y+91\nPrize: X=7090, Y=6422\n\nButton A: X+28, Y+70\nButton B: X+68, Y+21\nPrize: X=17176, Y=3693\n\nButton A: X+33, Y+16\nButton B: X+27, Y+51\nPrize: X=1884, Y=2771\n\nButton A: X+11, Y+43\nButton B: X+51, Y+19\nPrize: X=4114, Y=10066\n\nButton A: X+26, Y+70\nButton B: X+87, Y+46\nPrize: X=3532, Y=6874\n\nButton A: X+22, Y+35\nButton B: X+38, Y+13\nPrize: X=7508, Y=16592\n\nButton A: X+33, Y+16\nButton B: X+48, Y+72\nPrize: X=12065, Y=15896\n\nButton A: X+67, Y+25\nButton B: X+14, Y+55\nPrize: X=4093, Y=10275\n\nButton A: X+36, Y+17\nButton B: X+43, Y+77\nPrize: X=3253, Y=1933\n\nButton A: X+84, Y+24\nButton B: X+42, Y+69\nPrize: X=8862, Y=4869\n\nButton A: X+70, Y+16\nButton B: X+17, Y+68\nPrize: X=5690, Y=3224\n\nButton A: X+58, Y+27\nButton B: X+44, Y+92\nPrize: X=1890, Y=1595\n\nButton A: X+64, Y+30\nButton B: X+29, Y+57\nPrize: X=15004, Y=15224\n\nButton A: X+13, Y+90\nButton B: X+64, Y+33\nPrize: X=6560, Y=6048\n\nButton A: X+37, Y+91\nButton B: X+64, Y+49\nPrize: X=5214, Y=8379\n\nButton A: X+12, Y+80\nButton B: X+75, Y+25\nPrize: X=6684, Y=8460\n\nButton A: X+27, Y+53\nButton B: X+53, Y+30\nPrize: X=4897, Y=14148\n\nButton A: X+41, Y+11\nButton B: X+39, Y+72\nPrize: X=2818, Y=493\n\nButton A: X+74, Y+45\nButton B: X+14, Y+35\nPrize: X=8996, Y=13510\n\nButton A: X+11, Y+36\nButton B: X+86, Y+58\nPrize: X=18273, Y=14722\n\nButton A: X+99, Y+72\nButton B: X+11, Y+39\nPrize: X=2530, Y=3390\n\nButton A: X+55, Y+17\nButton B: X+22, Y+80\nPrize: X=3652, Y=6326\n\nButton A: X+11, Y+17\nButton B: X+76, Y+16\nPrize: X=5480, Y=1976\n\nButton A: X+18, Y+73\nButton B: X+28, Y+22\nPrize: X=3222, Y=4827\n\nButton A: X+14, Y+46\nButton B: X+33, Y+29\nPrize: X=2212, Y=3932\n\nButton A: X+11, Y+14\nButton B: X+80, Y+28\nPrize: X=4187, Y=2450\n\nButton A: X+28, Y+70\nButton B: X+78, Y+25\nPrize: X=2220, Y=1810\n\nButton A: X+53, Y+19\nButton B: X+73, Y+91\nPrize: X=4514, Y=2850\n\nButton A: X+21, Y+54\nButton B: X+54, Y+25\nPrize: X=5609, Y=7594\n\nButton A: X+79, Y+15\nButton B: X+16, Y+80\nPrize: X=14993, Y=17105\n\nButton A: X+20, Y+59\nButton B: X+35, Y+17\nPrize: X=10820, Y=1709\n\nButton A: X+96, Y+22\nButton B: X+24, Y+43\n" <> ...}
+```
+
+```elixir
+#puzzle_input =
+  """
+Button A: X+94, Y+34
+Button B: X+22, Y+67
+Prize: X=8400, Y=5400
+
+Button A: X+26, Y+66
+Button B: X+67, Y+21
+Prize: X=12748, Y=12176
+
+Button A: X+17, Y+86
+Button B: X+84, Y+37
+Prize: X=7870, Y=6450
+
+Button A: X+69, Y+23
+Button B: X+27, Y+71
+Prize: X=18641, Y=10279
+  """
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: outdented heredoc line. The contents inside the heredoc should be indented at the same level as the closing """. The following is forbidden:
+
+    def text do
+      """
+    contents
+      """
+    end
+
+Instead make sure the contents are indented as much as the heredoc closing:
+
+    def text do
+      """
+      contents
+      """
+    end
+
+The current heredoc line is indented too little
+└─ Workspace/hauleth/advent-of-code/2024/day13.livemd#cell:b6uoz4dag7jywljr:3:3
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"Button A: X+94, Y+34\nButton B: X+22, Y+67\nPrize: X=8400, Y=5400\n\nButton A: X+26, Y+66\nButton B: X+67, Y+21\nPrize: X=12748, Y=12176\n\nButton A: X+17, Y+86\nButton B: X+84, Y+37\nPrize: X=7870, Y=6450\n\nButton A: X+69, Y+23\nButton B: X+27, Y+71\nPrize: X=18641, Y=10279\n"
+```
+
+```elixir
+games =
+  puzzle_input
+  |> String.split("\n\n", trim: true)
+  |> Enum.map(fn game ->
+    [
+      "Button A: X+" <> <<ax::2-binary>> <> ", Y+" <> <<ay::2-binary>>,
+      "Button B: X+" <> <<bx::2-binary>> <> ", Y+" <> <<by::2-binary>>,
+      "Prize: " <> prize_pos
+    ] = String.split(game, "\n", trim: true)
+
+    ["X=" <> px, "Y=" <> py] = String.split(prize_pos, ", ")
+
+    %{
+      btn_a: {String.to_integer(ax), String.to_integer(ay)},
+      btn_b: {String.to_integer(bx), String.to_integer(by)},
+      prize: {String.to_integer(px), String.to_integer(py)}
+    }
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{btn_a: {22, 88}, btn_b: {90, 28}, prize: {6496, 3076}},
+  %{btn_a: {54, 14}, btn_b: {14, 44}, prize: {8084, 1284}},
+  %{btn_a: {96, 15}, btn_b: {55, 63}, prize: {5535, 3966}},
+  %{btn_a: {17, 42}, btn_b: {40, 25}, prize: {12176, 3136}},
+  %{btn_a: {87, 31}, btn_b: {15, 36}, prize: {6672, 2500}},
+  %{btn_a: {59, 27}, btn_b: {21, 56}, prize: {1475, 15098}},
+  %{btn_a: {39, 51}, btn_b: {98, 14}, prize: {7890, 3126}},
+  %{btn_a: {23, 37}, btn_b: {35, 14}, prize: {16537, 6184}},
+  %{btn_a: {21, 89}, btn_b: {74, 23}, prize: {2407, 8748}},
+  %{btn_a: {47, 17}, btn_b: {35, 59}, prize: {17994, 16242}},
+  %{btn_a: {14, 45}, btn_b: {52, 16}, prize: {18768, 3912}},
+  %{btn_a: {29, 45}, btn_b: {85, 11}, prize: {3149, 4161}},
+  %{btn_a: {81, 95}, btn_b: {67, 12}, prize: {5489, 2110}},
+  %{btn_a: {48, 58}, btn_b: {86, 22}, prize: {4802, 2280}},
+  %{btn_a: {27, 59}, btn_b: {47, 15}, prize: {2602, 2090}},
+  %{btn_a: {39, 87}, btn_b: {94, 38}, prize: {8830, 6134}},
+  %{btn_a: {23, 61}, btn_b: {82, 16}, prize: {8405, 3957}},
+  %{btn_a: {54, 14}, btn_b: {24, 63}, prize: {894, 1708}},
+  %{btn_a: {26, 14}, btn_b: {18, 35}, prize: {5510, 12541}},
+  %{btn_a: {65, 55}, btn_b: {21, 69}, prize: {430, 620}},
+  %{btn_a: {11, 62}, btn_b: {50, 11}, prize: {11414, 3683}},
+  %{btn_a: {21, 54}, btn_b: {93, 22}, prize: {7683, 5642}},
+  %{btn_a: {20, 95}, btn_b: {52, 29}, prize: {5580, 10155}},
+  %{btn_a: {37, 13}, btn_b: {11, 66}, prize: {18250, 14983}},
+  %{btn_a: {54, 28}, btn_b: {37, 58}, prize: {17939, 14902}},
+  %{btn_a: {87, 65}, btn_b: {11, 79}, prize: {3765, 4087}},
+  %{btn_a: {74, 30}, btn_b: {16, 59}, prize: {9858, 8342}},
+  %{btn_a: {74, 31}, btn_b: {17, 59}, prize: {14764, 6598}},
+  %{btn_a: {12, 95}, btn_b: {27, 33}, prize: {945, 3324}},
+  %{btn_a: {21, 36}, btn_b: {34, 14}, prize: {7247, 5012}},
+  %{btn_a: {48, 62}, btn_b: {90, 29}, prize: {9150, 5973}},
+  %{btn_a: {93, 43}, btn_b: {49, 91}, prize: {7090, 6422}},
+  %{btn_a: {28, 70}, btn_b: {68, 21}, prize: {17176, 3693}},
+  %{btn_a: {33, 16}, btn_b: {27, 51}, prize: {1884, 2771}},
+  %{btn_a: {11, 43}, btn_b: {51, 19}, prize: {4114, 10066}},
+  %{btn_a: {26, 70}, btn_b: {87, 46}, prize: {3532, 6874}},
+  %{btn_a: {22, 35}, btn_b: {38, 13}, prize: {7508, 16592}},
+  %{btn_a: {33, 16}, btn_b: {48, 72}, prize: {12065, 15896}},
+  %{btn_a: {67, 25}, btn_b: {14, 55}, prize: {4093, 10275}},
+  %{btn_a: {36, 17}, btn_b: {43, 77}, prize: {3253, 1933}},
+  %{btn_a: {84, 24}, btn_b: {42, 69}, prize: {8862, 4869}},
+  %{btn_a: {70, 16}, btn_b: {17, 68}, prize: {5690, 3224}},
+  %{btn_a: {58, 27}, btn_b: {44, 92}, prize: {1890, 1595}},
+  %{btn_a: {64, 30}, btn_b: {29, 57}, prize: {15004, 15224}},
+  %{btn_a: {13, 90}, btn_b: {64, 33}, prize: {6560, 6048}},
+  %{btn_a: {37, 91}, btn_b: {64, 49}, prize: {5214, ...}},
+  %{btn_a: {12, 80}, btn_b: {75, ...}, prize: {...}},
+  %{btn_a: {27, ...}, btn_b: {...}, ...},
+  %{btn_a: {...}, ...},
+  %{...},
+  ...
+]
+```
+
+Yay, matrices again. We need to solve linear equations in form of:
+
+$$
+\begin{cases}
+a_x x & + & b_x y & = & p_x \\
+a_y x & + & b_x y & = & p_y
+\end{cases}
+$$
+
+So we need to solve:
+
+$$
+\begin{bmatrix}
+a_x & b_x \\
+a_y & b_y
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y
+\end{bmatrix}
+= \begin{bmatrix}
+p_x \\
+p_y
+\end{bmatrix}
+$$
+
+For each game. So we can use [Cramer's Rule](https://en.wikipedia.org/wiki/Cramer%27s_rule).
+
+$$
+\begin{gather*}
+x = \frac{\text{det}(A_x)}{\text{det}(A)} \\
+y = \frac{\text{det}(A_y)}{\text{det}(A)}
+\end{gather*}
+$$
+
+Assuming that $\text{det}(A) \ne 0$ (otherwise there will be no solution). In case of $2\times2$ matrices determinant is simple to compute:
+
+$$
+\text{det}
+\begin{vmatrix}
+a & b \\
+c & d
+\end{vmatrix}
+= ad - bc
+$$
+
+So in the end we need to compute:
+
+$$
+\begin{gather*}
+x = \frac{p_x b_y - b_x p_y}{a_x b_y - b_x a_y} \\
+y = \frac{a_x p_y - p_x a_y}{a_x b_y - b_x a_y}
+\end{gather*}
+$$
+
+And reject cases where $x$ or $y$ is non-integer value.
+
+```elixir
+defmodule Game do
+  def solve(%{btn_a: {ax, ay}, btn_b: {bx, by}, prize: {px, py}}) do
+    det_a = ax * by - bx * ay
+    det_x = px * by - bx * py
+    det_y = ax * py - px * ay
+    
+    if rem(det_x, det_a) == 0 do
+      {div(det_x, det_a), div(det_y, det_a)}
+    end
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Game, <<70, 79, 82, 49, 0, 0, 8, ...>>, {:solve, 1}}
+```
+
+## Part 1
+
+```elixir
+games
+|> Enum.map(&Game.solve/1)
+|> Enum.map(fn
+  nil -> 0
+  {a, b} -> a * 3 + b * 1
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+31897
+```
+
+## Part 2
+
+```elixir
+games
+|> Enum.map(fn %{prize: {px, py}} = game ->
+  add = 10_000_000_000_000
+  %{game | prize: {px + add, py + add}}
+end)
+|> Enum.map(&Game.solve/1)
+|> Enum.map(fn
+  nil -> 0
+  {a, b} -> a * 3 + b * 1
+end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+87596249540359
+```
+
+<!-- livebook:{"offset":11449,"stamp":{"token":"XCP.AhVykQ8wyKxhTI29dXZZ0BnWEqWCuVGz8E2TRFpScgbUfqJJtY47yrvU9g9OzcejZVc8LbU3ak4YrgSGy5A5XeARPC3qt5fGPV4K9PYS3YabI7-q8rCKi8R6ZpGBpmZeDNQ","version":2}} -->
