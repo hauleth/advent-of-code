@@ -1,0 +1,211 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 14
+
+```elixir
+Mix.install([:kino_aoc, :image])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxNCIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "14", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "p=49,14 v=-82,-41\np=27,80 v=67,31\np=76,93 v=-15,-66\np=90,62 v=-84,86\np=62,86 v=46,20\np=7,72 v=25,26\np=30,32 v=-92,60\np=91,40 v=6,1\np=50,58 v=57,-21\np=71,79 v=-3,58\np=84,44 v=36,-59\np=87,12 v=-62,-95\np=69,46 v=76,39\np=50,51 v=-26,-64\np=41,58 v=30,5\np=80,97 v=-13,9\np=52,84 v=98,-50\np=52,32 v=64,39\np=52,91 v=61,20\np=31,22 v=49,45\np=85,73 v=-43,32\np=77,15 v=20,-52\np=17,10 v=74,-3\np=88,92 v=-54,26\np=20,46 v=31,-63\np=42,49 v=-26,44\np=3,101 v=40,-95\np=78,77 v=-17,48\np=10,88 v=-88,55\np=100,68 v=74,76\np=42,11 v=-97,-25\np=88,57 v=-37,93\np=11,36 v=-33,54\np=88,61 v=-58,43\np=66,47 v=-55,82\np=11,52 v=52,-60\np=9,48 v=41,-64\np=70,57 v=61,27\np=22,80 v=11,11\np=73,11 v=65,56\np=79,84 v=-28,41\np=50,79 v=-93,-12\np=55,35 v=23,-64\np=48,26 v=45,29\np=38,23 v=-86,-54\np=71,48 v=-21,6\np=60,98 v=28,-54\np=75,70 v=59,7\np=24,71 v=-20,-46\np=55,88 v=79,-23\np=13,48 v=44,49\np=37,73 v=-86,-99\np=82,12 v=-26,80\np=13,16 v=-8,30\np=86,34 v=84,99\np=45,90 v=-31,68\np=23,93 v=44,8\np=3,52 v=-65,-54\np=64,7 v=16,-30\np=97,88 v=-67,-39\np=58,87 v=72,42\np=8,70 v=-27,5\np=25,67 v=99,22\np=48,92 v=19,31\np=23,46 v=-16,-76\np=13,101 v=70,13\np=55,4 v=-25,-39\np=44,10 v=10,-59\np=56,2 v=83,67\np=90,83 v=28,42\np=28,84 v=7,-12\np=49,87 v=-7,-50\np=11,56 v=-76,87\np=27,72 v=46,-28\np=76,43 v=-59,32\np=19,50 v=80,62\np=12,1 v=44,-84\np=53,29 v=83,61\np=57,12 v=-63,-90\np=67,39 v=38,71\np=38,78 v=86,26\np=14,19 v=-72,-85\np=75,9 v=42,-43\np=89,33 v=65,-43\np=77,21 v=-64,54\np=32,72 v=-45,-71\np=9,21 v=55,-4\np=22,49 v=70,-71\np=86,73 v=-35,-7\np=32,5 v=-41,-62\np=14,51 v=89,-92\np=71,34 v=24,-69\np=87,18 v=69,-10\np=58,67 v=4,-28\np=22,75 v=15,26\np=73,14 v=-77,24\np=2,26 v=-12,91\np=53,3 v=38,-57\np=49,35 v=-37,-59\np=25,87 v=52,-83\np=47,74 v=46,-22\np=70,22 v=-81,24\np=46,57 v=23,-76\np=59,96 v=27,-40\np=72,77 v=99,28\np=66,89 v=61,-67\np=46,43 v=70,-23\np=30,55 v=-67,48\np=8,75 v=89,-17\np=15,29 v=-86,-3\np=53,2 v=38,-56\np=6,90 v=55,-83\np=44,83 v=8,-50\np=2,56 v=-54,-43\np=30,13 v=19,-62\np=21,97 v=-78,-46\np=13,53 v=70,22\np=2,5 v=59,56\np=2,48 v=18,50\np=81,94 v=92,57\np=1,1 v=6,-59\np=99,61 v=-65,-76\np=99,95 v=-24,35\np=17,53 v=-84,19\np=33,77 v=-4,53\np=100,32 v=-3,-43\np=60,74 v=-10,97\np=23,54 v=-57,-75\np=56,69 v=27,21\np=58,100 v=-51,44\np=43,77 v=-41,-93\np=75,3 v=80,13\np=66,32 v=72,34\np=67,67 v=-32,69\np=80,80 v=-23,-3\np=62,23 v=-4,48\np=77,0 v=87,30\np=2,96 v=-35,-73\np=15,4 v=4,-38\np=92,56 v=-54,-16\np=90,46 v=26,-16\np=75,2 v=1,67\np=59,71 v=-59,-33\np=79,21 v=-62,24\np=34,99 v=45,14\np=49,18 v=-37,-76\np=63,26 v=79,-41\np=97,54 v=-80,71\np=66,18 v=69,-30\np=14,25 v=74,-90\np=9,95 v=-87,96\np=24,39 v=-8,83\np=32,98 v=-75,79\np=36,50 v=-23,-92\np=97,36 v=-73,86\np=66,36 v=23,-53\np=84,3 v=2,95\np=89,73 v=48,26\np=3,94 v=-46,68\np=61,75 v=-52,-98\np=51,36 v=8,50\np=70,48 v=80,-2\np=32,39 v=-54,4\np=73,85 v=-92,-72\np=22,70 v=-12,38\np=92,48 v=-92,93\np=100,79 v=-76,-12\np=1,52 v=-43,65\np=22,98 v=78,52\np=35,76 v=-97,48\np=52,14 v=-48,-74\np=7,55 v=29,98\np=79,40 v=-2,-38\np=90,91 v=57,-72\np=60,3 v=-14,-94\np=34,69 v=-56,32\np=63,19 v=-44,24\np=48,71 v=-18,-98\np=90,42 v=-87,9\np=73,59 v=27,-28\np=30,66 v=18,-48\np=9,54 v=-79,-43\np=57,73 v=-73,-34\np=75,93 v=-39,60\np=31,75 v=-98,86\np=93,86 v=-95,-45\np=64,33 v=33,4\np=62,27 v=12,46\np=76,93 v=91,58\np=92,23 v=-13,29\np=54,93 v=69,51\np=19,53 v=59,-16\np=78,90 v=84,-7\np=17,93 v=33,25\np=100,73 v=5,59\np=74,39 v=80,28\np=88,4 v=84,19\np=63,98 v=-65,-2\np=81,98 v=32,4\np=64,89 v=-7,9\np=88,3 v=-35,9\np=77,14 v=-62,-79\np=15,15 v=18,-41\np=40,4 v=41,-24\np=14,68 v=89,-98\np=77,71 v=-14,97\np=69,28 v=1,-9\np=16,102 v=-87,52\np=26,20 v=-62,15\np=100,25 v=28,-37\np=22,63 v=93,-5\np=9,47 v=77,-47\np=78,36 v=76,-95\np=41,84 v=52,63\np=14,6 v=30,-88\np=99,72 v=59,42\np=72,45 v=7,-21\np=99,71 v=-20,-98\np=30,40 v=-6,82\np=75,50 v=-99,97\np=91,80 v=8,44\np=7,44 v=52,-91\np=96,12 v=-50,-74\np=72,48 v=-88,-33\np=21,7 v=-29,-3\np=96,38 v=2,-48\np=33,22 v=86,-36\np=79,84 v=-36,-77\np=87,65 v=2,48\np=46,42 v=98,-11\np=60,79 v=80,-27\np=95,3 v=-2,-94\np=94,75 v=88,-29\np=16,66 v=-24,48\np=83,51 v=-24,-64\np=54,94 v=-10,-7\np=0,96 v=-8,-96\np=4,50 v=-31,71\np=21,98 v=-66,-4\np=50,85 v=-48,69\np=71,14 v=5,67\np=19,56 v=71,6\np=18,43 v=-16,-49\np=11,25 v=18,45\np=38,90 v=-52,-34\np=50,9 v=-89,73\np=15,23 v=" <> ...}
+```
+
+```elixir
+robots =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn row ->
+    ["p=" <> pos, "v=" <> v] = String.split(row, " ")
+
+    pos = pos |> String.split(",") |> Enum.map(&String.to_integer/1) |> List.to_tuple()
+    v = v |> String.split(",") |> Enum.map(&String.to_integer/1) |> List.to_tuple()
+
+    %{pos: pos, v: v}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  %{pos: {49, 14}, v: {-82, -41}},
+  %{pos: {27, 80}, v: {67, 31}},
+  %{pos: {76, 93}, v: {-15, -66}},
+  %{pos: {90, 62}, v: {-84, 86}},
+  %{pos: {62, 86}, v: {46, 20}},
+  %{pos: {7, 72}, v: {25, 26}},
+  %{pos: {30, 32}, v: {-92, 60}},
+  %{pos: {91, 40}, v: {6, 1}},
+  %{pos: {50, 58}, v: {57, -21}},
+  %{pos: {71, 79}, v: {-3, 58}},
+  %{pos: {84, 44}, v: {36, -59}},
+  %{pos: {87, 12}, v: {-62, -95}},
+  %{pos: {69, 46}, v: {76, 39}},
+  %{pos: {50, 51}, v: {-26, -64}},
+  %{pos: {41, 58}, v: {30, 5}},
+  %{pos: {80, 97}, v: {-13, 9}},
+  %{pos: {52, 84}, v: {98, -50}},
+  %{pos: {52, 32}, v: {64, 39}},
+  %{pos: {52, 91}, v: {61, 20}},
+  %{pos: {31, 22}, v: {49, 45}},
+  %{pos: {85, 73}, v: {-43, 32}},
+  %{pos: {77, 15}, v: {20, -52}},
+  %{pos: {17, 10}, v: {74, -3}},
+  %{pos: {88, 92}, v: {-54, 26}},
+  %{pos: {20, 46}, v: {31, -63}},
+  %{pos: {42, 49}, v: {-26, 44}},
+  %{pos: {3, 101}, v: {40, -95}},
+  %{pos: {78, 77}, v: {-17, 48}},
+  %{pos: {10, 88}, v: {-88, 55}},
+  %{pos: {100, 68}, v: {74, 76}},
+  %{pos: {42, 11}, v: {-97, -25}},
+  %{pos: {88, 57}, v: {-37, 93}},
+  %{pos: {11, 36}, v: {-33, 54}},
+  %{pos: {88, 61}, v: {-58, 43}},
+  %{pos: {66, 47}, v: {-55, 82}},
+  %{pos: {11, 52}, v: {52, -60}},
+  %{pos: {9, 48}, v: {41, -64}},
+  %{pos: {70, 57}, v: {61, 27}},
+  %{pos: {22, 80}, v: {11, 11}},
+  %{pos: {73, 11}, v: {65, 56}},
+  %{pos: {79, 84}, v: {-28, 41}},
+  %{pos: {50, 79}, v: {-93, -12}},
+  %{pos: {55, 35}, v: {23, -64}},
+  %{pos: {48, 26}, v: {45, 29}},
+  %{pos: {38, 23}, v: {-86, -54}},
+  %{pos: {71, 48}, v: {-21, 6}},
+  %{pos: {60, 98}, v: {28, ...}},
+  %{pos: {75, ...}, v: {...}},
+  %{pos: {...}, ...},
+  %{...},
+  ...
+]
+```
+
+```elixir
+room = {w, h} = {101, 103}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{101, 103}
+```
+
+```elixir
+defmodule Robot do
+  def walk(robots, room, n \\ 1), do: Enum.map(robots, &move(&1, room, n))
+
+  def move(%{pos: {x, y}, v: {vx, vy}}, {w, h}, by \\ 1) do
+    x = Integer.mod(x + vx * by, w)
+    y = Integer.mod(y + vy * by, h)
+
+    %{pos: {x, y}, v: {vx, vy}}
+  end
+
+  def quad(%{pos: {x, y}}, {w, h}) do
+    hw = div(w - 1, 2)
+    hh = div(h - 1, 2)
+
+    if x == hw or y == hh do
+      :middle
+    else
+      {sign(x - hw), sign(y - hh)}
+    end
+  end
+
+  defp sign(0), do: 0
+  defp sign(n) when n < 0, do: -1
+  defp sign(n) when n > 0, do: 1
+
+  def with_neighbours(robots) do
+    set = MapSet.new(robots, & &1.pos)
+
+    with_neighbours =
+      Enum.count(robots, fn %{pos: {x, y}} ->
+        [{x + 1, y}, {x - 1, y}, {x, y - 1}, {x, y + 1}] |> Enum.any?(&(&1 in set))
+      end)
+
+    div(with_neighbours * 100, length(robots))
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Robot, <<70, 79, 82, 49, 0, 0, 18, ...>>, {:with_neighbours, 1}}
+```
+
+## Part 1
+
+```elixir
+robots
+|> Robot.walk(room, 100)
+|> Enum.group_by(fn robot -> Robot.quad(robot, room) end)
+|> Map.new(fn {k, l} -> {k, length(l)} end)
+|> Map.drop([:middle])
+|> Map.values()
+|> Enum.product()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+219150360
+```
+
+## Part 2
+
+Hack that I have found over the internet - if more than 60% of the robots have neighbours, you have found solution.
+
+Othe hack that I have found - checking whether there are no robots that are occupying the same position - didn't work for me.
+
+```elixir
+{tree, steps} =
+  0..10_000
+  |> Task.async_stream(
+    fn step ->
+      robots = Robot.walk(robots, room, step)
+
+      if Robot.with_neighbours(robots) >= 60, do: {robots, step}
+    end,
+    ordered: false
+  )
+  |> Enum.find_value(fn {:ok, val} -> val end)
+
+steps
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+8053
+```
+
+```elixir
+Image.new!(w, h)
+|> Image.mutate(fn img ->
+  for %{pos: {x, y}} <- tree do
+    Image.Draw.point(img, x, y, color: :white)
+  end
+
+  {:ok, img}
+end)
+|> elem(1)
+|> Image.resize!(4, interpolate: :nearest)
+```
+
+<!-- livebook:{"offset":9077,"stamp":{"token":"XCP.gUbmyoJABRufOfOt0ZeaLvsGKeSMKLrJo_tuzD9IPlUw8bA8QTK0V6_qDCVmNX02724bl4wTSGMbDl9LH4-qrXfejoCDaxokcatvdIiDcPrwE0PpJ7V34ORcoI0URmYd_Mo","version":2}} -->
