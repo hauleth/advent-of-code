@@ -1,0 +1,182 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 21
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIyMSIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "21", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok, "638A\n965A\n780A\n803A\n246A"}
+```
+
+```elixir
+codes =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn <<num::3-binary>> <> "A" = code ->
+    {String.to_charlist(code), String.to_integer(num)}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[{~c"638A", 638}, {~c"965A", 965}, {~c"780A", 780}, {~c"803A", 803}, {~c"246A", 246}]
+```
+
+```elixir
+dirpad = %{
+  [?A, ?>] => ~c[vA],
+  [?A, ?^] => ~c[<A],
+  [?A, ?v] => ~c[<vA],
+  [?A, ?<] => ~c[v<<A],
+
+  [?>, ?A] => ~c[^A],
+  [?>, ?^] => ~c[<^A],
+  [?>, ?v] => ~c[<A],
+  [?>, ?<] => ~c[<<A],
+
+  [?^, ?A] => ~c[>A],
+  [?^, ?>] => ~c[v>A],
+  [?^, ?v] => ~c[vA],
+  [?^, ?<] => ~c[v<A],
+
+  [?<, ?A] => ~c[>>^A],
+  [?<, ?^] => ~c[>^A],
+  [?<, ?v] => ~c[>A],
+  [?<, ?>] => ~c[>>A],
+
+  [?v, ?A] => ~c[>^A],
+  [?v, ?^] => ~c[^A],
+  [?v, ?<] => ~c[<A],
+  [?v, ?>] => ~c[>A]
+}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{
+  ~c"<>" => ~c">>A",
+  ~c"<A" => ~c">>^A",
+  ~c"<^" => ~c">^A",
+  ~c"<v" => ~c">A",
+  ~c"><" => ~c"<<A",
+  ~c">A" => ~c"^A",
+  ~c">^" => ~c"<^A",
+  ~c">v" => ~c"<A",
+  ~c"A<" => ~c"v<<A",
+  ~c"A>" => ~c"vA",
+  ~c"A^" => ~c"<A",
+  ~c"Av" => ~c"<vA",
+  ~c"^<" => ~c"v<A",
+  ~c"^>" => ~c"v>A",
+  ~c"^A" => ~c">A",
+  ~c"^v" => ~c"vA",
+  ~c"v<" => ~c"<A",
+  ~c"v>" => ~c">A",
+  ~c"vA" => ~c">^A",
+  ~c"v^" => ~c"^A"
+}
+```
+
+```elixir
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+nil
+```
+
+```elixir
+defmodule Keypad do
+  def naive(input, lut) do
+    [?A | input]
+    |> Enum.chunk_every(2, 1, :discard)
+    |> Enum.flat_map(&Map.get(lut, &1, [?A]))
+  end
+
+  def expand(input, lut) do
+    Stream.concat([?A], input)
+    |> Stream.chunk_every(2, 1, :discard)
+    |> Stream.flat_map(&Map.get(lut, &1, [?A]))
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Keypad, <<70, 79, 82, 49, 0, 0, 9, ...>>, {:expand, 2}}
+```
+
+```elixir
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+nil
+```
+
+```elixir
+Keypad.expand(~c[<A^A>^^AvvvA], dirpad)
+|> Enum.count()
+
+#|> Enum.map(fn {k, v} ->
+#  [?A | Map.get(dirpad, k, [?A])]
+#  |> Enum.chunk_every(2, 1, :discard)
+#  |> Enum.map()
+#end)
+#|> Enum.group_by(&elem(&1, 0), &elem(&1, 1))
+#|> Map.new(fn {k, v} -> {k, Enum.sum(v)} end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+28
+```
+
+```elixir
+Keypad.naive(~c[<A^A>^^AvvvA], dirpad)
+|> Keypad.naive(dirpad)
+|> Enum.chunk_every(2, 1, [?A])
+|> Enum.frequencies()
+|> Map.values()
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+68
+```
+
+```elixir
+~c"<vA<AA>>^AvAA<^A>Av<<A>>^AvA^A<vA>^Av<<A>^A>AAvA^Av<<A>A>^AAAvA<^A>A"
+~c"<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A" |> length
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+68
+```
+
+<!-- livebook:{"offset":3144,"stamp":{"token":"XCP.rEBKR0PbENlE02mf_Mo6R3RTWsHU-tFuA9VTPd907vq3-8e37LytxC6qWBmZAHZHLc_e1t3ZaG85X5KBWsYq0WGEzo7HC0U9-oE0dpPKGKeF7oBGgFeiEoDsX6GDKTwp76o","version":2}} -->

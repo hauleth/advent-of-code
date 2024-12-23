@@ -175,7 +175,7 @@ Othe hack that I have found - checking whether there are no robots that are occu
 
 ```elixir
 {tree, steps} =
-  0..10_000
+  Stream.from_index()
   |> Task.async_stream(
     fn step ->
       robots = Robot.walk(robots, room, step)
@@ -199,7 +199,15 @@ steps
 Image.new!(w, h)
 |> Image.mutate(fn img ->
   for %{pos: {x, y}} <- tree do
-    Image.Draw.point(img, x, y, color: :white)
+    # Add some festivity
+    color =
+      if abs(:math.sin(x + y)) < 0.5 do
+        :red
+      else
+        :green
+      end
+
+    Image.Draw.point(img, x, y, color: color)
   end
 
   {:ok, img}
@@ -208,4 +216,4 @@ end)
 |> Image.resize!(4, interpolate: :nearest)
 ```
 
-<!-- livebook:{"offset":9077,"stamp":{"token":"XCP.gUbmyoJABRufOfOt0ZeaLvsGKeSMKLrJo_tuzD9IPlUw8bA8QTK0V6_qDCVmNX02724bl4wTSGMbDl9LH4-qrXfejoCDaxokcatvdIiDcPrwE0PpJ7V34ORcoI0URmYd_Mo","version":2}} -->
+<!-- livebook:{"offset":9213,"stamp":{"token":"XCP.bbViODF6Z4_TcNSzpaXWzuFflurdyZ5JsvKHJZr6NjgJ4MQaH2OorTxA-YR5uDBN5HxiB0uC5hX0vi-Kgdm26HMcOubYpE_c39bjuPfPH_BH4SVxLeEac5c8aaRtPdt7CJk","version":2}} -->

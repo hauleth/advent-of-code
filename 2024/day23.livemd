@@ -1,0 +1,203 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 23
+
+```elixir
+Mix.install([:kino_aoc, {:libgraph, github: "bitwalker/libgraph"}, :combination])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIyMyIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "23", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "on-za\nbp-hs\nvc-bg\ntm-us\nzf-ox\nib-lc\nuo-zs\nov-qj\nll-eb\niy-tq\nbg-by\nun-ix\ngi-do\nrv-ou\nyp-qu\nqb-um\nqs-dn\nru-ro\net-fw\nyx-jt\nns-iz\nod-rc\nny-ap\nvb-fd\nwf-wr\nyh-qy\nfa-ct\nqo-fv\nig-jv\nqi-ff\nnj-ii\nsa-gg\ncp-un\nez-kh\nvs-du\ngp-qs\npt-qj\nyp-my\njf-sz\nyo-gm\nfn-xw\niu-xr\nse-ox\nmw-ie\nfw-br\nxy-iu\nqw-wi\nxc-dq\nvb-cq\ntw-zj\nka-aq\ngo-ds\nvi-cn\npz-kz\npy-nd\npt-ws\nog-lw\nlb-hj\nef-ac\ncv-qa\nsq-jv\nfw-xk\nlu-fc\nbj-bp\nzh-fi\ntg-nm\nsp-at\nke-dh\nut-ly\ngr-vr\nko-qg\nxg-df\nrc-up\nbd-it\ngz-en\nqj-ev\nwf-dx\nxn-hi\npq-th\nkr-gw\ngu-sm\ncv-xr\nzq-fp\nep-kq\nfv-dx\nlc-rw\ney-ef\nek-rw\ntw-eg\nfc-zw\nxm-ho\ngj-oy\nhy-og\nec-tw\npy-hw\nqr-jh\nvh-ea\nvz-ja\nov-ev\nyh-vh\nyk-fc\nfm-yi\nyf-kx\ner-bi\nbi-qq\ngc-fk\nie-gf\njk-fn\nxl-il\nbs-dl\nsh-op\npy-vx\ncn-jl\ntl-ee\nxw-wn\nzv-br\nkr-yn\ndj-wd\nwj-bz\nhf-bg\nzh-ql\nbs-ls\ntq-jk\nmz-dz\nav-jr\ngj-dr\npo-iy\nof-aq\nun-fw\nnv-bx\njz-nl\nze-ae\nvd-df\nix-et\nrn-ik\ndz-ou\nmz-ej\nec-kx\nxr-cf\njt-vr\nix-fw\nes-er\nbv-no\nwj-df\nyv-cl\njd-xl\nlu-vo\nxo-td\nvq-ow\nlc-vm\nca-lf\noq-on\nwj-xg\nfn-rp\nka-np\nbx-ez\ndz-sz\nkt-xl\ndd-jd\nla-qn\nqe-pt\ngl-ly\nqj-cc\nat-rf\nke-om\ndc-hu\nqb-rr\nov-ku\ntq-xw\nfz-tn\nma-hi\nbr-yw\nno-sp\ndj-kn\nyn-gw\ngo-ir\nbz-xg\nwo-se\nrz-wa\nqy-sx\nqn-ym\npo-tq\nxr-jh\ndf-tn\noe-vi\nsw-el\nvm-vr\ntg-nf\ncg-zt\nwf-fl\ncd-nc\nsw-qa\nfo-jg\nhj-av\nwd-rn\nwc-wq\noq-vw\nkx-ux\nop-nq\nsm-ru\nch-fw\nqx-uy\nti-fw\nrp-qm\npo-tj\nse-nw\npj-rs\nbo-sn\nsy-ur\niy-jb\ntm-rz\ndg-jt\nfa-sq\nok-th\nzq-ps\nhr-kr\npz-zs\nwq-ze\nms-an\nnp-aq\ntl-ka\npw-dh\nbm-sz\nuu-gm\nft-vb\nau-ab\nlx-lw\ncp-ri\nep-xm\nry-hk\nyi-gf\ncj-qr\nfl-lu\nbv-za\nyw-xk\nne-ss\nln-wv\nwf-vo\nlx-jy\noy-xy\nkq-fa\neh-lv\nuq-mi\nis-mx\nwn-eo\nqr-xy\nlr-ms\nkt-jd\nyk-lu\nqe-cc\naj-si\nqq-bp\nlw-xa\nus-pp\nen-mq\nct-te\nod-db\ncp-br\nrg-ou\nev-ku\nqg-ec\nuv-np\njn-sw\nxj-ie\nqr-xr\ntr-zp\nha-gg\nrx-pz\nsa-fl\ngx-vz\nmg-oi\nyc-zn\nxw-jo\nae-ou\nhj-gn\nix-ri\nsq-ct\nwo-xr\nbl-wl\ntt-ac\nbs-ij\nmh-re\nhg-lv\nwu-fh\nrt-rq\nsn-vq\nzy-vh\nyh-zy\ntu-oz\nbk-ai\nds-gq\nss-ob\ndv-di\nvw-on\nxr-zb\nfr-jl\nro-om\nrk-mg\nyc-hi\nvv-nf\nkz-nt\nrt-qw\nzj-ux\nox-wv\nfz-dc\nya-xo\ngq-du\nmx-fk\nsi-mo\nmo-ef\ndb-ex\nhw-rc\njy-qd\noz-lb\nvi-cm\nvx-ec\nxr-aa\nnx-ni\nny-fv\nta-vc\nnq-yi\nzt-gp\nnd-iu\nvv-yd\nsh-gf\nyf-hm\ndq-ee\nbg-bt\nnc-kz\ngq-py\nek-sy\nty-le\njo-eo\ndy-ko\nxa-qd\nrm-ns\ngk-xp\ngz-jr\ncr-ez\nwr-fc\nhe-cg\nin-og\ndw-sh\nuk-bf\nbr-un\nok-gi\nch-gr\ncx-gz\ndv-ho\nbx-cr\nex-go\nik-nv\nkh-wb\nol-vk\nhg-bf\nod-du\nvj-qk\nyd-uj\nfu-lq\nbi-bj\nvl-il\ncd-ob\nax-us\nmw-nq\nvr-rw\nhx-uf\nwz-vb\nem-xe\nee-of\nhm-ec\nek-ds\nys-sy\nqq-jq\ngu-jg\nzc-oi\nji-yb\nou-kw\nep-lh\nid-nx\ngp-wp\nph-ns\ncn-io\nwn-tq\nrw-vm\nnx-fv\nce-gn\nvr-lt\nxl-dd\nzw-sa\nwr-ty\nkz-jx\njd-rx\nna-hk\nnc-ob\nnw-re\nwt-jq\naj-sw\nkc-bi\nwq-qx\njt-ib\ncb-ly\nuj-zp\ncy-ps\nsm-om\nbu-bd\nux-ko\nxa-hy\nbc-uq\nsi-sw\nyc-ma\nyk-sa\ngf-mw\nbp-eq\nfh-zh\nmn-bo\nbw-hj\nes-bj\nop-xj\nup-hh\nds-db\ngx-qu\nyo-fp\nwg-ls\net-zc\ndn-vw\nyb-bt\nsk-sb\nxe-ea\nni-ap\nhw-go\ndn-zc\nno-vw\npt-cc\nrv-wc\nwc-xq\njg-ke\noo-jg\ndo-ss\nie-nq\npq-is\nrf-oq\nzn-vb\neb-ef\ngp-rs\npt-pf\nmd-lb\nle-zw\nxn-tf\nui-cb\nbz-fz\npj-gp\nzr-ee\npp-ax\nkl-jq\nxc-of\nox-lr\nuy-rv\nvd-sb\nyy-bh\nvn-dq\ndt-hg\nnp-vn\nla-fh\ngw-eh\ncq-wz\nno-ia\nqj-ws\npl-pt\ndf-ge\nzq-vj\njg-om\nnq-sh\nzy-kr\npv-im\naq-vn\nsq-yx\nsb-df\nih-gx\ngn-av\ndc-ff\nwg-ph\nsm-fo\nux-dk\ngi-kv\nhr-dt\nrc-go\nax-tm\npp-bo\nnn-xe\njf-mz\nvl-jd\nfs-cl\ngz-gn\nui-ly\nrx-hy\nrn-dj\nqe-pf\njx-gy\ntr-qb\neu-lr\nyt-ih\ntr-oi\nnc-ss\nnh-pb\nir-nd\nel-qf\ntl-aq\nkj-es\nru-fo\nfw-bu\nps-qk\nlq-lx\ncm-fg\nel-si\nvs-hw\neg-ux\nmt-lh\ntt-yy\njz-sq\nfm-nq\nvx-ko\nbl-lx\nrc-ex\nby-ji\neq-kl\ntk-vd\nmo-qf\nzr-xd\nbt-vc\nux-mi\nha-us\nvr-ib\nhx-rq\nat-no\nui-tx\nvs-od\nfp-ay\nzj-kx\nvs-ds\nqo-vk\nhw-db\npf-ku\nmd-jr\nfp-fe\nyg-tx\nmz-gs\nnl-ct\ncn-oe\nxj-ri\nya-ku\nnw-mh\nvh-ff\nft-hz\nen-md\nps-fp\naf-rx\nvx-kx\nkv-fd\nkr-lf\nae-rg\nsp-vw\nvn-zr\nea-pi\nat-vw\nrw-ax\nkg-vh\nxy-cv\nca-gw\nem-nn\nhj-en\ngw-ra\nfr-cy\ned-wu\nyf-tw\nuo-lz\ngc-pq\ntw-ux\nqy-kg\ncx-fo\nit-ly\nuj-mg\nrp-po\nsq-yv\nzh-zs\nth-ne\nes-fe\nrn-nv\naa-gj\nzb-aa\nwt-kl\nwu-uo\nbb-ce\nby-bt\nqb-gv\nbp-es\nbd-tx\nma-cq\nyt-qu\nuu-mn\nke-fa\nmx-jn\ndq-ew\nax-ow\nhv-dx\nyh-sx\ngx-ry\njz-jv\nsb-wj\ndo-ok\ngj-qn\nbr-ri\nlu-zw\nsb-ge\nkg-ao\nuu-fp\nus-xh\ndd-jb\nxp-wi\ncf-cj\nhm-zj\nle-sa\nwf-ty\nqx-xq\noi-rr\nbl-og\nmq-hj\ndw-xi\naw-ap\nsk-cs\nwu-yq\ngm-zq\nna-ry\nwp-pj\nne-gy\ndt-yn\nau-bm\nrk-ur\nnm-oi\naf-zm\ncd-ss\ndj-ez\ncf-oy\nce-md\nth-kz\nnt-cd\nrm-iz\njz-fs\nni-qo\njx-do\nzy-xe\nls-uq\nsy-jt\nwa-xh\nlf-lv\nys-jt\nij-wg\njw-mw\nbk-ef\nyx-ek\nvr-cm\njv-sk\ndw-ej\nmo-pq\nov-pl\nfz-ge\nmt-ep\ncq-hz\nza-zc\nlj-uy\nrv-ae\nse-ln\nkw-ze\nwo-ln\nvo-zw\nwd-fd\nxo-pl\nmx-gc\nln-lr\nsy-rw\ngy-fs\nzy-ea\nkc-er\nfl-l" <> ...}
+```
+
+```elixir
+connections =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn <<a::binary-2, "-", b::binary-2>> ->
+    {a, b}
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  {"on", "za"},
+  {"bp", "hs"},
+  {"vc", "bg"},
+  {"tm", "us"},
+  {"zf", "ox"},
+  {"ib", "lc"},
+  {"uo", "zs"},
+  {"ov", "qj"},
+  {"ll", "eb"},
+  {"iy", "tq"},
+  {"bg", "by"},
+  {"un", "ix"},
+  {"gi", "do"},
+  {"rv", "ou"},
+  {"yp", "qu"},
+  {"qb", "um"},
+  {"qs", "dn"},
+  {"ru", "ro"},
+  {"et", "fw"},
+  {"yx", "jt"},
+  {"ns", "iz"},
+  {"od", "rc"},
+  {"ny", "ap"},
+  {"vb", "fd"},
+  {"wf", "wr"},
+  {"yh", "qy"},
+  {"fa", "ct"},
+  {"qo", "fv"},
+  {"ig", "jv"},
+  {"qi", "ff"},
+  {"nj", "ii"},
+  {"sa", "gg"},
+  {"cp", "un"},
+  {"ez", "kh"},
+  {"vs", "du"},
+  {"gp", "qs"},
+  {"pt", "qj"},
+  {"yp", "my"},
+  {"jf", "sz"},
+  {"yo", "gm"},
+  {"fn", "xw"},
+  {"iu", "xr"},
+  {"se", "ox"},
+  {"mw", "ie"},
+  {"fw", "br"},
+  {"xy", "iu"},
+  {"qw", "wi"},
+  {"xc", "dq"},
+  {"vb", ...},
+  {...},
+  ...
+]
+```
+
+```elixir
+party =
+  Graph.new(type: :undirected)
+  |> Graph.add_edges(connections)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+#Graph<type: undirected, num_vertices: 520, num_edges: 3380>
+```
+
+```elixir
+cliques = Graph.cliques(party)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  ["yf", "dk", "dy", "hm", "vx", "zj", "ec", "eg", "ko", "kx", "tw", "ux"],
+  ["yf", "dk", "hm", "vx", "zj", "ec", "eg", "qg", "ko", "kx", "tw", "ux"],
+  ["yf", "ob"],
+  ["xa", "wl", "lx", "lq", "jy", "in", "hy", "lw", "qd", "fu", "ub", "og"],
+  ["xa", "wl", "lx", "jy", "bl", "in", "hy", "lw", "qd", "fu", "ub", "og"],
+  ["xa", "wi"],
+  ["bd", "cb", "it", "ut", "fq", "hs", "ur", "ly", "tx", "yg", "ui", "gl"],
+  ["bd", "cb", "it", "ut", "fq", "ur", "ly", "tx", "yg", "ui", "gl", "rk"],
+  ["bd", "bu"],
+  ["nm", "qb", "gv", "nf", "oi", "tg", "uj", "yd", "rr", "tr", "vv", "mg"],
+  ["nm", "qb", "gv", "nf", "oi", "tg", "uj", "yd", "rr", "tr", "vv", "zp"],
+  ["nm", "ge"],
+  ["dk", "jn"],
+  ["cn", "lh", "di", "xm", "cm", "oe", "vi", "ho", "fg", "mt", "io", "dv"],
+  ["cn", "zt"],
+  ["cn", "jl"],
+  ["qp", "xd"],
+  ["qp", "zq", "qk", "uu", "cy", "fp", "ay", "yo", "gm", "vj", "ps", "fr"],
+  ["qp", "zq", "qk", "uu", "cy", "ay", "yo", "gm", "vj", "jl", "ps", "fr"],
+  ["xq", "qx", "rg", "wc", "um", "rv", "ae", "kw", "lj", "ze", "wq", "ou"],
+  ["xq", "kg"],
+  ["xq", "qo"],
+  ["ti", "et", "bu", "xk", "ix", "fw", "un", "ri", "cp", "br", "gr", "ch"],
+  ["ti", "et", "bu", "xk", "fw", "un", "ri", "cp", "br", "gr", "ch", "yw"],
+  ["ti", "ab"],
+  ["nh", "hv", "id", "ap", "fv", "ny", "pb", "ni", "aw", "nx", "vk", "qo"],
+  ["nh", "pj"],
+  ["nh", "lk"],
+  ["ys", "ib", "dg", "vr", "yx", "jt", "ek", "lt", "sy", "vm", "lc", "rw"],
+  ["ys", "ib", "dg", "yx", "jt", "pg", "ek", "lt", "sy", "vm", "lc", "rw"],
+  ["ys", "tl"],
+  ["cb", "ha"],
+  ["ue", "dd", "kd", "zm", "kt", "il", "af", "xx", "vl", "xl", "jd", "rx"],
+  ["ue", "dd", "kd", "kt", "il", "af", "xx", "vl", "xl", "jd", "rx", "pz"],
+  ["ue", "bh"],
+  ["jg", "cx", "fo", "ro", "ru", "oo", "dh", "as", "zx", "ke", "om", "gu"],
+  ["jg", "cx", "fo", "ro", "ru", "dh", "as", "sm", "zx", "ke", "om", "gu"],
+  ["jg", "cy"],
+  ["bz", "fz", "qi", "tn", "xg", "dc", "ge", "sb", "df", "hu", "vd", ...],
+  ["bz", "ae"],
+  ["bz", "gm"],
+  ["im", "dz", "ab", "sz", "ej", "mz", "pv", "rj", ...],
+  ["im", "dz", "sz", "ej", "mz", "pv", "rj", ...],
+  ["im", "ps"],
+  ["sw", "gc", "si", "aj", "is", ...],
+  ["sw", "gc", "si", "aj", ...],
+  ["sw", "fn"],
+  ["cg", "zt", ...],
+  ["cg", ...],
+  [...],
+  ...
+]
+```
+
+## Part 1
+
+```elixir
+cliques
+|> Stream.flat_map(fn clique ->
+  if length(clique) >= 3 do
+    Combination.combine(clique, 3)
+  else
+    []
+  end
+end)
+|> Stream.filter(fn clique -> Enum.any?(clique, &String.starts_with?(&1, "t")) end)
+|> MapSet.new()
+|> MapSet.size()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+1248
+```
+
+## Part 2
+
+```elixir
+cliques
+|> Enum.max_by(&length/1)
+|> Enum.sort()
+|> Enum.join(",")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"aa,cf,cj,cv,dr,gj,iu,jh,oy,qr,xr,xy,zb"
+```
+
+<!-- livebook:{"offset":9387,"stamp":{"token":"XCP.YMMjV81j86GOTx0hGVW-U0w7aqvuBdig59tmj2pqELbNIP0HXjbZA1WSQwLRMCUIuzZ1PLs6_0ehAVdgp7sj4Wuc6QaM8KCZ3j-zJrTUmr2_hxaACLOnkijsz6m2hIS8E6Q","version":2}} -->

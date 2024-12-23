@@ -1,0 +1,395 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 15
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxNSIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "15", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "##################################################\n##...O...#OO...O.#....#....#O#O..O..O......O..O..#\n#OOOO.#.O.O.....OO#...O.OO.O....O.#..OO....O#OOO.#\n#...#.#O..O...OO......O.......#....O..O#.O..OO...#\n#.O.....O..#.........O......OO..O..OO.OO....O.O..#\n#.....O.OO.O.#.O...O..#.OOOO..#...#.O.OO.O.#.#OO##\n#...OO.#..O.O.#.O..OO..O....O...OO.OOO.......O...#\n##.O.....O..#O...........O..O.....O.......OO.....#\n#...O..O....O...O...O...O..O..O...O......O..OO...#\n#.O##.O.OO.....O.O.#....O#.....OO.O.O.#..O....#O.#\n#.............#.O........OOO.OO..#.............O.#\n#OOO..O.O.........OO....O.#......#.OO.......O..O.#\n#.......#...O..#O.OO...O..#O.O...##O#O......O##..#\n#O#.O..#........O....O.....O...#O..#......O.O..O.#\n#O..O..O#...#.......OO.OO..O.....O..O..O.O.O...O.#\n#...O.O...OO.......#O#O...O.##.....#..O.O.....O..#\n#.#OOOO..OO..O....O.O....OO.#.OO..O.......O....#.#\n#..O...#.....#.....OO..#O....O#.O....O..OOO.O...O#\n#.O.......OO.O.#........OO...O..O#..O.#..##...#.O#\n#.O..#..........OO.O.O..O..O.......O...O.O.OO....#\n#.O..##..........OO..O..O.....#OO#...#..O....O...#\n#O.OOOO.O..O........O#.#OO.OO...OO.#OO..OO#O.....#\n#..OO..........O...O....O.O.....O.....O...#..O..O#\n#.#O..O..O.....#.O...#........O.O.O..O.......#.O.#\n#..##..O.....O......O..O@........O....O#.O..OO..O#\n#...O..##O.#....#.......O..OO#..O.O.....##O....O.#\n#....O.O...O.OOO.O.O#..O..OOOOOOOOOO#.....O...#.O#\n#O.....#O..O..#..O....O.O..OOOO.#.O.O#....#.O.O#.#\n#..O.O..#O..............O....###..O#.O.....O.#O#O#\n#O...O.O.#.#..O......OO.OO#..O...O.O....O#.O...OO#\n#..OO.O#.....O##.O##....O..#..#..#O..O.....#....O#\n#....#..O..O....O.OO...O.......OO.OO...O.O.....O.#\n#....O.O.#O.#OO.......O......O........OOO..O.....#\n#..#...##.O......##.....O..O.O#.O...O....O..#.O..#\n#...O.O..O....O..O.OOOOOO...#.O...OO.#.....OO.O..#\n#O.......O....#.OO.OO...OO...##O......O.O........#\n##.O.OO.OO...O..O#......O.O....#.............O.#.#\n#O#O...O..O..OO.O.O...OO..O.O..OOOO..O..O...O..O.#\n#..OO.O#O..O..#.O..O.#...#..O.....OO..OOO..O...O.#\n#.O.O..OO.....O...O.....O..#..O..#.O.#.OOO...O.O.#\n#.O..O.......O...OO#.#..O....O...O....O..........#\n#....O..O.OO...OO..#....#O.OO.OO##.....O.........#\n#..O..O....O...O....OO#.#O..O.#.#O.O..O...#....O.#\n#.O.....O.#.O#.O..O.OO.O#............O..........O#\n#..O#O.O.........O.#.O#O..#O.O.........O....O..O.#\n#..O.....#OO..O..#.#.#....O.O.OO.O.O......O#.#O..#\n#.O.O..O.O.O.O...O..O..OO..................#OO...#\n#..O....O....O.....OOO...OO..OO.......O....OO....#\n#.O....OO.O................OO....O.O#O.O.........#\n##################################################\n\n>v>>>^>>v>vv^v^^v^^^<v^vv^vv<<>^v^^^<<<vv<>vv^^>v>v^^><>^<v<v><>>^>^<^^v>v<>^^v<><<^><v>v^v<<^>^>^>^>>vvv>^<<^^^^^><vv>>^>^^>^vv>><v^^v^<<<>^^<<<^^^vv^<^<<<>v<^v<v>^<>v<^>>^v^<>><><<^<>v>^>^>v>>v>vv^><v<v^v>vv>><^^<<>>vv<<^vv>^^vv>>><^v^>>v<<<<v>^<><>^>v^vv>v>><><^vvv>^><<>^<<<vvv^>^vv<<>v^^^>v<>^^vv>vv^<>^<>vvv<vvvv^^^<^vv^<v^<<vv^v<><vvvv^>vv<>><><<v>><^>v<>v<v<v>^v>^<>^v>>><^>>v<<<v^>^v>v>^^>^v<v^v^^<vv^v^><<^^<v^v>>^v>>>>>v<v^>^>^v^>vv^v^><^<v>^^<>^v^>><>>><vv<<>^v<^vvv<v^vvv^>v<<v>>^>><<^v^^v>^^>^<<<>v^^>><<v>^<v^<^>v>>>^^^<<vvv^>vvv>^><v>^>vvv^^^v^^>v^><v>><>^<v<<vv^^>>^^v>><vv>vvv>^>>>vv^><^<v<<<^^v>v^<v^^>^^<<<>v^vv<vvv>^v>v<^^>vv>v<>>vv<><v>v<^^<<^>>v<v^<>^<<v>><<vv^<<<<v^^^v^^<^<^<>v><^<>>v>v>v>v>v><v>>v<<^>>><v^v<v>>v^><^v^>>>^>^<<>>^^v><^<v^vv^<><>>v^^>v<vvv>v<>><<<<<>><<><v<>vv><^^^><vv<v<<>v^>v>>^^v^v^>vvv<v^<>><<<^>vvv><^^v>v<>v><^<v>v<^<<^<>v>>>>^<>^^^>v<v<<vv><v>>>^<^>v^><vv>^<<v<>><<^<>>>^v>><<>v^^v<^>v^v^>vvvv>vv<<>^^^<v>^<<v>>><<>>>vv^<^><><^^^>^v^<><>^<vv<^vv^^v>^<\n<^>vv>v>^^>^vvvv<<^><^<>>^<v>v>>^^<v><^<>><<<>^vv<>v<v^>>>^<<^<><<>^^vv^^<<><<vvv>v^^>vv^<v<<>>v><^>v^>>^^v<<<<^v<v<<>>v><v^>vv^<vv^>^v>^^>>><>v<><^v><vvvv^v<<>>^^v><>>vv^>v>v^>^>v<><^v>v^^<<>^v^>^>v<><^v<^^vv<>^^^v^>>><<><<<<v^v^><v<v<^^^><><^<<^^^vv<^^<^<v>v<<v^>>v<>>^<vv<^<v><>^<^v^>^v>>>^v>>v^>^^v^>><<v>>^<v>^vvv<v<<<v>^<>vv<^<v<>^<>v^v^>vv^v>><^>><>^^^<<v<vv^<vv>>v<^^^>vv<^^>vv^^^^<<^<v^>v<v>vvv<v<<^^><v<<^>^^<>v>>v><^v^<v>vv^<v<<v>v>vvv^>v<vv>>>>>^^v<<>^><>v^^^>^^>^>^^vvvv^v<v>>^^^v>>^<v<^^v>>><<>^^><<<^>v^^^v><v<v<v^v^><>^>v<v<^^^>" <> ...}
+```
+
+```elixir
+#puzzle_input =
+  """
+##########
+#..O..O.O#
+#......O.#
+#.OO..O.O#
+#..O@..O.#
+#O#..O...#
+#O..O..O.#
+#.OO.O.OO#
+#....O...#
+##########
+
+<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^
+vvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v
+><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<
+<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^
+^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><
+^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^
+>^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^
+<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>
+^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>
+v^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^
+  """
+
+#puzzle_input =
+  """
+########
+#..O.O.#
+##@.O..#
+#...O..#
+#.#.O..#
+#...O..#
+#......#
+########
+
+<^^>>>vv<v>>v<<
+  """
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: outdented heredoc line. The contents inside the heredoc should be indented at the same level as the closing """. The following is forbidden:
+
+    def text do
+      """
+    contents
+      """
+    end
+
+Instead make sure the contents are indented as much as the heredoc closing:
+
+    def text do
+      """
+      contents
+      """
+    end
+
+The current heredoc line is indented too little
+└─ Workspace/hauleth/advent-of-code/2024/day15.livemd#cell:7w6bq5lw7vctw7mk:3:3
+
+warning: outdented heredoc line. The contents inside the heredoc should be indented at the same level as the closing """. The following is forbidden:
+
+    def text do
+      """
+    contents
+      """
+    end
+
+Instead make sure the contents are indented as much as the heredoc closing:
+
+    def text do
+      """
+      contents
+      """
+    end
+
+The current heredoc line is indented too little
+└─ Workspace/hauleth/advent-of-code/2024/day15.livemd#cell:7w6bq5lw7vctw7mk:28:3
+
+warning: code block contains unused literal "##########\n#..O..O.O#\n#......O.#\n#.OO..O.O#\n#..O@..O.#\n#O#..O...#\n#O..O..O.#\n#.OO.O.OO#\n#....O...#\n##########\n\n<vv>^<v^>v>^vv^v>v<>v^v<v<^vv<<<^><<><>>v<vvv<>^v^>^<<<><<v<<<v^vv^v>^\nvvv<<^>^v^^><<>>><>^<<><^vv^^<>vvv<>><^^v>^>vv<>v<<<<v<^v>^<^^>>>^<v<v\n><>vv>v^v^<>><>>>><^^>vv>v<^^^>>v^v^<^^>v^^>v^<^v>v<>>v^v^<v>v^^<^^vv<\n<<v<^>>^^^^>>>v^<>vvv^><v<<<>^^^vv^<vvv>^>v<^^^^v<>^>vvvv><>>v^<<^^^^^\n^><^><>>><>^^<<^^v>>><^<v>^<vv>>v>>>^v><>^v><<<<v>>v<v<v>vvv>^<><<>^><\n^>><>^v<><^vvv<^^<><v<<<<<><^v<<<><<<^^<v<^^^><^>>^<v^><<<^>>^v<v^v<v^\n>^>>^v>vv>^<<^v<>><<><<v<<v><>v<^vv<<<>^^v^>^^>>><<^v>>v^v><^^>>^<>vv^\n<><^^>^^^<><vvvvv^v<v<<>^v<v>v<<^><<><<><<<^^<<<^<<>><<><^^^>^^<>^>v<>\n^^>vv<^v^v<vv>^<><v<^v>^^^>>>^^vvv^>vvv<>>>^<^>>>>>^<<^v>^vvv<>^<><<v>\nv^^>>><<^^<>>^v^<v^vv<>v^<<>^<^v^v><^<<<><<^<v><v<>vv>>v><v^<vv<>v^<<^\n" (remove the literal or assign it to _ to avoid warnings)
+└─ Workspace/hauleth/advent-of-code/2024/day15.livemd#cell:7w6bq5lw7vctw7mk:1
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"########\n#..O.O.#\n##@.O..#\n#...O..#\n#.#.O..#\n#...O..#\n#......#\n########\n\n<^^>>>vv<v>>v<<\n"
+```
+
+```elixir
+[map, moves] = String.split(puzzle_input, "\n\n")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["##################################################\n##...O...#OO...O.#....#....#O#O..O..O......O..O..#\n#OOOO.#.O.O.....OO#...O.OO.O....O.#..OO....O#OOO.#\n#...#.#O..O...OO......O.......#....O..O#.O..OO...#\n#.O.....O..#.........O......OO..O..OO.OO....O.O..#\n#.....O.OO.O.#.O...O..#.OOOO..#...#.O.OO.O.#.#OO##\n#...OO.#..O.O.#.O..OO..O....O...OO.OOO.......O...#\n##.O.....O..#O...........O..O.....O.......OO.....#\n#...O..O....O...O...O...O..O..O...O......O..OO...#\n#.O##.O.OO.....O.O.#....O#.....OO.O.O.#..O....#O.#\n#.............#.O........OOO.OO..#.............O.#\n#OOO..O.O.........OO....O.#......#.OO.......O..O.#\n#.......#...O..#O.OO...O..#O.O...##O#O......O##..#\n#O#.O..#........O....O.....O...#O..#......O.O..O.#\n#O..O..O#...#.......OO.OO..O.....O..O..O.O.O...O.#\n#...O.O...OO.......#O#O...O.##.....#..O.O.....O..#\n#.#OOOO..OO..O....O.O....OO.#.OO..O.......O....#.#\n#..O...#.....#.....OO..#O....O#.O....O..OOO.O...O#\n#.O.......OO.O.#........OO...O..O#..O.#..##...#.O#\n#.O..#..........OO.O.O..O..O.......O...O.O.OO....#\n#.O..##..........OO..O..O.....#OO#...#..O....O...#\n#O.OOOO.O..O........O#.#OO.OO...OO.#OO..OO#O.....#\n#..OO..........O...O....O.O.....O.....O...#..O..O#\n#.#O..O..O.....#.O...#........O.O.O..O.......#.O.#\n#..##..O.....O......O..O@........O....O#.O..OO..O#\n#...O..##O.#....#.......O..OO#..O.O.....##O....O.#\n#....O.O...O.OOO.O.O#..O..OOOOOOOOOO#.....O...#.O#\n#O.....#O..O..#..O....O.O..OOOO.#.O.O#....#.O.O#.#\n#..O.O..#O..............O....###..O#.O.....O.#O#O#\n#O...O.O.#.#..O......OO.OO#..O...O.O....O#.O...OO#\n#..OO.O#.....O##.O##....O..#..#..#O..O.....#....O#\n#....#..O..O....O.OO...O.......OO.OO...O.O.....O.#\n#....O.O.#O.#OO.......O......O........OOO..O.....#\n#..#...##.O......##.....O..O.O#.O...O....O..#.O..#\n#...O.O..O....O..O.OOOOOO...#.O...OO.#.....OO.O..#\n#O.......O....#.OO.OO...OO...##O......O.O........#\n##.O.OO.OO...O..O#......O.O....#.............O.#.#\n#O#O...O..O..OO.O.O...OO..O.O..OOOO..O..O...O..O.#\n#..OO.O#O..O..#.O..O.#...#..O.....OO..OOO..O...O.#\n#.O.O..OO.....O...O.....O..#..O..#.O.#.OOO...O.O.#\n#.O..O.......O...OO#.#..O....O...O....O..........#\n#....O..O.OO...OO..#....#O.OO.OO##.....O.........#\n#..O..O....O...O....OO#.#O..O.#.#O.O..O...#....O.#\n#.O.....O.#.O#.O..O.OO.O#............O..........O#\n#..O#O.O.........O.#.O#O..#O.O.........O....O..O.#\n#..O.....#OO..O..#.#.#....O.O.OO.O.O......O#.#O..#\n#.O.O..O.O.O.O...O..O..OO..................#OO...#\n#..O....O....O.....OOO...OO..OO.......O....OO....#\n#.O....OO.O................OO....O.O#O.O.........#\n##################################################",
+ ">v>>>^>>v>vv^v^^v^^^<v^vv^vv<<>^v^^^<<<vv<>vv^^>v>v^^><>^<v<v><>>^>^<^^v>v<>^^v<><<^><v>v^v<<^>^>^>^>>vvv>^<<^^^^^><vv>>^>^^>^vv>><v^^v^<<<>^^<<<^^^vv^<^<<<>v<^v<v>^<>v<^>>^v^<>><><<^<>v>^>^>v>>v>vv^><v<v^v>vv>><^^<<>>vv<<^vv>^^vv>>><^v^>>v<<<<v>^<><>^>v^vv>v>><><^vvv>^><<>^<<<vvv^>^vv<<>v^^^>v<>^^vv>vv^<>^<>vvv<vvvv^^^<^vv^<v^<<vv^v<><vvvv^>vv<>><><<v>><^>v<>v<v<v>^v>^<>^v>>><^>>v<<<v^>^v>v>^^>^v<v^v^^<vv^v^><<^^<v^v>>^v>>>>>v<v^>^>^v^>vv^v^><^<v>^^<>^v^>><>>><vv<<>^v<^vvv<v^vvv^>v<<v>>^>><<^v^^v>^^>^<<<>v^^>><<v>^<v^<^>v>>>^^^<<vvv^>vvv>^><v>^>vvv^^^v^^>v^><v>><>^<v<<vv^^>>^^v>><vv>vvv>^>>>vv^><^<v<<<^^v>v^<v^^>^^<<<>v^vv<vvv>^v>v<^^>vv>v<>>vv<><v>v<^^<<^>>v<v^<>^<<v>><<vv^<<<<v^^^v^^<^<^<>v><^<>>v>v>v>v>v><v>>v<<^>>><v^v<v>>v^><^v^>>>^>^<<>>^^v><^<v^vv^<><>>v^^>v<vvv>v<>><<<<<>><<><v<>vv><^^^><vv<v<<>v^>v>>^^v^v^>vvv<v^<>><<<^>vvv><^^v>v<>v><^<v>v<^<<^<>v>>>>^<>^^^>v<v<<vv><v>>>^<^>v^><vv>^<<v<>><<^<>>>^v>><<>v^^v<^>v^v^>vvvv>vv<<>^^^<v>^<<v>>><<>>>vv^<^><><^^^>^v^<><>^<vv<^vv^^v>^<\n<^>vv>v>^^>^vvvv<<^><^<>>^<v>v>>^^<v><^<>><<<>^vv<>v<v^>>>^<<^<><<>^^vv^^<<><<vvv>v^^>vv^<v<<>>v><^>v^>>^^v<<<<^v<v<<>>v><v^>vv^<vv^>^v>^^>>><>v<><^v><vvvv^v<<>>^^v><>>vv^>v>v^>^>v<><^v>v^^<<>^v^>^>v<><^v<^^vv<>^^^v^>>><<><<<<v^v^><v<v<^^^><><^<<^^^vv<^^<^<v>v<<v^>>v<>>^<vv<^<v><>^<^v^>^v>>>^v>>v^>^^v^>><<v>>^<v>^vvv<v<<<v>^<>vv<^<v<>^<>v^v^>vv^v>><^>><>^^^<<v<vv^<vv>>v<^^^>vv<^^>vv^^^^<<^<v^>v<v>vvv<v<<^^><v<<^>^^<>v>>v><^v^<v>vv^<v<<v>v>vvv^>v<vv>>>>>^^v<<>^><>v^^^>^^>^>^^vvvv^v<v>>^^^v>>^<v<^^v>>><<>^^><<<^>v^^^v><v<v<v^v^><>^>v<v<^^^>>>vv><<^>><v>><<v<<vv><^^^<<^<>v>^v^v><<<<<<>>vv^<<<><<><><<^<^>^<v<^v>>>^>v^>^v>^v^<^>^v>><<<v>v^^vvv><<^>v^^<><v^>><<v><^^>>v<<<<<^>>><><vv>v<<>>^v<><<^>>v<<<^<^>>^>v^>^v<v>^v>>v<^>><<>><>vvv<<>vv^>v>><><<^><vvv>v><^>^<^v><>>v><v><^v^vv><>^^>>>v<^v^<^v>^v><vv<<v<<v><>>><v<vv<>>v^^>>>vv><v<<<<><v^^>>v>^<v^^>^v<<<><v>v>>^^<vv<v^v>><^<^^<>><v>^<^^<><^^^><>^<v^^^<v<^>>^v>vv^^<^v>><<vv><<v>><v>>>^>>><<<v<<><^vvv^<v>^>vvv^v>>v><<>v><<v<vvvvv^>^>><v^>vv^>>^\nvvv^v^><<v<>><><><<<^v>^v^><>^vvv<<^<<v^v<>>v<v^^>>^>v<v>^v<v^v>^<<vvv<^^v<<<<>v^v<<<v<^>><v^vv^vvvv^v><><v<<^>v>v^v^<v<v<^<><^>^vv<^^v<^^>vv<<>^^<>><<<<^^>>>^<^^>vv<>>>^^^^vv^>^v^v^^>^<<<>v^<v>^^^>v<^^<<^<v><^vvv>v>v>v<^>><^<^<>>>^^<<<vv^>>><>>v><>^<>^^<v^><<vv>vv^v<<>^>v><vvv>v^>>v^^^v<<>>^v><^<>^>^<^>^^<vv<>>><v^v^>>>^^>>^v^^^>>^v>v><^^^v<>>vv>>v^^<><^^v>v<^>>v<v^v^v^v^vv^vvv>v^vv>^v>vv<vv<^<<<v^v><<v>v<<^>vvv^^^^>>^>v>^^<>vv<>^^v><v<<^v><><><^<vv^>v^^>>>^^vv>^v>^<>vvv^v<^vv^<<^<^^<>>^<<><vv^>^>^^v^<v><v^>><^^>><<><<<<<<^>^><^v>^v>><v><v<>vvv>^^<^<<>v>>vv<v<><^<<^<>v<v>><><>^v><v<^^^<>>vvv>^^>>>v><v><^^>><<^<v><<^<v<<vv>>^vv<>v>^><><<<<<v>>>v^^v>^<>^<>v^^>>^<>>v^>^<>>>><>><v^v>>v>^<<^v^><<>>^v>><>><>>>><>vv<<>>^>v^v^<vvvvvvv^>v<<<^^<>vvvv^<<><<v^<<vv^^^v^^<<><v>v^^<^^v^^<>^v<>vvv>>^^v^^^<v>v^^vv<^^^<<>^v^>>^^<<^^v^^v<<vv^<<>>>v<>vv<v^v<<>vvv>^<v>v>^v<^^v<>^>^<><<v>v<>v^>v^v>><<><v><>>>>v^<^<^><>^v^<^><<v<^v><>>^v^^^v^><>^v>v<<^v>>^<<v<>v<^<<<<>>^><<<vv<^v^<^>^^><^^vvv^><v<><^^<>^v^>\nvvvv^vv^>>^v^v<^<vvv<>v>v>vv>^>^><^vv><v^v>v<><>v^v^>vvvv<<>v<^^^vv<^v><>^>^>v<>^>^vvv<>^>^<^^v^<><<>^>^v><v>^v>v^<v^<>>^^>^>v^>v>>^^<v><^<^vv>^vv^v^>v><^vv>^>v>^><>v>v^^>>v>^<<v^<vvv>>v<v>v^^<>^v^vv^<^^<v>>>v>>^v>vvv^^v^>v<vvv^<><v>v>v<>^^v^^<vv<>v<vvv>>><><<>>v>^^<^^^^><v>^>v<^<^>v^^>v>^>>^><<<^vv>vv^v^><v^<v>vv>^<>^vvvv^>vv>^>v^>v<<v^^<v^<v>>vvv<<v<>>>v^>^vv>^<v<>>^^v<vv<^>v<>^<<^^><>^^v>^v>>^<v>vv^v<<^^>^<v<><v>vv<><vv<>>v<^^^><<^^>^v<>vv<v>><<<v><<>>vv^>>^vvvv^><<v<vv^v<vv<>v<><v<<><v>vvv>>vv^^^<><^v<><v<^<v<v<^>>vv<><<>^^>><<v><^>vvv^>^vvv<>v^^<<^<vv>>v>^>v>^^><<>v<v^>^<<<<vv<<^^^>^>^>v<>>vv^><v<><<><^><><^^vv>>^<^vv<^^v<><<><>vvvv^^^<>v>>v^<vvv<v<vv><<v^v<v>>^v^<<^>>vvvv^v<<^<^vv<v<v>^v<^<^^>vv<v^^^>>^<^><^^v<v^v^>^^^v^v>^>^><^>>^v<v<^^^v^>>^v>vv>^v<>^v^^^v^v^>v>><^^<^v<<v<^v<>v^<>^<>^v<v^^v<^>v<v>^v<<><<<>^v><<<^>vvvvv^v^^^<<v>>v^>>^^<<v^^>vv^^vvvv>^>v^<<<^<>v><<^>^v^<^>><<<v<vv>vv<<^>^<^^><>>^^v>vvv^<^>^^^^<^v<<>^<>^>>v>^<><><>>^^vv^<<>><^<v><>^v^vvv<<>>^<>^>v<<^><<^>^<^>^<<><\n<<^<^>><<<vv>v<v<^<>>>v^>vv><>>vvvv<<^><<<>v<>v^v^<>v>v<^^<<v<vv^<<<vv>^<>^^vv<><v<<^v^v<^<v" <> ...]
+```
+
+```elixir
+%{robot: [robot], wall: walls, box: boxes} =
+  map
+  |> String.split("\n", trim: true)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {row, y} ->
+    row
+    |> String.to_charlist()
+    |> Enum.with_index()
+    |> Enum.reject(fn {kind, _} -> kind == ?. end)
+    |> Enum.map(fn {kind, x} ->
+      kind =
+        case kind do
+          ?# -> :wall
+          ?O -> :box
+          ?@ -> :robot
+        end
+
+      {{x, y}, kind}
+    end)
+  end)
+  |> Enum.group_by(&elem(&1, 1), &elem(&1, 0))
+
+walls = MapSet.new(walls)
+boxes = MapSet.new(boxes)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+MapSet.new([
+  {38, 2},
+  {29, 26},
+  {9, 34},
+  {47, 38},
+  {47, 44},
+  {22, 37},
+  {19, 38},
+  {27, 21},
+  {19, 22},
+  {16, 10},
+  {16, 38},
+  {35, 26},
+  {10, 32},
+  {36, 14},
+  {28, 48},
+  {17, 30},
+  {32, 18},
+  {40, 35},
+  {6, 23},
+  {28, 37},
+  {29, 47},
+  {29, 40},
+  {29, 10},
+  {6, 42},
+  {23, 46},
+  {10, 33},
+  {4, 46},
+  {43, 47},
+  {12, 8},
+  {3, 16},
+  {15, 3},
+  {20, 46},
+  {33, 48},
+  {35, 6},
+  {41, 9},
+  {25, 29},
+  {1, 2},
+  {3, 30},
+  {8, 5},
+  {18, 37},
+  {37, 43},
+  {3, 47},
+  {30, 26},
+  {41, 31},
+  {4, 15},
+  {33, 40},
+  {6, 21},
+  {5, 26},
+  {1, ...},
+  {...},
+  ...
+])
+```
+
+```elixir
+moves = moves |> String.to_charlist() |> Enum.reject(& &1 not in ~c"^>v<")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+~c">v>>>^>>v>vv^v^^v^^^<v^vv^vv<<>^v^^^<<<vv<>vv^^>v>v^^><>^<v<v><>>^>^<^^v>v<>^^v<><<^><v>v^v<<^>^>^>^>>vvv>^<<^^^^^><vv>>^>^^>^vv>><v^^v^<<<>^^<<<^^^vv^<^<<<>v<^v<v>^<>v<^>>^v^<>><><<^<>v>^>^>v>>v>vv^><v<v^v>vv>><^^<<>>vv<<^vv>^^vv>>><^v^>>v<<<<v>^<><>^>v^vv>v>><><^vvv>^><<>^<<<vvv^>^vv<<>v^^^>v<>^^vv>vv^<>^<>vvv<vvvv^^^<^vv^<v^<<vv^v<><vvvv^>vv<>><><<v>><^>v<>v<v<v>^v>^<>^v>>><^>>v<<<v^>^v>v>^^>^v<v^v^^<vv^v^><<^^<v^v>>^v>>>>>v<v^>^>^v^>vv^v^><^<v>^^<>^v^>><>>><vv<<>^v<^vvv<v^vvv^>v<<v>>^>><<^v^^v>^^>^<<<>v^^>><<v>^<v^<^>v>>>^^^<<vvv^>vvv>^><v>^>vvv^^^v^^>v^><v>><>^<v<<vv^^>>^^v>><vv>vvv>^>>>vv^><^<v<<<^^v>v^<v^^>^^<<<>v^vv<vvv>^v>v<^^>vv>v<>>vv<><v>v<^^<<^>>v<v^<>^<<v>><<vv^<<<<v^^^v^^<^<^<>v><^<>>v>v>v>v>v><v>>v<<^>>><v^v<v>>v^><^v^>>>^>^<<>>^^v><^<v^vv^<><>>v^^>v<vvv>v<>><<<<<>><<><v<>vv><^^^><vv<v<<>v^>v>>^^v^v^>vvv<v^<>><<<^>vvv><^^v>v<>v><^<v>v<^<<^<>v>>>>^<>^^^>v<v<<vv><v>>>^<^>v^><vv>^<<v<>><<^<>>>^v>><<>v^^v<^>v^v^>vvvv>vv<<>^^^<v>^<<v>>><<>>>vv^<^><><^^^>^v^<><>^<vv<^vv^^v>^<<^>vv>v>^^>^vvvv<<^><^<>>^<v>v>>^^<v><^<>><<<>^vv<>v<v^>>>^<<^<><<>^^vv^^<<><<vvv>v^^>vv^<v<<>>v><^>v^>>^^v<<<<^v<v<<>>v><v^>vv^<vv^>^v>^^>>><>v<><^v><vvvv^v<<>>^^v><>>vv^>v>v^>^>v<><^v>v^^<<>^v^>^>v<><^v<^^vv<>^^^v^>>><<><<<<v^v^><v<v<^^^><><^<<^^^vv<^^<^<v>v<<v^>>v<>>^<vv<^<v><>^<^v^>^v>>>^v>>v^>^^v^>><<v>>^<v>^vvv<v<<<v>^<>vv<^<v<>^<>v^v^>vv^v>><^>><>^^^<<v<vv^<vv>>v<^^^>vv<^^>vv^^^^<<^<v^>v<v>vvv<v<<^^><v<<^>^^<>v>>v><^v^<v>vv^<v<<v>v>vvv^>v<vv>>>>>^^v<<>^><>v^^^>^^>^>^^vvvv^v<v>>^^^v>>^<v<^^v>>><<>^^><<<^>v^^^v><v<v<v^v^><>^>v<v<^^^>>>vv><<^>><v>><<v<<vv><^^^<<^<>v>^v^v><<<<<<>>vv^<<<><<><><<^<^>^<v<^v>>>^>v^>^v>^v^<^>^v>><<<v>v^^vvv><<^>v^^<><v^>><<v><^^>>v<<<<<^>>><><vv>v<<>>^v<><<^>>v<<<^<^>>^>v^>^v<v>^v>>v<^>><<>><>vvv<<>vv^>v>><><<^><vvv>v><^>^<^v><>>v><v><^v^vv><>^^>>>v<^v^<^v>^v><vv<<v<<v><>>><v<vv<>>v^^>>>vv><v<<<<><v^^>>v>^<v^^>^v<<<><v>v>>^^<vv<v^v>><^<^^<>><v>^<^^<><^^^><>^<v^^^<v<^>>^v>vv^^<^v>><<vv><<v>><v>>>^>>><<<v<<><^vvv^<v>^>vvv^v>>v><<>v><<v<vvvvv^>^>><v^>vv^>>^vvv^v^><<v<>><><><<<^v>^v^><>^vvv<<^<<v^v<>>v<v^^>>^>v<v>^v<v^v>^<<vvv<^^v<<<<>v^v<<<v<^>><v^vv^vvvv^v><><v<<^>v>v^v^<v<v<^<><^>^vv<^^v<^^>vv<<>^^<>><<<<^^>>>^<^^>vv<>>>^^^^vv^>^v^v^^>^<<<>v^<v>^^^>v<^^<<^<v><^vvv>v>v>v<^>><^<^<>>>^^<<<vv^>>><>>v><>^<>^^<v^><<vv>vv^v<<>^>v><vvv>v^>>v^^^v<<>>^v><^<>^>^<^>^^<vv<>>><v^v^>>>^^>>^v^^^>>^v>v><^^^v<>>vv>>v^^<><^^v>v<^>>v<v^v^v^v^vv^vvv>v^vv>^v>vv<vv<^<<<v^v><<v>v<<^>vvv^^^^>>^>v>^^<>vv<>^^v><v<<^v><><><^<vv^>v^^>>>^^vv>^v>^<>vvv^v<^vv^<<^<^^<>>^<<><vv^>^>^^v^<v><v^>><^^>><<><<<<<<^>^><^v>^v>><v><v<>vvv>^^<^<<>v>>vv<v<><^<<^<>v<v>><><>^v><v<^^^<>>vvv>^^>>>v><v><^^>><<^<v><<^<v<<vv>>^vv<>v>^><><<<<<v>>>v^^v>^<>^<>v^^>>^<>>v^>^<>>>><>><v^v>>v>^<<^v^><<>>^v>><>><>>>><>vv<<>>^>v^v^<vvvvvvv^>v<<<^^<>vvvv^<<><<v^<<vv^^^v^^<<><v>v^^<^^v^^<>^v<>vvv>>^^v^^^<v>v^^vv<^^^<<>^v^>>^^<<^^v^^v<<vv^<<>>>v<>vv<v^v<<>vvv>^<v>v>^v<^^v<>^>^<><<v>v<>v^>v^v>><<><v><>>>>v^<^<^><>^v^<^><<v<^v><>>^v^^^v^><>^v>v<<^v>>^<<v<>v<^<<<<>>^><<<vv<^v^<^>^^><^^vvv^><v<><^^<>^v^>vvvv^vv^>>^v^v<^<vvv<>v>v>vv>^>^><^vv><v^v>v<><>v^v^>vvvv<<>v<^^^vv<^v><>^>^>v<>^>^vvv<>^>^<^^v^<><<>^>^v><v>^v>v^<v^<>>^^>^>v^>v>>^^<v><^<^vv>^vv^v^>v><^vv>^>v>^><>v>v^^>>v>^<<v^<vvv>>v<v>v^^<>^v^vv^<^^<v>>>v>>^v>vvv^^v^>v<vvv^<><v>v>v<>^^v^^<vv<>v<vvv>>><><<>>v>^^<^^^^><v>^>v<^<^>v^^>v>^>>^><<<^vv>vv^v^><v^<v>vv>^<>^vvvv^>vv>^>v^>v<<v^^<v^<v>>vvv<<v<>>>v^>^vv>^<v<>>^^v<vv<^>v<>^<<^^><>^^v>^v>>^<v>vv^v<<^^>^<v<><v>vv<><vv<>>v<^^^><<^^>^v<>vv<v>><<<v><<>>vv^>>^vvvv^><<v<vv^v<vv<>v<><v<<><v>vvv>>vv^^^<><^v<><v<^<v<v<^>>vv<><<>^^>><<v><^>vvv^>^vvv<>v^^<<^<vv>>v>^>v>^^><<>v<v^>^<<<<vv<<^^^>^>^>v<>>vv^><v<><<><^><><^^vv>>^<^vv<^^v<><<><>vvvv^^^<>v>>v^<vvv<v<vv><<v^v<v>>^v^<<^>>vvvv^v<<^<^vv<v<v>^v<^<^^>vv<v^^^>>^<^><^^v<v^v^>^^^v^v>^>^><^>>^v<v<^^^v^>>^v>vv>^v<>^v^^^v^v^>v>><^^<^v<<v<^v<>v^<>^<>^v<v^^v<^>v<v>^v<<><<<>^v><<<^>vvvvv^v^^^<<v>>v^>>^^<<v^^>vv^^vvvv>^>v^<<<^<>v><<^>^v^<^>><<<v<vv>vv<<^>^<^^><>>^^v>vvv^<^>^^^^<^v<<>^<>^>>v>^<><><>>^^vv^<<>><^<v><>^v^vvv<<>>^<>^>v<<^><<^>^<^>^<<><<<^<^>><<<vv>v<v<^<>>>v^>vv><>>vvvv<<^><<<>v<>v^v^<>v>v<^^<<v<vv^<<<vv>^<>^^vv<><v<<^v^v<^<v>>vv" ++ ...
+```
+
+## Part 1
+
+```elixir
+defmodule Warehouse.A do
+  def walk(start, path, walls, boxes) do
+    Enum.reduce(path, {start, boxes}, fn dir, {pos, boxes} ->
+      move(pos, walls, boxes, dir)
+    end)
+    |> elem(1)
+  end
+  
+  def move({x, y}, walls, boxes, dir) do
+    next = next({x, y}, dir)
+
+    cond do
+      next in walls ->
+        {{x, y}, boxes}
+
+      next in boxes ->
+        if new_boxes = move_box(next, boxes, walls, dir) do
+          {next, new_boxes}
+        else
+          {{x, y}, boxes}
+        end
+
+      true ->
+        {next, boxes}
+    end
+  end
+
+  defp move_box(pos, boxes, walls, dir) do
+    next = next(pos, dir)
+    cond do
+      next in walls -> nil
+        
+      next in boxes ->
+        if new_boxes = move_box(next, boxes, walls, dir) do
+          new_boxes |> MapSet.delete(pos) |> MapSet.put(next)
+        end
+
+      true ->
+        boxes |> MapSet.delete(pos) |> MapSet.put(next)
+    end
+  end
+
+  defp next({x, y}, ?^), do: {x, y - 1}
+  defp next({x, y}, ?>), do: {x + 1, y}
+  defp next({x, y}, ?v), do: {x, y + 1}
+  defp next({x, y}, ?<), do: {x - 1, y}
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Warehouse.A, <<70, 79, 82, 49, 0, 0, 14, ...>>, {:next, 2}}
+```
+
+```elixir
+robot
+|> Warehouse.A.walk(moves, walls, boxes)
+|> Enum.map(fn {x, y} -> x + y * 100 end)
+|> Enum.sum()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+1406628
+```
+
+## Part 2
+
+```elixir
+defmodule Warehouse.B do
+  def resize({x, y}, walls, boxes) do
+    start = {2 * x, y}
+
+    walls =
+      walls
+      |> Enum.flat_map(fn {x, y} ->
+        [{2 * x, y}, {2 * x + 1, y}]
+      end)
+      |> MapSet.new()
+
+    boxes =
+      boxes
+      |> Enum.flat_map(fn {x, y} ->
+        pos = [{2 * x, y}, {2 * x + 1, y}]
+        box = %{p: pos}
+
+        for p <- pos do
+          {p, box}
+        end
+      end)
+
+    {start, walls, boxes}
+  end
+
+  def walk(start, path, walls, boxes) do
+    Enum.reduce(path, {start, boxes}, fn dir, {pos, boxes} ->
+      move(pos, walls, boxes, dir)
+    end)
+    |> elem(1)
+  end
+
+  def move({x, y}, walls, boxes, dir) do
+    next = next({x, y}, dir)
+
+    cond do
+      next in walls ->
+        {{x, y}, boxes}
+
+      box = boxes[next] ->
+        if new_boxes = move_box(box, boxes, walls, dir) do
+          {next, new_boxes}
+        else
+          {{x, y}, boxes}
+        end
+
+      true ->
+        {next, boxes}
+    end
+  end
+
+  defp move_box(%{p: pos}, boxes, walls, dir) do
+    next = next(pos, dir)
+
+    cond do
+      Enum.any?(pos, & &1 in walls) ->
+        throw(:wall)
+
+      (next_boxes = select_boxes_at(pos, boxes)) != [] ->
+        if new_boxes = move_box(next, boxes, walls, dir) do
+          new_boxes |> MapSet.delete(pos) |> MapSet.put(next)
+        end
+
+      true ->
+        boxes |> Map.drop(pos) |> MapSet.put(next)
+    end
+  catch
+    :throw, :wall -> nil
+  end
+
+  defp select_boxes_at(pos, boxes) do
+    boxes
+    |> Map.take(pos)
+    |> Enum.uniq()
+  end
+
+  defp next({x, y}, ?^), do: {x, y - 1}
+  defp next({x, y}, ?>), do: {x + 1, y}
+  defp next({x, y}, ?v), do: {x, y + 1}
+  defp next({x, y}, ?<), do: {x - 1, y}
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+warning: variable "next_boxes" is unused (if the variable is not meant to be used, prefix it with an underscore)
+└─ Workspace/hauleth/advent-of-code/2024/day15.livemd#cell:3ajets4kgmkyknvu:59: Warehouse.B.move_box/4
+
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Warehouse.B, <<70, 79, 82, 49, 0, 0, 20, ...>>, {:next, 2}}
+```
+
+<!-- livebook:{"offset":23559,"stamp":{"token":"XCP.GtnzBtRKuk3dCuG1gVPqYVHJwR27FPAQixvDel9XY7YKKtIR-fLOYjYE9q5s_RDyt_V8hQtSWHWE0pTlg7ukiaTmklnlkowdbH-y0AJ21EtpRoXXQ3C48_7vRp_64BdLpHY","version":2}} -->

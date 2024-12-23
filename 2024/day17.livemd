@@ -1,0 +1,206 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 17
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxNyIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "17", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "Register A: 66245665\nRegister B: 0\nRegister C: 0\n\nProgram: 2,4,1,7,7,5,1,7,4,6,0,3,5,5,3,0"}
+```
+
+```elixir
+defmodule Computer do
+  @instructions ~w[adv bxl bst jnz bxc out bdv cdv]a
+                |> Enum.with_index()
+                |> Map.new(fn {name, ins} -> {ins, name} end)
+
+  def load(opcodes) do
+    opcodes
+    |> Enum.chunk_every(2)
+    |> Enum.map(fn [opcode, op] ->
+      {@instructions[opcode], op}
+    end)
+    |> List.to_tuple()
+  end
+
+  def process(program, reg) do
+    reg = Map.merge(%{a: 0, b: 0, c: 0}, Map.new(reg))
+    do_process(program, 0, reg, [])
+  end
+
+  defp do_process(program, idx, _reg, out) when idx >= tuple_size(program) do
+    Enum.reverse(out)
+  end
+
+  defp do_process(program, idx, reg, out) do
+    ins = elem(program, idx)
+
+    case compute(ins, reg) do
+      new_reg when is_map(new_reg) ->
+        do_process(program, idx + 1, new_reg, out)
+
+      {:out, op} ->
+        do_process(program, idx + 1, reg, [op | out])
+
+      {:jump, op} ->
+        do_process(program, op, reg, out)
+    end
+  end
+
+  def compute({:adv, op}, reg),
+    do: %{reg | a: div(reg.a, 2 ** combo(op, reg))}
+
+  def compute({:bdv, op}, reg),
+    do: %{reg | b: div(reg.a, 2 ** combo(op, reg))}
+
+  def compute({:cdv, op}, reg),
+    do: %{reg | c: div(reg.a, 2 ** combo(op, reg))}
+
+  def compute({:bxl, op}, reg),
+    do: %{reg | b: Bitwise.bxor(reg.b, op)}
+
+  def compute({:bxc, _op}, reg),
+    do: %{reg | b: Bitwise.bxor(reg.b, reg.c)}
+
+  def compute({:bst, op}, reg),
+    do: %{reg | b: Bitwise.band(combo(op, reg), 0b111)}
+
+  def compute({:out, op}, reg),
+    do: {:out, Bitwise.band(combo(op, reg), 0b111)}
+
+  def compute({:jnz, op}, reg) do
+    if reg.a != 0 do
+      {:jump, op}
+    else
+      reg
+    end
+  end
+
+  defp combo(v, _) when v in 0..3, do: v
+  defp combo(4, %{a: a}), do: a
+  defp combo(5, %{b: b}), do: b
+  defp combo(6, %{c: c}), do: c
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Computer, <<70, 79, 82, 49, 0, 0, 21, ...>>, {:combo, 2}}
+```
+
+```elixir
+[
+  "Register A: " <> a,
+  "Register B: " <> b,
+  "Register C: " <> c,
+  "Program: " <> raw_code
+] = String.split(puzzle_input, "\n", trim: true)
+
+reg = %{
+  a: String.to_integer(a),
+  b: String.to_integer(b),
+  c: String.to_integer(c)
+} |> dbg()
+
+code =
+  raw_code
+  |> String.split(",")
+  |> Enum.map(&String.to_integer/1)
+
+program = Computer.load(code)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+%{a: 66245665, b: 0, c: 0}
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{{:bst, 4}, {:bxl, 7}, {:cdv, 5}, {:bxl, 7}, {:bxc, 6}, {:adv, 3}, {:out, 5}, {:jnz, 0}}
+```
+
+## Part 1
+
+```elixir
+out = Computer.process(program, reg)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[1, 4, 6, 1, 6, 4, 3, 0, 3]
+```
+
+```elixir
+IO.puts(Enum.join(out, ","))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+1,4,6,1,6,4,3,0,3
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+:ok
+```
+
+## Part 2
+
+```elixir
+defmodule Quine do
+  def find(program, target) do
+    do_find(program, Enum.reverse(target), Enum.to_list(0..7))
+  end
+
+  def do_find(_program, [], out), do: out
+
+  def do_find(program, [n | rest], out) do
+    potential =
+      for a <- out,
+          i <- 0..7,
+          hd(Computer.process(program, a: a * 8 + i)) == n,
+          do: a * 8 + i
+
+    do_find(program, rest, potential)
+  end
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Quine, <<70, 79, 82, 49, 0, 0, 10, ...>>, {:do_find, 3}}
+```
+
+```elixir
+Quine.find(program, code) |> Enum.min()
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+265061364597659
+```
+
+<!-- livebook:{"offset":4021,"stamp":{"token":"XCP.PwUWTErrjClVJj6ZS87ZLrfbzleELwxqD__HBvfB1y_Yc633Wj72_Jigo2Z3T7V2ONi1nVguQ_AE_NSyLCF5sjSmWldUKuW294o_wsQqiM_gKhXOjSLzJOnslN9iIEFIEww","version":2}} -->

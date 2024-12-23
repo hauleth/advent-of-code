@@ -1,0 +1,126 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 19
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxOSIsInNlc3Npb25fc2VjcmV0IjoiQURWRU5UX09GX0NPREVfU0VTU0lPTiIsInllYXIiOiIyMDI0In0","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2024", "19", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "rrbb, rgrb, rbbwbw, ruw, grwb, wbg, rrggu, wugbb, gwr, rrgu, wbbb, bwrgugb, rgww, brrw, gwwg, brgbb, ubbbu, rbgruw, bwub, rru, grbu, grw, bwrbr, wrwbwu, bgbr, urrb, bbb, guggb, gwuwuw, ubu, wbr, bb, ubwwrb, bruuwu, buw, wrr, gbgrr, ggw, ru, wub, uub, gbrw, uwrwrb, uwuu, wbbu, gwu, brrr, grggur, wugrbrw, rwuurgg, wrbg, wuugrgw, brr, wrgwu, rwwuur, wgug, guu, brru, bgr, buwruw, bbg, bw, brwuwbb, buwbrgrb, wrwuw, ubb, rgu, wru, ugw, rruubrr, bwur, rrb, uwg, wwbbuwu, rbw, uwrgbr, ubuw, uurwr, uggw, uuguur, guuww, bbrgw, ubuwbuu, buwgg, gru, uuu, u, wgguw, bruu, bu, gwurrw, rbgwur, gubg, ubgrubw, buwrgw, uu, rwgw, rrw, wgru, gwrb, bgguu, gwugwu, urrbg, ruwwb, wuw, wwgg, wwbbu, gggb, rgrruwrw, uugr, rwb, rggw, gbr, guuurru, wurubggw, gww, wuugb, rbbww, urwgb, wrruurr, guuurgg, bwbgbg, bubwb, ggrwwg, gugr, uwrrr, guurbu, uruw, gbguruu, grb, bwr, wrubggr, rbu, wgwgru, buuww, gub, wu, uw, rrbrb, ur, wrgbb, gbbu, wgw, ggwbgwb, wb, urwr, uggwbwu, wwwg, rbru, bwbw, brb, wbugw, r, gbb, rw, bru, wbbwbr, gwww, wgrr, rugg, bgrbrub, w, gwwb, wrwgu, wwgb, uwgbgwwb, wrrwb, ubw, rr, gbbuug, bbr, wugb, rbuww, uur, wgur, ugg, wwu, wwrww, uuwur, rwbbww, gbu, bgbuur, rrbugguw, ugrgwg, wurruu, rrrgww, ggbbgbb, bgbb, brrb, rwwr, brwwr, ubrbru, uburwwb, ggwu, rwbgrbu, bbwuwbr, urwggbwr, bbrgu, wbbuww, rbwwuwr, gu, brbb, wbwgu, ugbrrguw, urbu, gbgbbrub, gbuuuww, rww, gwwgwwg, buwu, bur, uubrw, rur, rgurr, rwbgrg, urr, wugw, wuur, wuub, wbgb, bgb, uubrbur, rrbugbu, ugru, guwr, uwu, uru, wbw, wugrwgb, ggwg, guw, ubbbg, grbuwg, gw, wgb, bbrbwgub, gr, rbruu, urwwu, gbuwbw, bug, rgrgb, uwr, wrw, urb, wgbw, rbbgr, rwww, wbubur, buubw, ruwgwbug, wwwgggub, uuwrwbww, burr, rubg, wgub, bww, urbuubb, bubugrb, rgwbbw, rb, ggu, gwg, rgw, ruwggbg, wrrwbg, gur, wwbgugb, ruu, rrgg, rwrr, uwb, bwbbwbg, rbgg, rwgwg, rrgrwg, gb, bgbg, urubwugb, ruww, grbbg, gwb, bugrr, wgwr, wuug, b, gbwgr, uugw, wwr, wuu, ggr, bbwb, ubbbwrg, wugbw, gguuw, bbw, ugr, wbbrrbu, grbub, ubuwuw, bwgw, bggw, bwu, ub, bwubw, rgru, brg, uruwr, rug, wrwwuubg, brw, wggurb, br, wgr, gug, wrww, gg, uuw, bguwbru, rrrw, uubgb, gbww, buu, rbbuw, bgru, ubbwr, bg, gbgrww, wrg, ugubw, rgrg, bwbbgw, ggubrwbg, uurgwg, gbw, ww, wr, wbgu, bbu, brrwb, wug, uurug, rgb, gwbwbgg, uuubg, ugub, bruw, rub, rgggrr, ruubrwuw, brguru, wbrbg, rrwr, bgrwbbr, ugu, grwbb, rgg, wwg, rgbuwr, wuwur, bbgub, ubg, rrg, wrur, bggbr, wgg, bbwbbru, bwwbrgu, rugrr, rgwbu, ugubwbgu, wwb, ggg, bwwu, gwuguu, rrwgwg, uuwu, rrug, bgwruw, brrgrb, rurg, bugb, grwbg, rwr, urug, rwg, bgg, gbggr, rrr, gbbrw, wgu, bwbg, bbgurggg, wuwguw, wwwuru, grg, grggbw, rubu, burw, grr, bgbbw, wgrbgg, rwrww, gwurgr, bruww, bub, wbu, rbb, uwgbb, rgr, ugb, buubb, wg, wwwgr, bgw, wbwr, wuwruu, wrgrrrw, rbr, wuwwr, wrwb, ggwgwbrw, urw, uwrubb, wuwg, wguu, ugwwuw, ggb, rrggr, wrb, urwgub, bgwwrw, rwu, wurug, gbgu, brrwbb, wwbub, uwrgw, bwb, ubr, uww, gbg, wgrugwbb, bwg, wbb, bbwwgr, www\n\nbgrwwwbuugwrruurrwgbgrbwrrruurgbuwbgbwuuruubwuubruwgubw\nugguwugrwrgwruwguuwurubggwgwbrwwwubburwrburg\nrbbbgwgbbbrrrubguwggubwburbrrwgbbuwgbwwuwrbwugurbbwuubruu\nwuuuwbwuwuwgbugwggwwuwurrgwubbugbbuuubbrwbgbubr\nubbrubwuurgbuwgguubgbrguwbguuwbwruguubwbbgguwrrgwwbubwb\nrbbwuwrrrgwrwwbwgwrruubggrrggbbgwuwbrgubgwwrbwwbggwwrwrwgb\nbgggbruguuguwwwurruwgubrwrruubgbrbwwwgrrgurb\ngubugrguurwgwwubrwguggbgbbuubbubuwurgbgugrubgrgggruugw\ngwrggrbrrrbwwrrggwrwggrwuguubgggrrwwrggubruwrrgbubg\nbgubggrrbuwwwggbwbrbguwuwwbburgururuguwuwgbguuwwwub\nuuggggggurgrgugugrwbrbrwururwurburrurggwgwbrwrwwwuuugwu\nuuubwrurwwrbbgrbrrbuwbrbwrurgrrwwwgugugrbugwu\nwbbbwrgbwrbgggwgbbwbbwrwbbbwwbbwbgbwuwubbrrggurbugwrgwbuug\nuruwrwugbbwruugrguuwrrbbguwwrrrruubrwgwrruug\nbguurwugrrgurubbuwbrgrbwggrrgrwguwgrwubgbubbw\nwwgubbbbgggrgrwwwuwwwbbbbbbrwwwguggrwurgwbguwgwubww\nwgbrwgbbgwuuwbwwuwwrruruwururwbwbguuwgbrgw\nwbrgwrrurwuubrruruwwbgwrgwrbbrwrbbbrwwbwwrgwbr\nggwgwrrwwruubruwgbwwuwrbwbgurubwugbbwurwbwrbuggubwwww\nbuurbrbwrgbgbgwgwbruwubbbgwgguruggrrwwgwgwuruwggrbbbbbugw\nbubgwugwubwwwgrurgurbubwbguurrwbubuubggbgbrbuwgrwbbgbuwr\ngggbbwgugrguguwubrbwbrgwwbubwuwwgbwrbrgbuugwrrb\nbgguuuwwbrubgrubwrwugbbwwrruwrgrrubwwuubgwrwwrgrgbgbg\nw" <> ...}
+```
+
+```elixir
+[towels | patterns] = String.split(puzzle_input, "\n", trim: true)
+
+towels =
+  towels
+  |> String.split(", ")
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+["rrbb", "rgrb", "rbbwbw", "ruw", "grwb", "wbg", "rrggu", "wugbb", "gwr", "rrgu", "wbbb", "bwrgugb",
+ "rgww", "brrw", "gwwg", "brgbb", "ubbbu", "rbgruw", "bwub", "rru", "grbu", "grw", "bwrbr",
+ "wrwbwu", "bgbr", "urrb", "bbb", "guggb", "gwuwuw", "ubu", "wbr", "bb", "ubwwrb", "bruuwu", "buw",
+ "wrr", "gbgrr", "ggw", "ru", "wub", "uub", "gbrw", "uwrwrb", "uwuu", "wbbu", "gwu", "brrr",
+ "grggur", "wugrbrw", "rwuurgg", ...]
+```
+
+```elixir
+defmodule Towels do
+  def count(target, towels) do
+    possible =
+      towels
+      |> Enum.filter(&String.contains?(target, &1))
+      |> Enum.sort()
+
+    do_count([{target, 1}], possible)
+  end
+
+  defp do_count([], _), do: 0
+  defp do_count([{"", count} | _], _), do: count
+
+  defp do_count([{target, score} | rest], towels) do
+    towels
+    |> Enum.reduce(rest, fn h, acc ->
+      case target do
+        ^h <> rest -> insert(acc, {rest, score})
+        _ -> acc
+      end
+    end)
+    |> do_count(towels)
+  end
+
+  defp insert([{longest, _} = top | t], {text, _} = new)
+       when byte_size(text) < byte_size(longest) do
+    [top | insert(t, new)]
+  end
+
+  defp insert([{same, count} | t], {same, add}),
+    do: [{same, count + add} | t]
+
+  defp insert(t, new), do: [new | t]
+end
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:module, Towels, <<70, 79, 82, 49, 0, 0, 12, ...>>, {:insert, 2}}
+```
+
+```elixir
+ways = Enum.map(patterns, &Towels.count(&1, towels))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[6620974293119, 0, 35074418436970, 51307147748, 1695253946038, 12806406135744, 4413048272,
+ 52744440529, 21533960420, 189633269638, 308662314336, 28930988196, 0, 0, 2335754782, 105920229640,
+ 6464319032, 87075196587, 3720984622862, 2177845982468, 5546717284590, 8535586138, 834112091460,
+ 6647844832, 21252082644, 5923960105816, 22344301329, 0, 0, 582455705324, 5162034941182,
+ 368835846080, 30797645913, 0, 5315701730, 1953742172864, 910841596, 5512526952, 673582370688,
+ 2029241325402, 13227054560, 81761616492, 0, 184404641300, 19196318323832, 773246829645,
+ 97032877104, 0, 0, 0, ...]
+```
+
+## Part 1
+
+```elixir
+Enum.count(ways, & &1 > 0)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+306
+```
+
+## Part 2
+
+```elixir
+Enum.sum(ways)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+604622004681855
+```
+
+<!-- livebook:{"offset":7059,"stamp":{"token":"XCP.002DySFes8xjfbs_CVpc_QP75dkQcDFc5l37WdKhIJnRNctYjy9B2s3kTIev5coTlF4OCw1O-s8QuxIAU1HRaVoeZUHdw248FBapl1Ki5EyAYF1LHsn0MfuWbSukOOamT4I","version":2}} -->
