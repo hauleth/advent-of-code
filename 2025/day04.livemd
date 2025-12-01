@@ -1,0 +1,78 @@
+# Day 04
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Setup
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiI0Iiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjUifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2025", "4", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+rolls =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.with_index()
+  |> Enum.flat_map(fn {line, row} ->
+    line
+    |> String.to_charlist()
+    |> Enum.with_index()
+    |> Enum.filter(&(elem(&1, 0) == ?@))
+    |> Enum.map(&{elem(&1, 1), row})
+  end)
+  |> MapSet.new()
+```
+
+## Implementation
+
+```elixir
+defmodule PaperRolls do
+  def adjacent({x, y}) do
+    for dx <- -1..1,
+        dy <- -1..1,
+        {dx, dy} != {0, 0},
+        do: {x + dx, y + dy}
+  end
+
+  def free?(pos, map) do
+    pos
+    |> adjacent()
+    |> Enum.count(&(&1 in map))
+    |> then(&(&1 < 4))
+  end
+end
+```
+
+## Part 1
+
+```elixir
+Enum.count(rolls, &PaperRolls.free?(&1, rolls))
+```
+
+## Part 2
+
+```elixir
+cleaned =
+  Stream.repeatedly(fn -> [] end)
+  |> Enum.reduce_while(rolls, fn _, acc ->
+    removable =
+      Enum.filter(acc, &PaperRolls.free?(&1, acc))
+      |> MapSet.new()
+
+    case MapSet.difference(acc, removable) do
+      ^acc -> {:halt, acc}
+      remaining -> {:cont, remaining}
+    end
+  end)
+```
+
+```elixir
+MapSet.size(rolls) - MapSet.size(cleaned)
+```
+
+<!-- livebook:{"offset":1486,"stamp":{"token":"XCP.deDYlsmx1l6_24twLKmjhZpjVr-zKpCk4kKaQFxGe1gppbfdc-7UyFIZxpcR_jVCGfX6vDlmYQ7ACpVB7bxafYi0X3Avsi-upj46ogSc5zRBoDdxStrGLSLdSmW_EsudIg","version":2}} -->
