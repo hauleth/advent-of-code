@@ -1,0 +1,150 @@
+<!-- livebook:{"persist_outputs":true} -->
+
+# Day 01
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Setup
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIxIiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjUifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2025", "1", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+{:ok,
+ "R19\nL18\nL17\nR21\nR8\nL23\nL42\nL37\nR21\nL9\nL14\nR38\nR10\nR19\nR27\nL47\nL13\nL3\nL45\nL13\nL43\nL31\nR15\nR17\nR11\nR50\nR10\nL23\nR7\nR2\nR49\nR23\nL8\nR11\nL44\nR19\nR18\nR14\nR41\nL3\nR6\nR42\nL47\nL6\nL20\nR13\nR10\nR45\nL1\nL9\nR47\nR10\nR28\nR22\nR93\nL10\nR75\nL65\nL64\nL97\nR24\nR22\nL85\nL18\nL65\nL17\nL53\nL79\nR55\nR85\nL8\nL9\nR95\nR14\nL41\nR41\nR62\nL37\nR15\nL17\nL60\nR77\nR60\nL36\nR36\nL32\nR32\nL45\nL55\nR23\nL62\nR39\nR64\nL57\nL7\nR60\nL89\nL70\nL89\nR72\nL84\nR48\nL866\nL15\nR877\nR56\nR94\nR40\nL23\nR54\nR35\nL321\nR21\nL32\nR872\nR56\nR50\nL340\nL6\nR44\nL44\nL67\nR94\nL95\nR68\nR32\nL32\nL57\nL99\nR7\nL589\nR81\nR957\nR67\nR31\nR683\nR19\nR12\nL14\nR2\nL80\nR502\nL88\nR15\nL10\nL739\nL4\nL66\nL24\nL42\nR45\nL88\nL75\nR491\nL48\nR11\nR14\nL14\nR81\nL81\nR63\nR37\nR8\nL47\nR39\nR73\nL73\nR947\nR973\nR42\nL75\nR13\nL207\nL45\nL59\nR11\nR42\nL42\nR15\nL615\nL32\nL151\nL86\nL42\nL2\nR77\nL64\nR87\nR13\nR189\nL89\nR22\nR90\nR88\nR56\nR91\nR53\nR71\nL71\nR68\nL16\nR42\nR6\nL70\nL30\nR17\nL89\nR59\nR13\nL14\nR14\nL87\nR573\nL386\nR9\nL32\nL2\nR46\nL1\nL35\nL46\nR61\nR91\nR3\nL64\nL30\nL76\nR999\nR17\nR86\nR62\nR71\nR471\nR5\nR65\nR76\nL76\nL91\nL9\nL86\nL94\nL75\nR55\nR93\nL24\nL89\nL80\nL86\nL14\nR86\nL86\nL19\nR32\nR87\nL738\nL62\nL44\nL750\nL6\nL98\nR366\nR65\nR67\nR86\nR514\nR164\nR20\nR46\nL60\nR30\nL62\nR62\nR55\nR45\nR84\nL86\nL99\nR1\nR414\nL62\nR893\nR97\nR73\nL739\nL76\nR362\nR17\nL211\nR41\nL25\nL112\nL64\nR66\nL15\nR52\nL76\nL35\nR38\nR129\nL72\nL6\nR11\nL30\nR21\nR9\nL54\nL46\nL94\nR280\nL59\nR84\nL616\nR595\nR745\nL35\nR334\nR114\nR95\nL43\nR12\nL51\nR55\nR84\nL91\nL706\nR2\nR95\nR76\nL76\nR397\nR15\nR927\nL39\nL23\nL77\nL74\nR34\nR440\nR21\nL221\nL45\nR45\nL80\nL16\nL7\nL14\nL283\nL18\nR18\nR839\nL239\nR91\nL91\nR66\nR54\nR37\nR42\nL99\nR836\nL11\nR575\nR54\nR41\nL29\nR94\nR40\nL72\nR72\nL556\nR10\nL854\nR21\nL79\nR15\nR331\nL83\nL32\nL88\nL35\nL50\nR29\nL210\nR65\nL346\nL38\nL44\nR44\nR314\nR79\nL56\nL14\nR77\nR1\nL20\nL581\nR49\nL28\nL725\nR54\nR450\nR53\nR73\nL57\nL79\nR726\nL37\nL79\nR50\nR29\nL879\nR92\nR1\nL55\nR62\nL550\nR95\nR932\nR70\nL97\nL63\nR10\nL214\nL33\nL50\nL834\nR534\nR31\nL31\nR41\nL70\nL71\nL94\nL406\nR43\nR264\nR48\nR53\nL36\nR56\nR85\nR71\nL127\nR79\nR986\nL22\nR74\nR26\nR13\nL47\nL66\nR45\nL63\nL677\nR636\nR59\nR97\nL97\nR23\nL32\nR24\nL654\nL81\nL280\nL598\nL2\nR98\nR286\nL247\nR632\nL39\nL11\nL38\nR32\nR87\nR28\nL24\nL61\nL62\nR82\nL63\nR627\nR73\nR526\nR74\nR23\nL23\nR84\nR37\nR6\nR18\nL45\nL61\nR58\nR63\nL91\nL69\nL60\nL40\nL52\nR118\nL66\nR28\nR872\nL50\nL54\nL96\nL50\nR520\nR30\nL78\nR578\nR242\nR47\nL21\nL68\nR46\nR54\nL55\nR48\nR7\nR93\nR726\nR81\nL8\nR25\nR983\nR255\nL752\nL52\nR83\nL75\nR92\nL29\nL47\nR25\nR66\nR34\nL352\nR92\nL44\nR30\nL321\nR56\nL303\nL58\nR64\nR936\nR118\nL57\nL72\nL49\nR58\nL98\nL54\nR63\nL62\nR8\nR8\nL28\nR51\nR43\nL39\nL46\nL63\nL781\nL256\nR101\nR32\nR985\nR38\nL975\nL538\nL1\nL203\nR25\nR592\nR64\nL664\nR37\nR63\nL34\nR34\nR64\nR536\nR689\nL89\nR13\nR587\nL27\nL573\nL747\nR462\nL15\nL78\nL16\nL99\nR71\nL60\nL125\nL93\nL863\nR71\nR92\nL92\nL8\nR72\nL72\nL23\nR323\nL66\nR139\nL187\nR14\nL42\nL53\nL92\nR87\nL46\nR46\nR12\nL12\nL30\nR75\nL645\nR73\nL44\nR71\nR50\nR15\nR235\nL57\nL426\nL60\nR39\nL96\nL1\nR1\nL3\nR6\nL37\nL766\nL420\nL80\nL42\nR66\nR50\nL58\nL81\nL35\nL365\nR565\nL369\nL6\nR75\nR42\nR8\nL50\nR2\nL81\nL21\nL23\nR80\nR47\nR96\nR50\nL314\nL36\nL97\nR460\nL63\nL103\nL86\nL11\nL43\nR43\nR45\nR55\nR27\nL19\nR92\nL4\nL33\nR98\nL87\nR60\nR66\nL82\nL621\nL44\nL85\nR65\nR67\nR18\nR82\nL9\nR9\nR30\nL44\nR774\nR81\nR49\nR91\nR11\nL92\nL14\nL60\nR81\nR593\nR62\nR38\nR36\nR277\nR90\nR93\nR75\nL59\nR37\nR824\nL73\nR69\nL79\nL241\nR27\nR726\nR5\nR82\nR98\nR513\nL55\nL18\nR41\nL92\nL52\nL8\nR784\nR90\nL4\nL56\nR98\nL667\nR12\nL73\nR21\nL821\nR149\nL6\nR25\nL21\nR53\nL46\nL19\nR12\nR569\nL99\nL90\nL65\nR36\nR302\nR37\nL37\nR388\nL88\nL61\nR16\nR14\nL85\nR16\nR602\nR698\nR57\nR43\nR56\nL80\nL76\nL71\nL601\nR4\nL69\nR5\nL115\nR21\nL74\nL23\nR68\nL23\nL63\nR41\nR18\nL18\nL784\nL26\nL38\nR48\nL98\nL91\nR62\nL73\nL811\nR39\nR72\nL97\nL93\nR935\nL45\nL31\nR36\nR95\nR51\nL15\nL36\nR410\nL805\nL5\nL86\nR86\nL71\nR371\nR43\nR10\nR61\nL59\nR11\nR34\nR11\nL93\nL18\nR58\nL79\nR588\nR233\nR9\nR91\nL496\nL4\nR92\nL40\nR1\nL828\nL85\nR61\nR66\nL998\nR83\nR64\nL45\nL71\nL32\nR42\nR653\nL49\nR79\nR92\nR15\nL6\nR6\nL45\nR194\nR29\nL78\nL76\nR76\nL37\nR359\nL5\nL17\nR92\nL957\nR62\nL8\nR11\nL78\nR11\nL457\nR57\nR72\nL5\nL52\nR51\nL14\nL48\nR460\nL617\nL80\nL154\nR68\nL57\nL357\nR32\nL32\nL52\nL48\nL467\nR12\nR855\nR51\nR49\nL90\nR90\nL73\nR40\nR91\nR32\nR10\nL88\nL46\nR851\nR683\nR7\nR649\nR313\nL544\nR75\nL92\nL9\nR198\nL97\nL61\nR61\nR53\nR68\nR65\nL685\nR99\nR55\nR12\nL51\nR89\nL5\nL35\nL64\nL98\nR97\nR453\nL53\nR37\nR40\nR5\nR54\nR42\nR45\nL3\nL12\nL83\nL181\nL44\nR4\nL62\nR7\nL49\nL46\nL36\nR72\nL90\nL98\nL2\nR73\nR79\nR548\nR696\nR4\nL347\nR47\nL89\nL11\nL572\nL22\nR94\nL885\nL15\nL62\nL76\nR70\nL830\nL61\nL41\nR24\nL93\nL31\nR63\nR51\nR821\nL24\nL47\nR41\nR42\nL970\nL77\nR32\nR68\nR49\nR251\nL49\nR49\nL63\nL37\nL43\nL36\nR5" <> ...}
+```
+
+```elixir
+instructions =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn <<dir>> <> rest ->
+    num = String.to_integer(rest)
+
+    if dir == ?R do
+      {div(num, 100), rem(num, 100)}
+    else
+      {div(num, 100), -rem(num, 100)}
+    end
+  end)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+[
+  {0, 19},
+  {0, -18},
+  {0, -17},
+  {0, 21},
+  {0, 8},
+  {0, -23},
+  {0, -42},
+  {0, -37},
+  {0, 21},
+  {0, -9},
+  {0, -14},
+  {0, 38},
+  {0, 10},
+  {0, 19},
+  {0, 27},
+  {0, -47},
+  {0, -13},
+  {0, -3},
+  {0, -45},
+  {0, -13},
+  {0, -43},
+  {0, -31},
+  {0, 15},
+  {0, 17},
+  {0, 11},
+  {0, 50},
+  {0, 10},
+  {0, -23},
+  {0, 7},
+  {0, 2},
+  {0, 49},
+  {0, 23},
+  {0, -8},
+  {0, 11},
+  {0, -44},
+  {0, 19},
+  {0, 18},
+  {0, 14},
+  {0, 41},
+  {0, -3},
+  {0, 6},
+  {0, 42},
+  {0, -47},
+  {0, -6},
+  {0, -20},
+  {0, 13},
+  {0, 10},
+  {0, 45},
+  {0, ...},
+  {...},
+  ...
+]
+```
+
+## Part 1
+
+```elixir
+Enum.reduce(instructions, {50, 0}, fn {_rot, val}, {curr, sum} ->
+  next = Integer.mod(curr + val, 100)
+
+  {next, sum + if(next == 0, do: 1, else: 0)}
+end)
+|> elem(1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+1158
+```
+
+## Part 2
+
+```elixir
+<<0x434C49434B::40>>
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+"CLICK"
+```
+
+```elixir
+Enum.reduce(instructions, {50, 0}, fn {rot, val}, {curr, sum} ->
+  next = curr + val
+
+  pass =
+    cond do
+      curr == 0 and next < 0 -> 0
+      next not in 0..99 -> 1
+      rem(next, 100) == 0 -> 1
+      true -> 0
+    end
+
+  {Integer.mod(next, 100), sum + pass + rot}
+end)
+|> elem(1)
+```
+
+<!-- livebook:{"output":true} -->
+
+```
+6860
+```
+
+<!-- livebook:{"offset":7198,"stamp":{"token":"XCP.BHSOPunco0pDpQv-38vear-fTqa2_h8Mqa9T6W_PKNUp9vv5OF4HlDkEjtSWN7zBUT_Houfqvq3RBUcZ1C2n04AJEv0BGPSZD_3cPwIlkk3T2z7C2qnbCrP__8EuwANKiw","version":2}} -->
