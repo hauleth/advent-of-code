@@ -1,0 +1,80 @@
+# Day 02
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Parsing
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIyIiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjUifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2025", "2", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+ranges =
+  puzzle_input
+  |> String.trim()
+  |> String.split(",")
+  |> Enum.map(fn range ->
+    range
+    |> String.split("-")
+    |> Enum.map(&String.to_integer/1)
+    |> then(&apply(Range, :new, &1))
+  end)
+```
+
+## Implementation
+
+```elixir
+defmodule ElfRanges do
+  def valid?(num) do
+    len = floor(:math.log10(num)) + 1
+
+    valid_n?(num, len, 2)
+  end
+
+  def valid_any?(num) do
+    len = floor(:math.log10(num)) + 1
+
+    Enum.all?(2..len//1, &valid_n?(num, len, &1))
+  end
+
+  def valid_n?(num, len, n) do
+    if rem(len, n) == 0 do
+      step = 10 ** div(len, n)
+
+      Stream.unfold(num, fn
+        0 -> nil
+        val -> {rem(val, step), div(val, step)}
+      end)
+      |> Enum.dedup()
+      |> then(&(not match?([_], &1)))
+    else
+      true
+    end
+  end
+end
+```
+
+## Part 1
+
+```elixir
+ranges
+|> Stream.flat_map(& &1)
+|> Stream.reject(&ElfRanges.valid?/1)
+|> Enum.sum()
+```
+
+## Part 2
+
+```elixir
+ranges
+|> Stream.flat_map(& &1)
+|> Stream.reject(&ElfRanges.valid_any?/1)
+|> Enum.sum()
+```
+
+<!-- livebook:{"offset":1434,"stamp":{"token":"XCP.XGwVuWkI5pveel-Tx5hGUsCOmJKjA6byJZgIevkuBoRsAeaI3iyjR6XNRi9nwICSeuXI_2gJ9nWRKsSPzj30sqjcf8vmy_6FGXhLmap28ImjUKnK7ruHw0EpJansNfksuQ","version":2}} -->
