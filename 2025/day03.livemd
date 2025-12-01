@@ -1,0 +1,52 @@
+# Day 03
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Section
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiIzIiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjUifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2025", "3", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+batteries =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.map(fn row ->
+    row
+    |> String.to_charlist()
+    |> Enum.map(& &1 - ?0)
+  end)
+```
+
+```elixir
+defmodule Joltage do
+  def make_largest(list, n) do
+    to_remove = length(list) - n
+    Enum.reduce(1..to_remove, list, fn _, acc -> make_larger(acc) end)
+  end
+  
+  def make_larger([_]), do: []
+  def make_larger([a, b | rest]) when a < b, do: [b | rest]
+  def make_larger([b | rest]), do: [b | make_larger(rest)]
+end
+```
+
+## Part 1
+
+```elixir
+Enum.sum_by(batteries, &Integer.undigits(Joltage.make_largest(&1, 2)))
+```
+
+## Part 2
+
+```elixir
+Enum.sum_by(batteries, &Integer.undigits(Joltage.make_largest(&1, 12)))
+```
+
+<!-- livebook:{"offset":1124,"stamp":{"token":"XCP.c4B4LAKOm9IZipbHc85MIeUBdcwcaQptUgMJIlHzU3DD1hssADSGdE-vByW1pHXsrARIeklYPeAk8Nn3AXBYvoEjBgm8zEP9oMXmp04xI_hLHezHURvrp6zdapkG0-l_sw","version":2}} -->

@@ -77,4 +77,4 @@ ranges
 |> Enum.sum()
 ```
 
-<!-- livebook:{"offset":1434,"stamp":{"token":"XCP.XGwVuWkI5pveel-Tx5hGUsCOmJKjA6byJZgIevkuBoRsAeaI3iyjR6XNRi9nwICSeuXI_2gJ9nWRKsSPzj30sqjcf8vmy_6FGXhLmap28ImjUKnK7ruHw0EpJansNfksuQ","version":2}} -->
+<!-- livebook:{"offset":1434,"stamp":{"token":"XCP.NoAgOlNzs9jV0M8QxQDrdfMwKQR_xYkBG2FLF06XnKPtJ5ps3S83JucEVQZ7fJF0utUaryiCOT7xPWESlw3lS3TI6Jujiw8uFAZdKEXUL_jmZMHVF37TxiY4vRwKjfwvfg","version":2}} -->
