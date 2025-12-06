@@ -1,0 +1,64 @@
+# Day 06
+
+```elixir
+Mix.install([:kino_aoc])
+```
+
+## Setup
+
+<!-- livebook:{"attrs":"eyJhc3NpZ25fdG8iOiJwdXp6bGVfaW5wdXQiLCJkYXkiOiI2Iiwic2Vzc2lvbl9zZWNyZXQiOiJBRFZFTlRfT0ZfQ09ERV9TRVNTSU9OIiwieWVhciI6IjIwMjUifQ","chunks":null,"kind":"Elixir.KinoAOC.HelperCell","livebook_object":"smart_cell"} -->
+
+```elixir
+{:ok, puzzle_input} =
+  KinoAOC.download_puzzle("2025", "6", System.fetch_env!("LB_ADVENT_OF_CODE_SESSION"))
+```
+
+```elixir
+{tasks, [ops]} =
+  puzzle_input
+  |> String.split("\n", trim: true)
+  |> Enum.split(-1)
+```
+
+```elixir
+ops =
+  ops
+  |> String.split()
+  |> Enum.map(&String.to_atom/1)
+```
+
+## Part 1
+
+```elixir
+tasks
+|> Enum.map(&String.split/1)
+|> Enum.zip_with(fn numbers -> Enum.map(numbers, &String.to_integer/1) end)
+|> Enum.zip(ops)
+|> Enum.sum_by(fn
+  {nums, :+} -> Enum.sum(nums)
+  {nums, :*} -> Enum.product(nums)
+end)
+```
+
+## Part 2
+
+```elixir
+tasks
+|> Enum.map(&String.to_charlist/1)
+|> Enum.zip_with(&(&1 |> List.to_string() |> String.trim()))
+|> Enum.chunk_while(
+  [],
+  fn
+    "", acc -> {:cont, acc, []}
+    num, acc -> {:cont, [String.to_integer(num) | acc]}
+  end,
+  &{:cont, &1, []}
+)
+|> Enum.zip(ops)
+|> Enum.sum_by(fn
+  {nums, :+} -> Enum.sum(nums)
+  {nums, :*} -> Enum.product(nums)
+end)
+```
+
+<!-- livebook:{"offset":1229,"stamp":{"token":"XCP.uuy6Ksg23kO8DXLs0nEHWRa2q8MnTF00fl1kNBDi-xlsQ1DZ_teumvy__d8PZSNG_VIsQ9fTr1rGiHu3aFBxxeOD5uVO2plujrne43wrcKxIt7wi6AInBo9LuC1gXgwFgw","version":2}} -->
